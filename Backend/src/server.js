@@ -1,12 +1,17 @@
 const express = require('express');
+const route = require('./routes/indexRouter.js')
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const userModel = require('./models/User');
 
 dotenv.config();
 
 const app = express();
+
 const port = process.env.PORT || 8081;
+//cau hinh doc json
+app.use(express.json());
+//cau hinh formdata
+app.use(express.urlencoded({extended:true}))
 
 // Connect to MongoDB once when the server starts
 mongoose.connect(process.env.MONGO_URI)
@@ -17,13 +22,5 @@ app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
-// Define the root route
-app.get('/', async (req, res) => {
-    try {
-        const users = await userModel.find().lean(); // Use lean() to get plain JavaScript objects
-        res.send(users);
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
+
+route(app)
