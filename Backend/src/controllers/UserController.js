@@ -1,5 +1,6 @@
 const userService = require('../services/userService.js')
 class UserController{
+    
     // dang ki
     createUser = async(req,res,next)=>{
        const data = req.body
@@ -39,6 +40,13 @@ class UserController{
         const data1=await userService.login(data)
         return res.status(200).json(data1)
 
+    }
+
+    //Get User
+    getUsers = async (req,res,next)=>{
+        const data = req.body
+        const dataUsers=await userService.getUsers(data)
+        return res.status(200).json(dataUsers)
     }
 }
 module.exports = new UserController

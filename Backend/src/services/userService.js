@@ -68,5 +68,14 @@ login= async(data)=>{
         return null
     }
 }
+
+getUsers=async()=>{
+    try{
+        const result = await user.find({})
+        return result
+    }catch(error){
+        throw error; 
+    }
+}
 }
 module.exports = new userService
