@@ -49,7 +49,8 @@ login= async(data)=>{
                 )
                     return {
                         token, 
-                        user:{                         
+                        user:{    
+                            userId:users._id,                     
                             fullname:users.fullname,
                             email:users.email,
                             role:users.role
@@ -75,6 +76,44 @@ getUsers=async()=>{
         return result
     }catch(error){
         throw error; 
+    }
+}
+
+
+refreshToken = async(token)=>{
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const users = await user.findOne({ userId: decoded._id });
+        if(users){
+            const payload ={
+                fullname:users.fullname,
+                email:users.email,
+                role:users.role
+            }
+            const newToken = jwt.sign(
+                payload,
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: process.env.JWT_EXPIRE
+                }
+            )
+                return {
+                    newToken, 
+                    user:{    
+                        userId:users._id,                     
+                        fullname:users.fullname,
+                        email:users.email,
+                        role:users.role
+                    }
+                }
+        }else{
+            return res.status(401).json({
+                message: "Authorization!"
+            })
+        }
+
+    } catch (error) {
+        throw error;
     }
 }
 }
