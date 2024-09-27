@@ -1,6 +1,7 @@
 const user = require('../models/userModel.js')
 const bcrypt =require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { updateUser } = require('../controllers/UserController.js')
 require('dotenv').config()
 const saltRounds =10
 
@@ -77,5 +78,21 @@ getUsers=async()=>{
         throw error; 
     }
 }
+updateUser=(id,data)=> {
+    return new Promise(async (resolve, reject)=>{
+        try{
+            const checkUser = await user.findOne(id)
+            console.log('checkUser',checkUser)
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+            })      
+    }catch (e){
+        reject(e)
+    }   
+
+})
 }
+}
+
 module.exports = new userService

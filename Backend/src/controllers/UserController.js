@@ -48,5 +48,26 @@ class UserController{
         const dataUsers=await userService.getUsers(data)
         return res.status(200).json(dataUsers)
     }
+
+    //Update user
+     updateUser = async (req,res)=>{
+        try{
+            const userId=req.params.id
+            const data= req.body
+            if(!userId) {
+                return res.status(200).json({
+                    status:'ERR',
+                    message:'The userId is required'
+                })
+            }
+            console.log("userId:",userId)
+            const response= await userService.updateUser(userId, data)
+            return res.status(200).json(response)
+        } catch{
+            return res.status(404).json({
+                message: e
+            })
+        }
+    }
 }
 module.exports = new UserController
