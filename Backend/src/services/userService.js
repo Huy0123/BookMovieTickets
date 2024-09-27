@@ -73,7 +73,7 @@ login= async(data)=>{
 
 getUsers=async()=>{
     try{
-        const result = await user.find({})
+        const result = await user.find({role: 'User'})
         return result
     }catch(error){
         throw error; 

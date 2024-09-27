@@ -20,7 +20,11 @@ const aut = async(req, res, next) => {
                     message: "Người dùng không tồn tại!"
                 })
             }
-            req.decoded = decoded;
+            if(decoded.role != 'Admin'){
+                return res.status(401).json({
+                    message: "Người dùng không có quyền truy cập!"
+                })
+            }
             next()
 
         } else {
