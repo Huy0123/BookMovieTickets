@@ -49,7 +49,7 @@ login= async(data)=>{
                 )
                     return {
                         token, 
-                        user:{
+                        user:{                         
                             fullname:users.fullname,
                             email:users.email,
                             role:users.role
