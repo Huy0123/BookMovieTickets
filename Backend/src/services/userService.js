@@ -36,6 +36,7 @@ login= async(data)=>{
                 }
             }else{
                 const payload ={
+                    userId:users._id,
                     fullname:users.fullname,
                     email:users.email,
                     role:users.role
@@ -83,9 +84,10 @@ getUsers=async()=>{
 refreshToken = async(token)=>{
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        const users = await user.findOne({ userId: decoded._id });
+        const users = await user.findOne({ _id: decoded.userId }); 
         if(users){
             const payload ={
+                userId:users._id,  
                 fullname:users.fullname,
                 email:users.email,
                 role:users.role
@@ -100,7 +102,7 @@ refreshToken = async(token)=>{
                 return {
                     newToken, 
                     user:{    
-                        userId:users._id,                     
+                        userId:users._id,             
                         fullname:users.fullname,
                         email:users.email,
                         role:users.role
@@ -112,8 +114,9 @@ refreshToken = async(token)=>{
             })
         }
 
-    } catch (error) {
-        throw error;
+    }  catch (error) {
+        console.error("Error in jwt.verify:", error.message); // Ghi log chi tiết lỗi
+        throw new Error("Failed to verify token: " + error.message);
     }
 }
 }

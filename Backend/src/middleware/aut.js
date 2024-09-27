@@ -14,9 +14,7 @@ const aut = async(req, res, next) => {
             }
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            console.log(decoded)
-            
-           
+     
             if (!decoded) {
                 return res.status(404).json({
                     message: "Người dùng không tồn tại!"
