@@ -69,6 +69,60 @@ class UserController{
         }
     }
 
+    //update user
+
+    updateUser = async (req, res, next) => {
+        const userId = req.params.id; 
+        const updateData = req.body;   
+    
+        try {
+            const existingUser = await userService.getUserById(userId);
+    
+            if (!existingUser) {
+                return res.status(404).json({
+                    message: 'Người dùng không tìm thấy!',
+                });
+            }
+    
+            // Nếu người dùng tồn tại, tiến hành cập nhật
+            const updatedUser = await userService.updateUser(userId, updateData);
+    
+            return res.status(200).json({
+                message: 'Cập nhật người dùng thành công!',
+                updatedUser,
+            });
+        } catch (error) {
+            console.error('Lỗi khi cập nhật người dùng:', error);
+            return res.status(500).json({
+                message: 'Lỗi máy chủ, vui lòng thử lại sau.',
+            });
+        }
+    }
+    
+    //delete user
+    deleteUser =async (req,res,next) =>{
+        const userId = req.params.id;
+        try {
+            const existingUser = await userService.getUserById(userId);
+    
+            if (!existingUser) {
+                return res.status(404).json({
+                    message: 'Người dùng không tìm thấy!',
+                });
+            }
+            const deletedUser = await userService.deleteUser(userId);
+            return res.status(200).json({
+                message: 'Xóa người dùng người dùng thành công!',
+            });
+    } catch (error) {
+        console.error('Lỗi khi cập nhật người dùng:', error);
+        return res.status(500).json({
+            message: 'Lỗi máy chủ, vui lòng thử lại sau.',
+        });
+    }
+}
+
+
     //refresh_token
     refreshToken = async(req, res, next) => {
         try {

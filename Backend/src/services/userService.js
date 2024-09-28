@@ -93,14 +93,59 @@ getUserById = async (id) => {
             fullname: userFound.fullname,
             username: userFound.username,
             email: userFound.email,
+            password: userFound.password,
             num: userFound.num,
             role: userFound.role
         };
-    } catch (error) {
-        console.error('Lỗi khi tìm người dùng theo ID:', error); // Log the error
-        throw error; // Rethrow the error for the controller to handle
+    } catch(error){
+        throw error; 
     }
 }
+
+updateUser = async (userId, updateData) => {
+    try {
+        let hashPassword;
+        if (updateData.password) {
+             hashPassword = await bcrypt.hash(updateData.password, saltRounds);
+            updateData.password = hashPassword; // Cập nhật mật khẩu đã mã hóa vào updateData
+        }
+        const updatedUser = await user.findByIdAndUpdate(
+            userId,           
+            updateData,        
+            { new: true }      // Trả về dữ liệu đã cập nhật
+        );
+
+        if (!updatedUser) {
+            return {
+                message: 'Người dùng không tìm thấy!' 
+            };
+        }
+
+        return {
+                _id: updatedUser._id,
+                fullname: updatedUser.fullname,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                password: updateData.password ? hashPassword : updatedUser.password,
+                num: updatedUser.num,
+                role: updatedUser.role    
+        };
+
+    } catch(error){
+        throw error; 
+    }
+}
+
+deleteUser = async (userId) => {
+    try{
+        const deletedUser = await user.findByIdAndDelete(userId);
+    } catch(error){
+        throw error; 
+    }
+}
+
+
+
 refreshToken = async(token)=>{
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)

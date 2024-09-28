@@ -8,5 +8,6 @@ router.post('/login',UserController.login)
 router.get('/getUsers',aut,UserController.getUsers)
 router.get('/getUserByID/:id', UserController.getUserByID);
 router.post('/refresh_token',aut,UserController.refreshToken)
-
+router.put('/updateUser/:id', UserController.updateUser);
+router.delete('/deleteUser/:id', UserController.deleteUser);
 module.exports = router
