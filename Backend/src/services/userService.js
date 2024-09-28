@@ -1,7 +1,6 @@
 const user = require('../models/userModel.js')
 const bcrypt =require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { updateUser } = require('../controllers/UserController.js')
 require('dotenv').config()
 const saltRounds =10
 
@@ -78,21 +77,27 @@ getUsers=async()=>{
         throw error; 
     }
 }
-updateUser=(id,data)=> {
-    return new Promise(async (resolve, reject)=>{
-        try{
-            const checkUser = await user.findOne(id)
-            console.log('checkUser',checkUser)
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-            })      
-    }catch (e){
-        reject(e)
-    }   
 
-})
+// Get user by ID
+getUserById = async (id) => {
+    try {
+        const userFound = await user.findById(id); // Find user by ID
+        if (!userFound) {
+            return null; // Return null if user not found
+        }
+        // Return the user object including _id
+        return {
+            _id: userFound._id, 
+            fullname: userFound.fullname,
+            username: userFound.username,
+            email: userFound.email,
+            num: userFound.num,
+            role: userFound.role
+        };
+    } catch (error) {
+        console.error('Lỗi khi tìm người dùng theo ID:', error); // Log the error
+        throw error; // Rethrow the error for the controller to handle
+    }
 }
 }
-
 module.exports = new userService

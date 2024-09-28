@@ -49,25 +49,24 @@ class UserController{
         return res.status(200).json(dataUsers)
     }
 
-    //Update user
-     updateUser = async (req,res)=>{
-        try{
-            const userId=req.params.id
-            const data= req.body
-            if(!userId) {
-                return res.status(200).json({
-                    status:'ERR',
-                    message:'The userId is required'
-                })
+    // Get user by ID
+    getUserByID = async (req, res, next) => {
+        const userId = req.params.id; 
+        try {
+            const user = await userService.getUserById(userId); // Call the service method
+            if (!user) {
+                return res.status(404).json({
+                    message: 'Người dùng không tìm thấy!', // User not found
+                });
             }
-            console.log("userId:",userId)
-            const response= await userService.updateUser(userId, data)
-            return res.status(200).json(response)
-        } catch{
-            return res.status(404).json({
-                message: e
-            })
+            return res.status(200).json(user); // Return the found user
+        } catch (error) {
+            console.error('Lỗi khi lấy thông tin người dùng:', error); // Log the error
+            return res.status(500).json({
+                message: 'Lỗi máy chủ, vui lòng thử lại sau', // Internal server error message
+            });
         }
     }
+
 }
 module.exports = new UserController
