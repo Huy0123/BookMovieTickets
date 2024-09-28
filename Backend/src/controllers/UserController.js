@@ -1,4 +1,5 @@
 const userService = require('../services/userService.js')
+const jwt = require('jsonwebtoken')
 class UserController{
     
     // dang ki
@@ -68,5 +69,20 @@ class UserController{
         }
     }
 
+    //refresh_token
+    refreshToken = async(req, res, next) => {
+        try {
+            const token = req.headers.authorization?.split(' ')[1];
+            if (!token) {
+                return res.status(401).json({ message: "Expired Authorization!" });
+            }
+            const dataToken = await userService.refreshToken(token);
+            return res.status(200).json(dataToken);
+        } catch (error) {
+            console.error('Error in refreshToken controller:', error.message); 
+            return res.status(401).json({ message: error.message });
+        }
+    };
+    
 }
 module.exports = new UserController

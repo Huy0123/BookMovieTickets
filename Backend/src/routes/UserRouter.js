@@ -7,4 +7,6 @@ router.post('/signup', UserController.createUser)
 router.post('/login',UserController.login)
 router.get('/getUsers',aut,UserController.getUsers)
 router.get('/getUserByID/:id', UserController.getUserByID);
+router.post('/refresh_token',aut,UserController.refreshToken)
+
 module.exports = router

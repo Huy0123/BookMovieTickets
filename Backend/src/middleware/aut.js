@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const Users = require('../models/userModel')
 require('dotenv').config()
 
+
 const aut = async(req, res, next) => {
     try {
         if (req.headers && req.headers.authorization) {
@@ -13,15 +14,17 @@ const aut = async(req, res, next) => {
             }
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            console.log(decoded)
-            
-           
+     
             if (!decoded) {
                 return res.status(404).json({
                     message: "Người dùng không tồn tại!"
                 })
             }
-            req.decoded = decoded;
+            if(decoded.role != 'Admin'){
+                return res.status(401).json({
+                    message: "Người dùng không có quyền truy cập!"
+                })
+            }
             next()
 
         } else {

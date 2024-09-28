@@ -36,6 +36,7 @@ login= async(data)=>{
                 }
             }else{
                 const payload ={
+                    userId:users._id,
                     fullname:users.fullname,
                     email:users.email,
                     role:users.role
@@ -49,7 +50,8 @@ login= async(data)=>{
                 )
                     return {
                         token, 
-                        user:{
+                        user:{    
+                            userId:users._id,                     
                             fullname:users.fullname,
                             email:users.email,
                             role:users.role
@@ -71,7 +73,7 @@ login= async(data)=>{
 
 getUsers=async()=>{
     try{
-        const result = await user.find({})
+        const result = await user.find({role: 'User'})
         return result
     }catch(error){
         throw error; 
@@ -97,6 +99,44 @@ getUserById = async (id) => {
     } catch (error) {
         console.error('Lỗi khi tìm người dùng theo ID:', error); // Log the error
         throw error; // Rethrow the error for the controller to handle
+    }
+}
+refreshToken = async(token)=>{
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const users = await user.findOne({ _id: decoded.userId }); 
+        if(users){
+            const payload ={
+                userId:users._id,  
+                fullname:users.fullname,
+                email:users.email,
+                role:users.role
+            }
+            const newToken = jwt.sign(
+                payload,
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: process.env.JWT_EXPIRE
+                }
+            )
+                return {
+                    newToken, 
+                    user:{    
+                        userId:users._id,             
+                        fullname:users.fullname,
+                        email:users.email,
+                        role:users.role
+                    }
+                }
+        }else{
+            return res.status(401).json({
+                message: "Authorization!"
+            })
+        }
+
+    }  catch (error) {
+        console.error("Error in jwt.verify:", error.message); // Ghi log chi tiết lỗi
+        throw new Error("Failed to verify token: " + error.message);
     }
 }
 }
