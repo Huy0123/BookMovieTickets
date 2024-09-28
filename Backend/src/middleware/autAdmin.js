@@ -3,7 +3,7 @@ const Users = require('../models/userModel')
 require('dotenv').config()
 
 
-const aut = async(req, res, next) => {
+const autAdmin = async(req, res, next) => {
     try {
         if (req.headers && req.headers.authorization) {
             const token = req.headers.authorization.split(' ')[1]
@@ -40,4 +40,4 @@ const aut = async(req, res, next) => {
     }
 }
 
-module.exports = aut
+module.exports = autAdmin

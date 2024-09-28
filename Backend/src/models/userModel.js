@@ -17,11 +17,11 @@ const createUser = new mongoose.Schema({
     },
     num: {
         type: String,
-        required: true,
+       
     },
     password: {
         type: String,
-        required: true,
+      
     },
     role: {
         type: String,
