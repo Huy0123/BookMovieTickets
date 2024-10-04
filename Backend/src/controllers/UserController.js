@@ -39,12 +39,61 @@ class UserController{
     login = async(req,res,next)=>{
         const data = req.body
         const data1=await userService.login(data)
+        res.cookie('refreshToken', data1.refreshToken, {
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production', // Chỉ gửi qua HTTPS nếu ở môi trường sản xuất
+            maxAge: 30 * 24 * 60 * 60 * 1000 // Thời gian sống của cookie (ví dụ: 30 ngày)
+        });
         return res.status(200).json(data1)
 
     }
+//logout
+    logout = async (req, res, next) => {
+        try {
+            // Xóa cookie refresh_token
+            res.clearCookie('refreshToken', {
+                httpOnly: true, // Đảm bảo rằng cookie đã được thiết lập là httpOnly
+                secure: process.env.NODE_ENV === 'production' // Chỉ xóa cookie qua HTTPS nếu ở môi trường sản xuất
+            });
+    
+            // Thực hiện bất kỳ logic nào khác cần thiết (ví dụ: ghi log, thông báo...)
+            
+            return res.status(200).json({ message: "Logout successful!" });
+        } catch (error) {
+            console.error('Error in logout controller:', error.message);
+            return res.status(500).json({ message: "Logout failed." });
+        }
+    };
 
-    //Get User
-    getUsers = async (req,res,next)=>{
+   // refresh_token
+    refreshToken = async (req, res, next) => {
+        try {
+            const { refresh_token } = req.body; // Lấy Refresh Token từ body
+            console.log(refresh_token);
+            
+            // Kiểm tra xem Refresh Token có tồn tại không
+            if (!refresh_token) {
+                return res.status(401).json({ message: "Refresh Token is required!" });
+            }
+
+            // Gọi service để làm mới Access Token
+            const dataToken = await userService.refreshToken(refresh_token); // Gọi service với Refresh Token
+
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true, // Không thể truy cập từ JavaScript
+                secure: process.env.NODE_ENV === 'production', // Chỉ gửi qua HTTPS nếu ở môi trường sản xuất
+                maxAge: 30 * 24 * 60 * 60 * 1000 // Thời gian sống của cookie (ví dụ: 30 ngày)
+            });
+            // Trả về Access Token mới
+            return res.status(200).json(dataToken);
+        } catch (error) {
+            console.error('Error in refreshToken controller:', error.message); 
+            return res.status(401).json({ message: error.message });
+        }
+    };
+
+     //Get User
+     getUsers = async (req,res,next)=>{
         const data = req.body
         const dataUsers=await userService.getUsers(data)
         return res.status(200).json(dataUsers)
@@ -123,20 +172,6 @@ class UserController{
 }
 
 
-    //refresh_token
-    refreshToken = async(req, res, next) => {
-        try {
-            const token = req.headers.authorization?.split(' ')[1];
-            if (!token) {
-                return res.status(401).json({ message: "Expired Authorization!" });
-            }
-            const dataToken = await userService.refreshToken(token);
-            return res.status(200).json(dataToken);
-        } catch (error) {
-            console.error('Error in refreshToken controller:', error.message); 
-            return res.status(401).json({ message: error.message });
-        }
-    };
     
 }
 module.exports = new UserController

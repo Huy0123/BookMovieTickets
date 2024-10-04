@@ -14,31 +14,7 @@ class userService{
 createUserService = async(data)=>{
     try{
         let hashPassword;
-        if (data.googleToken) {
-            const ticket = await client.verifyIdToken({
-                idToken: data.googleToken,
-                audience: client_id
-            });
-            const payload = ticket.getPayload();
-            
-            // Kiểm tra xem người dùng đã tồn tại chưa
-            const existingUser = await user.findOne({ email: payload.email });
-            if (existingUser) {
-                return existingUser; // Nếu đã tồn tại, trả về người dùng
-            }
-
-            // Tạo người dùng mới bằng thông tin từ Google
-            const newUser = await user.create({
-                fullname: payload.name,
-                username: payload.email.split('@')[0], // Có thể tạo username từ email
-                email: payload.email,
-                num: data.num || '', // Nếu cần thêm số điện thoại
-                password: null, // Không cần mật khẩu nếu đăng ký qua Google
-                role: data.role || 'User'
-            });
-            
-            return newUser;
-        } else{
+      
             hashPassword = await bcrypt.hash(data.password,saltRounds)
             let result = await user.create({
                 fullname: data.fullname,
@@ -49,7 +25,7 @@ createUserService = async(data)=>{
                 role: data.role
             })
             return result
-        }
+      
 
        
     } catch(error){
@@ -64,7 +40,11 @@ login = async (data) => {
         console.log("Đang cố gắng đăng nhập...");
         if (data.googleToken) {
             console.log("Đang xác thực token Google...");
-
+            const ticket = await client.verifyIdToken({
+                idToken: data.googleToken,
+                audience: client_id
+            });
+            const payload = ticket.getPayload();
             const googleUser = await this.verifyGoogleToken(data.googleToken);
             console.log("Đang xác thực token Google...",googleUser);
             if (!googleUser) {
@@ -76,27 +56,33 @@ login = async (data) => {
             if (!userFound) {
                 // Nếu không tìm thấy, tạo tài khoản mới
                 userFound = await user.create({
-                    fullname: googleUser.name,
-                    email: googleUser.email,
-                    password: null, // Không cần mật khẩu khi đăng nhập qua Google
-                    role: 'User' // Hoặc giá trị khác tùy thuộc vào logic của bạn
+                    fullname: payload.name,
+                    username: payload.email.split('@')[0], // Có thể tạo username từ email
+                    email: payload.email,
+                    num: data.num || '', // Nếu cần thêm số điện thoại
+                    password: null, // Không cần mật khẩu nếu đăng ký qua Google
+                    role: data.role || 'User'
                 });
             }
 
             // Tạo JWT cho người dùng
-            const payload = {
+            const payload1 = {
                 userId: userFound._id,
                 fullname: userFound.fullname,
                 email: userFound.email,
                 role: userFound.role
             };
 
-            const token = jwt.sign(payload, process.env.JWT_SECRET, {
+            const accesstoken = jwt.sign(payload1, process.env.JWT_SECRET, {
                 expiresIn: process.env.JWT_EXPIRE
+            });
+            const refreshToken = jwt.sign({ userId: userFound._id }, process.env.JWT_SECRET, {
+                expiresIn: process.env.JWT_REFRESH_EXPIRE // Thời gian tồn tại của Refresh Token
             });
 
             return {
-                token,
+                accesstoken,
+                refreshToken,
                 user: {
                     userId: userFound._id,
                     fullname: userFound.fullname,
@@ -108,7 +94,12 @@ login = async (data) => {
             // Đăng nhập bằng tên người dùng và mật khẩu
             const userFound = await user.findOne({ username: data.username });
             if (userFound) {
-                const isMatchPassword = await bcrypt.compare(data.password, userFound.password);
+                if( userFound.password!=null){
+                    var isMatchPassword = await bcrypt.compare(data.password, userFound.password);
+                }else{
+                    return { EC: 0, EM: "Email hoặc Password không hợp lệ!" };
+                }
+                
                 if (!isMatchPassword) {
                     return { EC: 1, EM: "Email hoặc Password không hợp lệ!" };
                 }
@@ -120,12 +111,16 @@ login = async (data) => {
                     role: userFound.role
                 };
 
-                const token = jwt.sign(payload, process.env.JWT_SECRET, {
+                const accesstoken = jwt.sign(payload, process.env.JWT_SECRET, {
                     expiresIn: process.env.JWT_EXPIRE
+                });
+                const refreshToken = jwt.sign({ userId: userFound._id }, process.env.JWT_SECRET, {
+                    expiresIn: process.env.JWT_REFRESH_EXPIRE // Thời gian tồn tại của Refresh Token
                 });
 
                 return {
-                    token,
+                    accesstoken,
+                    refreshToken,
                     user: {
                         userId: userFound._id,
                         fullname: userFound.fullname,
@@ -243,8 +238,11 @@ deleteUser = async (userId) => {
 
 refreshToken = async(token)=>{
     try {
+  
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        console.log(decoded)
         const users = await user.findOne({ _id: decoded.userId }); 
+        
         if(users){
             const payload ={
                 userId:users._id,  
