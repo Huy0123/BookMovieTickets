@@ -90,7 +90,7 @@ class paymentService {
             partnerCode: "MOMO",
             requestId: orderId,
             orderId,
-            signature, // Sử dụng 'signature' thay vì 'Signnature'
+            signature, 
             lang: 'vi'
         });
 
