@@ -53,10 +53,10 @@ class UserController{
             // Xóa cookie refresh_token
             res.clearCookie('refreshToken', {
                 httpOnly: true, // Đảm bảo rằng cookie đã được thiết lập là httpOnly
-                secure: process.env.NODE_ENV === 'production' // Chỉ xóa cookie qua HTTPS nếu ở môi trường sản xuất
+                secure: process.env.NODE_ENV === 'production' 
             });
     
-            // Thực hiện bất kỳ logic nào khác cần thiết (ví dụ: ghi log, thông báo...)
+            
             
             return res.status(200).json({ message: "Logout successful!" });
         } catch (error) {
@@ -169,6 +169,28 @@ class UserController{
             message: 'Lỗi máy chủ, vui lòng thử lại sau.',
         });
     }
+}
+    
+forgotpassword = async(req,res)=>{
+    try {
+        const {email} = req.body
+        const forgotpassword = await userService.forgotpassword(email);
+        return res.status(200).json({forgotpassword})
+    } catch (error) {
+        throw error
+    }
+   
+
+}
+resetpassword = async (req,res)=>{
+    try {
+        const {token , newpassword} = req.body
+        const resetpassword = await userService.resetpassword(token , newpassword);
+        return res.status(200).json({resetpassword})
+    } catch (error) {
+        throw error
+    }
+   
 }
 
 
