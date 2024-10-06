@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // Import CSS for Tippy
-
+import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 function Header() {
@@ -29,7 +29,13 @@ function Header() {
             </div>
         </div>
     );
-
+    const navigate = useNavigate();
+    const handlerNavigateSignin = () => {
+        navigate('/signIn');
+    };
+    const handlerNavigateSignup = () => {
+        navigate('/signUp');
+    };
     return (
         <div className={cx('wrapper')}>
             <div className={cx('container')}>
@@ -53,8 +59,8 @@ function Header() {
                                         </div>
                                         <div className={cx('sign', 'col-lg-6')}>
                                             <div className='row gap-2'>
-                                                <button type="button" className={cx('btn', 'sign-up', 'col-lg-6')}>Đăng ký</button>
-                                                <button type="button" className={cx('btn', 'sign-in', 'col-lg-6')}>Đăng nhập</button>
+                                                <button type="button" className={cx('btn', 'sign-up', 'col-lg-6')} onClick={handlerNavigateSignup}>Đăng ký</button>
+                                                <button type="button" className={cx('btn', 'sign-in', 'col-lg-6')} onClick={handlerNavigateSignin}>Đăng nhập</button>
                                             </div>
                                         </div>
                                     </div>

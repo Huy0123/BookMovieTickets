@@ -1,14 +1,23 @@
 .container{
     background-color: #000;
-}
-
-.img-banner{
-    width: 100%;
-}
-
-.title{
-    color: #f8fafc;
-    font-size: 4rem;
-    text-transform: uppercase;
-    text-align: center;
+    .icon-pre,
+    .icon-next{
+        width: 40px;
+        height: 40px;
+    }
+    .wrap{
+        .title-movie{
+            color: #fff;
+        }
+        .btn-gr{
+            .trailer{ 
+                width: 100px;
+                height: 40px;
+            }
+            .bookin{
+                width: 100px;
+                height: 40px;
+            }
+        }
+    }
 }

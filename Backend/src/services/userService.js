@@ -1,4 +1,5 @@
 const user = require('../models/userModel.js')
+const nodemailer = require('nodemailer'); 
 const bcrypt =require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
@@ -267,9 +268,9 @@ refreshToken = async(token)=>{
                     }
                 }
         }else{
-            return res.status(401).json({
+            return {
                 message: "Authorization!"
-            })
+            }
         }
 
     }  catch (error) {
@@ -277,5 +278,69 @@ refreshToken = async(token)=>{
         throw new Error("Failed to verify token: " + error.message);
     }
 }
+
+
+forgotpassword = async (email)=>{
+    if(!email){
+        return{
+            message: 'Bạn chưa nhập email !',
+        }
+    }
+    const users = await user.findOne({email})
+    if(!users){
+        return {
+            message: 'email chưa được đăng kí !',
+        }
+    }
+    const token = jwt.sign({email:users.email},process.env.JWT_SECRET,{ expiresIn: '30m' })
+    const link = `https://your-frontend-url.com/reset-password?token=${token}`; // Thay đổi URL thành đường dẫn của bạn
+
+    
+    console.log(token)
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_MYEMAIL, 
+            pass: process.env.EMAIL_PASSWORD 
+        }
+    });
+    
+    const mailOptions = {
+        from: process.env.EMAIL_MYEMAIL,
+        to: email,
+        subject: 'Đặt lại mật khẩu',
+        html: `<p>Xin chào,</p>
+               <p>Để đặt lại mật khẩu của bạn, hãy nhấp vào liên kết bên dưới:</p>
+               <a href="${link}">Đặt lại mật khẩu</a>
+               <p>Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này.</p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return {
+        message: 'Email đã được gửi để đặt lại mật khẩu!',
+    };
 }
+
+
+resetpassword = async (token , newpassword)=>{
+    if(!token || !newpassword){
+        return { message: 'Thiếu thông tin!' };
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const users =await user.findOne({email:decoded.email})
+    if(!users){
+        return {
+            message: 'email không tồn tại',
+        };
+    }
+    const hashedPassword = await bcrypt.hash(newpassword, 10);
+    users.password=hashedPassword;
+    await users.save()
+    return { message: 'Mật khẩu đã được đổi thành công!' };
+}
+}
+
+
+
 module.exports = new userService

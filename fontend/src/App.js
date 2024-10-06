@@ -1,28 +1,49 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '~/routes';
 import { DefaultLayout } from '~/Components/Layout';
+import axios from 'axios';
 
 function App() {
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
+  const fetchApi = async () => {
+    try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL_BACKEND}/`);
+        console.log('res', res.data); // In ra dữ liệu trả về từ backend
+    } catch (error) {
+        console.error('Lỗi khi gọi API:', error);
+    }
+  }
+
   return (
     <Router>
       <div className="App">
         <Routes>
-            {publicRoutes.map((route,index) =>{
-              const Page = route.component
+            {publicRoutes.map((route, index) => {
+              const Page = route.component;
 
-              let Layout = DefaultLayout
+              let Layout = DefaultLayout;
 
-              if (route.layout){
-                Layout=route.layout;
-              } else if (route.layout===null){
-                Layout=Fragment;
+              if (route.layout) {
+                Layout = route.layout;
+              } else if (route.layout === null) {
+                Layout = Fragment;
               }
-              return <Route key={index} path={route.path} element={
-                <Layout>
-                <Page />
-                </Layout>
-                } />;
+
+              return (
+                <Route 
+                  key={index} 
+                  path={route.path} 
+                  element={
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  } 
+                />
+              );
             })}
         </Routes>
       </div>
