@@ -9,7 +9,6 @@ var partnerCode = 'MOMO';
 var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
 var ipnUrl = 'https://d2de-14-161-10-15.ngrok-free.app/v1/callback';
 var requestType = "payWithMethod";
-var amount = '200000';
 var orderId = partnerCode + new Date().getTime();
 var requestId = orderId;
 var extraData ='';
@@ -20,10 +19,10 @@ var lang = 'vi';
 
 class paymentService {
     paymentCreater=async(data)=>{
-        
+        console.log(data)
         //before sign HMAC SHA256 with format
         //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
-        var rawSignature = "accessKey=" +accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" +ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
+        var rawSignature = "accessKey=" +accessKey + "&amount=" + data.amount + "&extraData=" + extraData + "&ipnUrl=" +ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
         //puts raw signature
         console.log("--------------------RAW SIGNATURE----------------")
         console.log(rawSignature)
@@ -40,7 +39,7 @@ class paymentService {
             partnerName : "Test",
             storeId : "MomoTestStore",
             requestId : requestId,
-            amount : amount,
+            amount : data.amount,
             orderId : orderId,
             orderInfo : orderInfo,
             redirectUrl : redirectUrl,
