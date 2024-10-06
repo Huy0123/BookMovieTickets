@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import Tippy from '@tippyjs/react/headless';
 
 const cx = classNames.bind(styles);
 
 function Header() {
-    // State to handle dropdown visibility
-    const [dropdownVisible, setDropdownVisible] = useState(false);
-
-    // Toggle dropdown visibility
-    const toggleDropdown = () => {
-        setDropdownVisible(!dropdownVisible);
-    };
+    const renderDropdown = () => (
+        <div className={cx('dropdown-menu')}>
+            <div className={cx('dropdown-item')}>Tên rạp 1</div>
+            <div className={cx('dropdown-item')}>Tên rạp 2</div>
+            <div className={cx('dropdown-item')}>Tên rạp 3</div>
+            {/* Add more theater names as needed */}
+        </div>
+    );
 
     return (
         <div className={cx('wrapper')}>
@@ -51,19 +52,25 @@ function Header() {
                     </div>
                 </div>
 
-                {/* Cinema Selection Section */}
                 <div className={cx('header2')}>
                     <div className='row'>
                         <div className='col-lg-1'></div>
                         <div className={cx('wrap2', 'pt-3', 'col-lg-3', 'pb-3')}>
-                            <button 
-                                type="button" 
-                                className={cx('btn-choose', 'col-lg-6', 'me-3')}
-                                onClick={toggleDropdown} // Toggle dropdown on click
+                            <Tippy
+                                interactive
+                                placement="bottom-start"
+                                render={renderDropdown}
+                                trigger="click"
+                                theme='border-light'
                             >
-                                <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
-                                Chọn rạp
-                            </button>
+                                <button 
+                                    type="button" 
+                                    className={cx('btn-choose', 'col-lg-6', 'me-3')}
+                                >
+                                    <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
+                                    Chọn rạp
+                                </button>
+                            </Tippy>
                             <button type="button" className={cx('btn-schedule', 'col-lg-6')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
                                 Lịch chiếu
@@ -71,23 +78,7 @@ function Header() {
                         </div>
                         <div className='col-lg-8'></div>
                     </div>
-
-                    {/* Dropdown Menu */}
-                    {dropdownVisible && (
-                        <div className={cx('dropdown')}>
-                            <div className="row">
-                                <div className="col-lg-12">
-                                    <ul className={cx('dropdown-list')}>
-                                        <li className={cx('dropdown-item')}>Tên rạp 1</li>
-                                        <li className={cx('dropdown-item')}>Tên rạp 2</li>
-                                        <li className={cx('dropdown-item')}>Tên rạp 3</li>
-                                        <li className={cx('dropdown-item')}>Tên rạp 4</li>
-                                        <li className={cx('dropdown-item')}>Tên rạp 5</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                 
                 </div>
             </div>
         </div>
