@@ -6,9 +6,12 @@ const autUser = require('../middleware/autUser.js')
 
 router.post('/signup', UserController.createUser)
 router.post('/login',UserController.login)
-router.get('/getUsers',autAdmin,UserController.getUsers)
+router.post('/logout',UserController.logout)
+router.get('/forgotpassword',UserController.forgotpassword)
+router.put('/reset-password',UserController.resetpassword)
+router.get('/getUsers',autUser,UserController.getUsers)
 router.get('/getUserByID/:id',autUser, UserController.getUserByID);
-router.post('/refresh_token',autAdmin,UserController.refreshToken);
+router.post('/refresh_token',autUser,UserController.refreshToken);
 router.put('/updateUser/:id',autUser, UserController.updateUser);
 router.delete('/deleteUser/:id',autUser, UserController.deleteUser);
 module.exports = router 
