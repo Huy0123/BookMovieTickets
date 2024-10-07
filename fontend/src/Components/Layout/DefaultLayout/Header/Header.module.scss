@@ -54,10 +54,27 @@
             }
         }
         .cinema-list{
+            background-color: #000;
             .title{
                 font-size: 18px;
                 color:#fff;
-            }
+            }           
         }
     }
+    .dropdown-menu {
+        background-color: #000;
+        color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+    }
+    
+    .dropdown-item {
+        padding: 5px 10px;
+        cursor: pointer;
+    
+        &:hover {
+            background-color: #333;
+        }
+    }
+    
 }
