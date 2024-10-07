@@ -1,10 +1,9 @@
 const express = require('express');
-<<<<<<< HEAD
-const route = require('./routes/indexRouter.js');
+
+const router = require('./routes/indexRouter.js');
 const cookieParser = require('cookie-parser');
-=======
-const router = require('./routes/indexRouter.js')
->>>>>>> 013d85ec86bebbb85163bf916e8516a4a3b91ebe
+const cors = require('cors'); // Thêm dòng này để import cors
+
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const connectDB = require('./config/Database.js');
@@ -13,7 +12,7 @@ dotenv.config();
 const app = express();
 
 const port = process.env.PORT || 8081;
-<<<<<<< HEAD
+
 
 // Sử dụng CORS cho tất cả các yêu cầu
 app.use(cors({
@@ -27,11 +26,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-=======
-//cau hinh formdata
-app.use(express.urlencoded({extended:true}))
-app.use(express.json());
->>>>>>> 013d85ec86bebbb85163bf916e8516a4a3b91ebe
+
+
 // Connect to MongoDB once when the server starts
 connectDB();
 app.listen(port, () => {
