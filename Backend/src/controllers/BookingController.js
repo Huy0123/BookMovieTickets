@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const bookingService = require('../services/bookingService.js')
 class BookingController {
     createBooking = async (req,res,next)=>{
@@ -17,3 +18,9 @@ class BookingController {
     }
 }
 module.exports = new BookingController
+=======
+const bookingService = require('../services/BookingService');
+
+class BookingController {
+}
+>>>>>>> 013d85ec86bebbb85163bf916e8516a4a3b91ebe
