@@ -1,19 +1,15 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const createOrderItem = new mongoose.Schema({
+
+const createOrderItem = new Schema({
     order_id: {
         type: Schema.Types.ObjectId,
-        ref: 'Orders',
+        ref: 'Orders', // Tham chiếu đến đơn hàng
         required: true
     },
     item_id: {
-        type: Schema.Types.ObjectId, // Tham chiếu đến Food_and_Drink hoặc Tickets
-        required: true
-    },
-    item_type: {
-        type: String,
-        enum: ['ticket', 'food','drink'],  
-        required: true
+        type: Schema.Types.ObjectId,
+        required: true // Yêu cầu item_id, không để trống
     },
     quantity: {
         type: Number,
@@ -25,5 +21,6 @@ const createOrderItem = new mongoose.Schema({
     }
 });
 
+// Tạo model cho OrderItem
 const OrderItem = mongoose.model('Order_Items', createOrderItem);
 module.exports = OrderItem;

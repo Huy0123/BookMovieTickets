@@ -22,6 +22,10 @@ const createTicket = new mongoose.Schema({
     purchase_date: {
         type: Date,
         default: Date.now
+    },
+    order_id: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Orders',
     }
 })
 const tickets = mongoose.model('Tickets',createTicket)
