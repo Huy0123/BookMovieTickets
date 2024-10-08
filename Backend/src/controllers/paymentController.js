@@ -1,6 +1,5 @@
 const paymentService = require('../services/paymentService')
 class paymentController  {
-
     payment =async(req,res,next)=>{
         const data = req.body
         const result=await paymentService.paymentCreater(data)
@@ -13,15 +12,12 @@ class paymentController  {
         
     }
     status = async (req,res)=>{
-
         const data = req.body
         
         
         const result=await paymentService.status(data)
         return res.status(200).json(result)
-
         
     }
 }
-
 module.exports = new paymentController

@@ -1,16 +1,15 @@
 const user = require('../models/userModel.js')
 const nodemailer = require('nodemailer'); 
 const bcrypt =require('bcrypt')
+const cookie = require('cookie');
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const saltRounds =10
 const client_id = process.env.GG_CLIENT_ID
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(client_id);
+
 class userService{
-    
-
-
 
 createUserService = async(data)=>{
     try{
@@ -35,7 +34,7 @@ createUserService = async(data)=>{
     }
 }
 
-login = async (data) => {
+login = async (data,res) => {
     try {
         // Kiểm tra xem người dùng có đăng nhập qua Google hay không
         console.log("Đang cố gắng đăng nhập...");
@@ -81,9 +80,14 @@ login = async (data) => {
                 expiresIn: process.env.JWT_REFRESH_EXPIRE // Thời gian tồn tại của Refresh Token
             });
 
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true, 
+                secure: true, // Chỉ gửi qua HTTPS nếu ở môi trường sản xuất
+                maxAge: 30 * 24 * 60 * 60 * 1000 // Thời gian sống của cookie (ví dụ: 30 ngày)
+            });
+
             return {
                 accesstoken,
-                refreshToken,
                 user: {
                     userId: userFound._id,
                     fullname: userFound.fullname,
@@ -119,9 +123,15 @@ login = async (data) => {
                     expiresIn: process.env.JWT_REFRESH_EXPIRE // Thời gian tồn tại của Refresh Token
                 });
 
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly: true, 
+                    secure: true, // Chỉ gửi qua HTTPS nếu ở môi trường sản xuất
+                    maxAge: 30 * 24 * 60 * 60 * 1000 // Thời gian sống của cookie (ví dụ: 30 ngày)
+                });
+
                 return {
                     accesstoken,
-                    refreshToken,
+                    
                     user: {
                         userId: userFound._id,
                         fullname: userFound.fullname,

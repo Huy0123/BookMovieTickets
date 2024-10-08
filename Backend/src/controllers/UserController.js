@@ -38,12 +38,8 @@ class UserController{
     //dang nhap
     login = async(req,res,next)=>{
         const data = req.body
-        const data1=await userService.login(data)
-        res.cookie('refreshToken', data1.refreshToken, {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production', // Chỉ gửi qua HTTPS nếu ở môi trường sản xuất
-            maxAge: 30 * 24 * 60 * 60 * 1000 // Thời gian sống của cookie (ví dụ: 30 ngày)
-        });
+        const data1=await userService.login(data,res)
+        
         return res.status(200).json(data1)
 
     }
