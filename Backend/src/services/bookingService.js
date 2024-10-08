@@ -7,6 +7,8 @@ const userModel = require('../models/userModel.js');
 const SeatModel = require('../models/Seat.js');
 const RoomModel = require('../models/Room.js');
 const ShowtimeModel = require('../models/Showtime.js');
+const nodemailer = require('nodemailer'); 
+const QRCode = require('qrcode'); 
 
 class bookingService {
     createBooking = async (data) => {
@@ -94,13 +96,59 @@ class bookingService {
             }
 
             // Lấy thông tin người dùng
-            const user = await userModel.findById(user_id).select('fullname');
+            const user = await userModel.findById(user_id);
             const fullname = user.fullname;
+            const qrData = {
+                order_id,
+                fullname,
+                total_price,
+            };
 
-            return { message:"Thanh toán thành công ",order_id, fullname, tickets, payment_method, orderItems ,total_price};
+            const qrCodeUrl = await QRCode.toDataURL(JSON.stringify(qrData), { errorCorrectionLevel: 'H' });
+            await this.sendEmailWithQRCode(user, qrCodeUrl);
+            return { message:"Thanh toán thành công ",order_id, fullname, tickets, payment_method, orderItems ,total_price,qrCodeUrl};
         } catch (error) {
             console.error(error);
             throw new Error('Error creating booking: ' + error.message);
+        }
+    }
+
+
+    sendEmailWithQRCode = async (user, qrCodeUrl) => {
+        try {
+            console.log("email",user.email)
+            const email = user.email;
+            const fullname = user.fullname;
+            // Thiết lập transporter
+            const transporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                    user: process.env.EMAIL_MYEMAIL, 
+                    pass: process.env.EMAIL_PASSWORD  
+                }
+            });
+
+            // Tạo nội dung email
+            const mailOptions = {
+                from: process.env.EMAIL_MYEMAIL,
+                to: email,
+                subject: 'Mã QR Code cho đơn hàng của bạn',
+                text: 'Dưới đây là mã QR Code cho đơn hàng của bạn.',
+                html:`<p>Cảm ơn ${fullname} đã đặt vé xem phim của chúng tôi</p>`,
+                attachments: [
+                    {
+                        filename: 'qr-code.png',
+                        content: qrCodeUrl.split(',')[1], 
+                        encoding: 'base64',
+                    },
+                ],
+            };
+
+            // Gửi email
+            await transporter.sendMail(mailOptions);
+            console.log('Email đã được gửi cho: ' + email);
+        } catch (error) {
+            console.error('Có lỗi xảy ra khi gửi email: ', error);
         }
     }
 }
