@@ -11,8 +11,9 @@ const createTicket = new mongoose.Schema({
         ref: 'users',                  // Tham chiếu tới collection User
         required: true
     },
-    seat_number: {
-        type: String,
+    seat_id: {
+        type: Schema.Types.ObjectId,  // Tham chiếu đến người dùng
+        ref: 'seats',                  // Tham chiếu tới collection User
         required: true
     },
     price: {
