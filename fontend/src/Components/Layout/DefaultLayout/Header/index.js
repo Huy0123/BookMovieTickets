@@ -7,12 +7,28 @@ import Tippy from '@tippyjs/react/headless';
 const cx = classNames.bind(styles);
 
 function Header() {
-    const renderDropdown = () => (
+    // Mảng chứa tên các rạp
+    const cinemas = [
+        'Tên rạp 1',
+        'Tên rạp 2',
+        'Tên rạp 3',
+        'Tên rạp 4',
+        'Tên rạp 5',
+        'Tên rạp 6',
+        'Tên rạp 7',
+        'Tên rạp 8',
+        'Tên rạp 9',
+        'Tên rạp 10',
+    ];
+
+    // Hàm render danh sách tên rạp
+    const renderCinemaList = () => (
         <div className={cx('dropdown-menu')}>
-            <div className={cx('dropdown-item')}>Tên rạp 1</div>
-            <div className={cx('dropdown-item')}>Tên rạp 2</div>
-            <div className={cx('dropdown-item')}>Tên rạp 3</div>
-            {/* Add more theater names as needed */}
+            {cinemas.map((cinema, index) => (
+                <div key={index} className={cx('dropdown-item')}>
+                    {cinema}
+                </div>
+            ))}
         </div>
     );
 
@@ -44,6 +60,9 @@ function Header() {
                                                 <button type="button" className={cx('btn', 'sign-in', 'col-lg-6')}>Đăng nhập</button>
                                             </div>
                                         </div>
+                                        <div className={cx('login','col-sm')}>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +78,7 @@ function Header() {
                             <Tippy
                                 interactive
                                 placement="bottom-start"
-                                render={renderDropdown}
+                                render={renderCinemaList}
                                 trigger="click"
                                 theme='border-light'
                             >
@@ -78,7 +97,6 @@ function Header() {
                         </div>
                         <div className='col-lg-8'></div>
                     </div>
-                 
                 </div>
             </div>
         </div>

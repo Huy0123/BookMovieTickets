@@ -1,7 +1,21 @@
+@keyframes changeColor {
+    0%   {
+        
+        background: linear-gradient(to right ,#f80606cd, #2c2c2c, rgb(0, 110, 255)); }
+    25%  {  background: linear-gradient(to right , #2c2c2c, rgb(0, 110, 255),#2c2c2c,);}
+    50% { 
+       
+        background: linear-gradient(to left ,#f80606cd, #2c2c2c, rgb(0, 110, 255)); }
+    75%  {  background: linear-gradient(to right , #2c2c2c, #f80606cd,#2c2c2c,);}
+    100%  {    background: linear-gradient(to right ,#f80606cd, #2c2c2c, rgb(0, 110, 255));}
+  }
+ 
 .wrapper {
   background-color: #000;
     .container {
+       
         .header1{
+            
             .wrap{   
                 padding-bottom: 8px;
                 border-bottom: 2px solid #2C2C2C;     
@@ -32,6 +46,11 @@
                             background-color: #2c2c2c;
                             border: none;
                             color: #fff;
+                            
+                            &:hover{
+                                background: linear-gradient(to right top,#f80606cd, #2c2c2c, rgb(0, 110, 255));
+                                transform: scale(1.1);
+                            }
                         }
                     }
                 } 
@@ -42,13 +61,18 @@
                 .btn-schedule{
                     width: 125px; // Button width
                     height: 40px; // Full width for buttons
-                    border-radius: 40px; // Rounded corners for the button
+                    border: none ;
                     font-size: 14px;
                     background-color: #000;
-                    border: 1px solid #2C2C2C;
+                    
                     color: #fff;
+                    
+                   
                     .icon{
                         margin-right: 6px;
+                    }
+                    &:hover{
+                        color: #FCCD2A;
                     }
                 }
             }
@@ -62,13 +86,27 @@
     }
     .dropdown-menu {
         background-color: #000;
+        border: 1px solid #ffffff98 ;
+        width: 84%;
+        
         color: #fff;
-        padding: 10px;
+        padding: 40px ;
         border-radius: 4px;
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 auto;
+        max-height: 300px; 
+        overflow-y: auto;
+        column-gap: min(10px,30px);
+        
+     
     }
-    
+
     .dropdown-item {
-        padding: 5px 10px;
+      
+        padding: 10px;
+        width: 320px;
+        margin: 0 30px auto;
         cursor: pointer;
     
         &:hover {

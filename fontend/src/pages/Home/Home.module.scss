@@ -1,13 +1,24 @@
 .container{
     background-color: #000;
-    .icon-pre,
-    .icon-next{
+   
+    .carousel-control-prev,.carousel-control-next{
         width: 40px;
         height: 40px;
+        background-color: #000;
+        border: none;
+        .icon-pre,
+        .icon-next{
+            width: 40px;
+            height: 40px;
+            color: #fff;
+        }
     }
     .wrap{
+        position: relative;
+        // z-index: 1;
         .title-movie{
             color: #fff;
+        
         }
         .btn-gr{
             .trailer{ 
@@ -19,5 +30,24 @@
                 height: 40px;
             }
         }
+        .wrap-hover{
+        
+            position: absolute;
+            width: 298px;
+            height: 444px;
+            background-color: rgba(0, 0, 0, 0.7); /* Màu nền khi hover */
+            color: white; /* Màu chữ */
+            display: none; /* Ẩn mặc định */
+            justify-content: start;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.3s ease;
+           
+        }
+        &:hover .wrap-hover{
+            display: flex; /* Hiện khi hover */ 
+        }
     }
+  
+    
 }
