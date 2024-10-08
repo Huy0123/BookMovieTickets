@@ -9,26 +9,33 @@ import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 function Header() {
-    const cinemaList = (
-        <div style={{ width: '700px', backgroundColor: '#f5f5f5', padding: '10px' }}> {/* Custom style applied here */}
-            <div className='row'>
-                <div className='col-lg-1'></div>
-                <div className='col-lg-10'>
-                    <div className={cx('row')}>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 1</div>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 2</div>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 3</div>
-                    </div>
-                    <div className={cx('row')}>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 4</div>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 5</div>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 6</div>
-                    </div>
+
+    // Mảng chứa tên các rạp
+    const cinemas = [
+        'Tên rạp 1',
+        'Tên rạp 2',
+        'Tên rạp 3',
+        'Tên rạp 4',
+        'Tên rạp 5',
+        'Tên rạp 6',
+        'Tên rạp 7',
+        'Tên rạp 8',
+        'Tên rạp 9',
+        'Tên rạp 10',
+    ];
+
+    // Hàm render danh sách tên rạp
+    const renderCinemaList = () => (
+        <div className={cx('dropdown-menu')}>
+            {cinemas.map((cinema, index) => (
+                <div key={index} className={cx('dropdown-item')}>
+                    {cinema}
                 </div>
-                <div className='col-lg-1'></div>
-            </div>
-        </div>
+            ))}
+        </div> // Move the closing parenthesis here
     );
+    
+
     const navigate = useNavigate();
     const handlerNavigateSignin = () => {
         navigate('/signIn');
@@ -80,11 +87,13 @@ function Header() {
                         <div className='col-lg-1'></div>
                         <div className={cx('wrap2', 'pt-3', 'col-lg-3', 'pb-3')}>
                             <Tippy
-                                content={cinemaList} // Nội dung của dropdown
-                                interactive={true}    // Cho phép tương tác với dropdown
-                                placement="bottom-start" // Vị trí của dropdown
-                                trigger="click"      // Hiển thị khi click
-                                theme="light"        // Chủ đề light (tùy chỉnh được)
+
+                                interactive
+                                placement="bottom-start"
+                                render={renderCinemaList}
+                                trigger="click"
+                                theme='border-light'
+
                             >
                                 <button type="button" className={cx('btn-choose', 'col-lg-6', 'me-3')}>
                                     <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />

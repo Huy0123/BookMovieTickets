@@ -1,6 +1,9 @@
 .container{
     background-color: #000;
    
+    .showing-title{
+        margin-top: 180px;
+    }
     .carousel-control-prev,.carousel-control-next{
         width: 40px;
         height: 40px;
@@ -18,16 +21,24 @@
         // z-index: 1;
         .title-movie{
             color: #fff;
+           
         
         }
         .btn-gr{
             .trailer{ 
                 width: 100px;
                 height: 40px;
+                &:hover{
+                    background-color:#F9E400;
+                }
             }
+           
             .bookin{
                 width: 100px;
                 height: 40px;
+                &:hover{
+                    background-color:#F9E400;
+                }
             }
         }
         .wrap-hover{
@@ -42,11 +53,15 @@
             align-items: center;
             padding: 20px;
             transition: opacity 0.3s ease;
-           
+            &:hover + .title-movie { // Use the sibling selector (+)
+                color: #F9E400; // Change the title movie color when hovering
+            }
         }
         &:hover .wrap-hover{
             display: flex; /* Hiện khi hover */ 
+            color: #F9E400;
         }
+       
     }
   
     

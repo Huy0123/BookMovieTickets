@@ -122,7 +122,7 @@ function Home() {
                 className={cx('carousel', 'slide')}
               >
                 <div className={cx('showing')}>
-                    <h1 className='showing-title text-center text-light py-5 '>PHIM ĐANG CHIẾU</h1>
+                    <h1 className={cx('showing-title',' text-center text-light py-5  ')}>PHIM ĐANG CHIẾU</h1>
                     <div className='row'>
                         <div className={cx('col-lg-1 col-2',' d-flex justify-content-center align-items-center')}>
                             <button className={cx('carousel-control-prev', 'btn-np')} type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="prev">
