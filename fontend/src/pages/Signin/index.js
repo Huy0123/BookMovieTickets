@@ -119,7 +119,7 @@ function SignIn() {
                         </div>
 
                         <div className={cx('wrapp', 'd-flex', 'justify-content-between')}>
-                            <h4 className={cx('forgot-password')} onClick={() => {}}>Quên Mật Khẩu?</h4>
+                            <h4 className={cx('forgot-password')} onClick={handlerNavigateForgot}>Quên Mật Khẩu?</h4>
                             <h4 className={cx('sign-up')} onClick={handlerNavigateSignup}>Đăng Ký</h4>
                         </div>
 

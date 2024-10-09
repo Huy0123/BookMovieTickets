@@ -6,7 +6,10 @@ const PaymentModel = require('../models/PaymentModel.js');
 const userModel = require('../models/userModel.js');
 const SeatModel = require('../models/Seat.js');
 const RoomModel = require('../models/Room.js');
+const MovieModel = require('../models/Movie.js')
+const CinemaModel = require('../models/Cinema.js')
 const ShowtimeModel = require('../models/Showtime.js');
+const SeatModelModel = require('../models/Seat.js')
 const nodemailer = require('nodemailer'); 
 const QRCode = require('qrcode'); 
 
@@ -56,7 +59,7 @@ class bookingService {
                 });
                 await ticket.save();
                 tickets.push(ticket);
-
+                await SeatModelModel.updateOne({ _id: seat_id }, { seat_status:"true"});
                 // Cập nhật tổng giá
                 total_price += seat.price;
 
@@ -150,6 +153,114 @@ class bookingService {
         } catch (error) {
             console.error('Có lỗi xảy ra khi gửi email: ', error);
         }
+    }
+
+    GetBooking = async ()=>{
+        try {
+            const result = await OrdersModel.find();
+           let data= []
+            for(const result_item of result){
+                const order_id = await OrdersModel.findById({_id:result_item._id});
+                const tickets = await TicketsModel.find({order_id:order_id._id}).select("showtime_id seat_id price")
+                let seats = [];
+                const showtime = await ShowtimeModel.findOne(tickets.showtime_id)
+                const movie = await MovieModel.findById(showtime.movie_id)
+                const cinema = await CinemaModel.findById(showtime.cinema_id)
+                const room = await RoomModel.findById(showtime.room_id)
+                for (const ticket of tickets){
+                    const seat = await SeatModel.findById(ticket.seat_id)            
+                    seats.push(seat)                                    
+                }
+                const ticket_infor = {seats,tickets,showtime,movie,cinema,room}
+                const orderItems = await OrderItemModel.find({order_id:order_id._id})
+                let items=[];
+                for(const orderItem of orderItems){
+                    const item = await FoodAndDrinkModel.findById(orderItem.item_id)
+                    items.push(item)
+                }
+                const item_infor = {items,orderItems}
+                const orders_infor = {order_id,ticket_infor,item_infor}
+                data.push ({orders_infor})
+            }
+
+           return {data}
+           
+        } catch (error) {
+            throw error
+        }
+       
+
+    }
+
+    GetUserBookingById = async (data)=>{
+        try {
+            const user_id = data
+            const user = await userModel.findById(user_id).select("fullname email num username")
+            const oders = await OrdersModel.find({user_id})
+            let result= []
+            for(const oder of oders){
+                const order_id = await OrdersModel.findById({_id:oder._id});
+                const tickets = await TicketsModel.find({order_id:order_id._id}).select("showtime_id seat_id price")
+                let seats = [];
+                const showtime = await ShowtimeModel.findOne(tickets.showtime_id)
+                const movie = await MovieModel.findById(showtime.movie_id)
+                const cinema = await CinemaModel.findById(showtime.cinema_id)
+                const room = await RoomModel.findById(showtime.room_id)
+                for (const ticket of tickets){
+                    const seat = await SeatModel.findById(ticket.seat_id)            
+                    seats.push(seat)                                    
+                }
+                const ticket_infor = {seats,tickets,showtime,movie,cinema,room}
+                const orderItems = await OrderItemModel.find({order_id:order_id._id})
+                let items=[];
+                for(const orderItem of orderItems){
+                    const item = await FoodAndDrinkModel.findById(orderItem.item_id)
+                    items.push(item)
+                }
+                const item_infor = {items,orderItems}
+                const orders_infor = {ticket_infor,item_infor}
+                result.push ({user,orders_infor})
+            }
+
+           return {result}
+           
+        } catch (error) {
+            throw error
+        }
+    }
+    GetBookingById = async (data)=>{
+        try {
+            const order_id = data 
+            const oders = await OrdersModel.findById(order_id)
+            
+                const user = await userModel.find({_id:oders.user_id}).select("fullname email num username")
+                const tickets = await TicketsModel.find({order_id:order_id._id}).select("showtime_id seat_id price")
+                let seats = [];
+                const showtime = await ShowtimeModel.findOne(tickets.showtime_id)
+                const movie = await MovieModel.findById(showtime.movie_id)
+                const cinema = await CinemaModel.findById(showtime.cinema_id)
+                const room = await RoomModel.findById(showtime.room_id)
+                for (const ticket of tickets){
+                    const seat = await SeatModel.findById(ticket.seat_id)            
+                    seats.push(seat)                                    
+                }
+                const ticket_infor = {seats,tickets,showtime,movie,cinema,room}
+                const orderItems = await OrderItemModel.find({order_id:oders._id})
+                let items=[];
+                for(const orderItem of orderItems){
+                    const item = await FoodAndDrinkModel.findById(orderItem.item_id)
+                    items.push(item)
+                }
+                const item_infor = {items,orderItems}
+                const orders_infor = {ticket_infor,item_infor}
+               
+            
+
+           return {user,orders_infor}
+        } catch (error) {
+            throw error
+        }
+
     }
 }
 
