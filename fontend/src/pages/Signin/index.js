@@ -48,6 +48,10 @@ function SignIn() {
         navigate('/signup'); 
     };
 
+    const handlerNavigateForgot= () => {
+        navigate('/forgot');
+    }
+
     const handleGoogleSignIn = async (credentialResponse) => {
         try {
             const googleToken = credentialResponse.credential; // Lấy ID token từ Google
@@ -103,7 +107,12 @@ function SignIn() {
                                     value={password}
                                     onChange={(event) => setPassword(event.target.value)}
                                 />
-                                <button type="button" onClick={togglePasswordVisibility}>
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className={cx('toggle-password')}
+                                    aria-label={isShowPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                                >
                                     <FontAwesomeIcon icon={isShowPassword ? faEyeSlash : faEye} />
                                 </button>
                             </div>

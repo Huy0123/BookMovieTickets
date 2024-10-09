@@ -303,7 +303,7 @@ forgotpassword = async (email)=>{
         }
     }
     const token = jwt.sign({email:users.email},process.env.JWT_SECRET,{ expiresIn: '30m' })
-    const link = `https://your-frontend-url.com/reset-password?token=${token}`; // Thay đổi URL thành đường dẫn của bạn
+    const link = `http://localhost:3000/reset-password/${token}`; // Updated URL
 
     
     console.log(token)
