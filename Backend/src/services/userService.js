@@ -11,11 +11,23 @@ const client = new OAuth2Client(client_id);
 
 class userService{
 
-createUserService = async(data)=>{
-    try{
-        let hashPassword;
-      
-            hashPassword = await bcrypt.hash(data.password,saltRounds)
+    createUserService = async (data) => {
+        try {
+            const usernameExists = await user.findOne({ username: data.username });
+            if (usernameExists) {
+                return { EC: 1, EM: "Tên người dùng đã được sử dụng!" }; // Username already used
+            }
+            // Check for existing user by email
+            const emailExists = await user.findOne({ email: data.email });
+            if (emailExists) {
+                return { EC: 2, EM: "Email đã được sử dụng!" }; // Email already used
+            }
+    
+            // Check for existing user by username
+            
+    
+            // Proceed with hashing the password and creating the user
+            const hashPassword = await bcrypt.hash(data.password, saltRounds);
             let result = await user.create({
                 fullname: data.fullname,
                 username: data.username,
@@ -23,16 +35,16 @@ createUserService = async(data)=>{
                 num: data.num,
                 password: hashPassword,
                 role: data.role
-            })
-            return result
-      
-
-       
-    } catch(error){
-        console.error('Lỗi tạo người dùng:', error); // In lỗi ra console
-        throw error; 
+            });
+    
+            return { EC: 0, EM: "Đăng ký người dùng thành công!", data: result }; // User created successfully
+    
+        } catch (error) {
+            console.error('Lỗi tạo người dùng:', error);
+            throw error;
+        }
     }
-}
+    
 
 login = async (data,res) => {
     try {
