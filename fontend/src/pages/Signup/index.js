@@ -20,6 +20,17 @@ function Signup() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const [errors, setErrors] = useState({
+        fullname: false,
+        username: false,
+        email: false,
+        num: false,
+        password: false,
+        confirmPassword: false,
+        passwordLength: false,
+    });
 
     const handlerNavigateSignin = () => {
         navigate('/signIn');
@@ -32,10 +43,43 @@ function Signup() {
     const toggleConfirmPasswordVisibility = () => {
         setIsShowConfirmPassword(!isShowConfirmPassword);
     };
-    
+
     const handleSignUp = async (event) => {
         event.preventDefault(); // Prevent default form submission
-        console.log('signup', fullname, username, email, num, password, confirmPassword);
+
+        // Reset error states
+        setErrors({
+            fullname: false,
+            username: false,
+            email: false,
+            num: false,
+            password: false,
+            confirmPassword: false,
+            passwordLength: false,
+        });
+
+        // Check email format
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            setMessage("Trường này phải là email!"); // Invalid email format
+            setErrors((prev) => ({ ...prev, email: true })); // Mark email as error
+            return;
+        }
+
+        // Check password length
+        if (password.length < 6) {
+            setMessage("Mật khẩu phải có ít nhất 6 ký tự!");
+            setErrors((prev) => ({ ...prev, passwordLength: true }));
+            return;
+        }
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            setMessage("Mật khẩu không khớp!");
+            setErrors((prev) => ({ ...prev, password: true, confirmPassword: true }));
+            return;
+        }
+
         const userData = {
             fullname,
             username,
@@ -43,16 +87,29 @@ function Signup() {
             num,
             password
         };
-        try{
-            const response = await axios.post('http://localhost:8080/v1/signup', userData);
-            console.log(response.data);         
-        navigate('/signIn');
-        } catch (error){
-            console.error('Lỗi khi gửi dữ liệu:', error);
 
+        try {
+            const response = await axios.post('http://localhost:8080/v1/Users/signup', userData);
+            console.log(response.data);
+            
+            if (response.data.EC === 0) {
+                alert(response.data.EM);
+                navigate('/signIn');
+            } else {
+                setMessage(response.data.EM);
+                
+                if (response.data.EC === 1) {
+                    setErrors((prev) => ({ ...prev, username: true }));
+                } else if (response.data.EC === 2) {
+                    setErrors((prev) => ({ ...prev, email: true }));
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setMessage('Đã xảy ra lỗi. Vui lòng thử lại.');
         }
     }
-
+    
     return (
         <div
             className={cx('container')}
@@ -61,6 +118,7 @@ function Signup() {
             <div className={cx('filter')}>
                 <div className={cx('sign-up')}>
                     <h1 className={cx('title', 'py-4')}>ĐĂNG KÝ</h1>
+                    {message && <div className={cx('message')}>{message}</div>}
                     <form className={cx('form')} onSubmit={handleSignUp}>
                         <div className={cx('form-group')}>
                             <label htmlFor="fullname">Họ và Tên</label>
@@ -72,6 +130,7 @@ function Signup() {
                                 placeholder='Nhập họ và tên' 
                                 value={fullname}
                                 onChange={(event) => setFullname(event.target.value)} 
+                                className={cx({ 'border-danger': errors.fullname })} 
                             />
                         </div>
 
@@ -85,19 +144,21 @@ function Signup() {
                                 placeholder='Nhập tên đăng nhập' 
                                 value={username}
                                 onChange={(event) => setUsername(event.target.value)} 
+                                className={cx({ 'border-danger': errors.username })} 
                             />
                         </div>
 
                         <div className={cx('form-group')}>
                             <label htmlFor="email">Email</label>
                             <input 
-                                type="email" 
+                                type="text" 
                                 id="email" 
                                 name="email" 
                                 required 
                                 placeholder='Nhập Email' 
                                 value={email} 
                                 onChange={(event) => setEmail(event.target.value)} 
+                                className={cx({ 'border-danger': errors.email })} 
                             />
                         </div>
 
@@ -111,6 +172,7 @@ function Signup() {
                                 placeholder='Nhập số điện thoại' 
                                 value={num}
                                 onChange={(event) => setNum(event.target.value)} 
+                                className={cx({ 'border-danger': errors.num })} 
                             />   
                         </div>
 
@@ -125,6 +187,7 @@ function Signup() {
                                     placeholder='Nhập mật khẩu' 
                                     value={password} 
                                     onChange={(event) => setPassword(event.target.value)} 
+                                    className={cx({ 'border-danger': errors.password || errors.passwordLength })} 
                                 />
                                 <button 
                                     type="button" 
@@ -148,6 +211,7 @@ function Signup() {
                                     placeholder='Nhập lại mật khẩu' 
                                     value={confirmPassword} 
                                     onChange={(event) => setConfirmPassword(event.target.value)} 
+                                    className={cx({ 'border-danger': errors.confirmPassword })} 
                                 />
                                 <button 
                                     type="button" 
@@ -161,8 +225,8 @@ function Signup() {
                         </div>
                         
                         <button 
-                        type="submit" 
-                        className={cx('submit-btn', 'mt-2', 'mb-4')}
+                            type="submit" 
+                            className={cx('submit-btn', 'mt-2', 'mb-4')}
                         >Đăng Ký</button>
                         <h4 className={cx('login', 'pt-3')} onClick={handlerNavigateSignin}>Đăng nhập</h4>
                     </form>
