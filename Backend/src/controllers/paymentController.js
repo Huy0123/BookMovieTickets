@@ -12,9 +12,7 @@ class paymentController  {
         
     }
     status = async (req,res)=>{
-        const data = req.body
-        
-        
+        const data = req.body       
         const result=await paymentService.status(data)
         return res.status(200).json(result)
         

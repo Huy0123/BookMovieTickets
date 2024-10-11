@@ -9,107 +9,69 @@ const RoomModel = require('../models/Room.js');
 const MovieModel = require('../models/Movie.js')
 const CinemaModel = require('../models/Cinema.js')
 const ShowtimeModel = require('../models/Showtime.js');
-const SeatModelModel = require('../models/Seat.js')
 const nodemailer = require('nodemailer'); 
 const QRCode = require('qrcode'); 
 
 class bookingService {
     createBooking = async (data) => {
         try {
-            const { user_id, showtime_id, seat_ids, food_items, payment_method } = data;
-            if (!user_id || !showtime_id || !seat_ids) {
+            const { user_id, showtime_id, seats_id = [], FoodAndDrinks_id = [], payment_method } = data;
+            if (!user_id || !showtime_id || !seats_id||!FoodAndDrinks_id) {
                 throw new Error('Missing required fields');
             }
             
-            const showtime = await ShowtimeModel.findOne({_id:showtime_id})
-            const seat = await SeatModel.findOne({_id:seat_ids,room_id:showtime.room_id}); 
-
-            if (!showtime) {
-                throw new Error('Seat not found');
+            var total_price_seat = 0;
+            var total_price_food = 0;
+            for (const seat_id of seats_id){
+                const seat = await SeatModel.findById(seat_id)
+                if(seat.seat_status){
+                    return {message :`${seat.seat_number} không tồn tại hoặc đã được đặt`}
+                }
+                total_price_seat += seat.price
             }
-            console.log(showtime) 
-            console.log(seat) 
-            var total_price = 0; 
-        
-            const tickets = [];
-            // Tạo đơn hàng trước
+          
+           
+            for (const FoodAndDrink_id of FoodAndDrinks_id){
+                const FoodAndDrink = await FoodAndDrinkModel.findById(FoodAndDrink_id.item_id)
+                total_price_food += FoodAndDrink.price*FoodAndDrink_id.quantity
+            }
+            
+            var total_price = total_price_seat+total_price_food;
+            
+            console.log(total_price)
             const order = new OrdersModel({
                 user_id,
+                showtime_id,
+                seats_id:seats_id,
+                FoodAndDrinks_id:FoodAndDrinks_id,
                 order_date: new Date(),
                 total_price
-            });
-            const savedOrder = await order.save();
-            const order_id = savedOrder._id;
+            })
+            const orders_infor = await order.save();
 
-            // Tạo vé
-            
-            for (const seat_id of seat_ids) {
-                const seat = await SeatModel.findOne({ _id: seat_id, room_id: showtime.room_id });
-                if (!seat) {
-                    throw new Error(`Seat with ID ${seat_id} not found`);
-                }
-
-                // Tạo vé
-                const ticket = new TicketsModel({
-                    order_id: order_id,
-                    showtime_id,
-                    user_id,
-                    seat_id,
-                    price: seat.price // Giá vé
-                });
-                await ticket.save();
-                tickets.push(ticket);
-                await SeatModelModel.updateOne({ _id: seat_id }, { seat_status:"true"});
-                // Cập nhật tổng giá
-                total_price += seat.price;
-
-                // Tạo đồ ăn nếu có
-                
+           for (const seat_id of seats_id){
+                await SeatModel.updateOne({_id:seat_id},{seat_status:"true"})
             }
-
-            const orderItems = [];
-            const items = food_items || [];
-                for (const item of items) {
-                    const productItem = await FoodAndDrinkModel.findById(item.item_id);
-                    if (productItem) {
-                        const orderItem = new OrderItemModel({
-                            order_id: order_id,
-                            item_id: productItem._id,
-                            quantity: item.quantity,
-                            price: productItem.price * item.quantity
-                        });
-                        await orderItem.save();
-                        orderItems.push(orderItem);
-                        total_price += productItem.price * item.quantity; // Cập nhật tổng giá
-                    }
-                }
-            // Cập nhật tổng giá cho đơn hàng
-            await OrdersModel.updateOne({ _id: order_id }, { total_price });
             
-
-            // Lưu thông tin thanh toán nếu có
             if (payment_method) {
                 const payment = new PaymentModel({
-                    order_id,
+                    order_id:orders_infor._id,
                     payment_method: payment_method,
-                    amount: total_price, // Sử dụng total_price từ body
+                    amount: total_price, 
                     date: new Date()
                 });
                 await payment.save();
             }
 
-            // Lấy thông tin người dùng
-            const user = await userModel.findById(user_id);
-            const fullname = user.fullname;
-            const qrData = {
-                order_id,
-                fullname,
-                total_price,
+          const user = await userModel.findById(user_id)
+            const qrData = {           
+                order_id:orders_infor._id.toString(),
             };
-
-            const qrCodeUrl = await QRCode.toDataURL(JSON.stringify(qrData), { errorCorrectionLevel: 'H' });
+            console.log(qrData.order_id)
+            const qrCodeUrl = await QRCode.toDataURL(qrData.order_id);
+            
             await this.sendEmailWithQRCode(user, qrCodeUrl);
-            return { message:"Thanh toán thành công ",order_id, fullname, tickets, payment_method, orderItems ,total_price,qrCodeUrl};
+            return { message:"Thanh toán thành công ",orders_infor,qrCodeUrl};
         } catch (error) {
             console.error(error);
             throw new Error('Error creating booking: ' + error.message);
@@ -157,33 +119,23 @@ class bookingService {
 
     GetBooking = async ()=>{
         try {
-            const result = await OrdersModel.find();
-           let data= []
-            for(const result_item of result){
-                const order_id = await OrdersModel.findById({_id:result_item._id});
-                const tickets = await TicketsModel.find({order_id:order_id._id}).select("showtime_id seat_id price")
-                let seats = [];
-                const showtime = await ShowtimeModel.findOne(tickets.showtime_id)
-                const movie = await MovieModel.findById(showtime.movie_id)
-                const cinema = await CinemaModel.findById(showtime.cinema_id)
-                const room = await RoomModel.findById(showtime.room_id)
-                for (const ticket of tickets){
-                    const seat = await SeatModel.findById(ticket.seat_id)            
-                    seats.push(seat)                                    
+            const order_infor = await OrdersModel.find()
+            .populate('user_id','fullname username email num')
+            .populate({
+                path:'seats_id',
+                select:'seat_number price seat_type'
+            })
+            .populate({
+                path:'showtime_id',
+                populate:'movie_id cinema_id room_id'            
+            })
+            .populate({
+                path:'FoodAndDrinks_id',
+                populate:{
+                    path:'item_id',
                 }
-                const ticket_infor = {seats,tickets,showtime,movie,cinema,room}
-                const orderItems = await OrderItemModel.find({order_id:order_id._id})
-                let items=[];
-                for(const orderItem of orderItems){
-                    const item = await FoodAndDrinkModel.findById(orderItem.item_id)
-                    items.push(item)
-                }
-                const item_infor = {items,orderItems}
-                const orders_infor = {order_id,ticket_infor,item_infor}
-                data.push ({orders_infor})
-            }
-
-           return {data}
+            })
+           return {order_infor}
            
         } catch (error) {
             throw error
@@ -192,76 +144,84 @@ class bookingService {
 
     }
 
-    GetUserBookingById = async (data)=>{
+    GetUserBookingById = async (user_id)=>{
         try {
-            const user_id = data
-            const user = await userModel.findById(user_id).select("fullname email num username")
-            const oders = await OrdersModel.find({user_id})
-            let result= []
-            for(const oder of oders){
-                const order_id = await OrdersModel.findById({_id:oder._id});
-                const tickets = await TicketsModel.find({order_id:order_id._id}).select("showtime_id seat_id price")
-                let seats = [];
-                const showtime = await ShowtimeModel.findOne(tickets.showtime_id)
-                const movie = await MovieModel.findById(showtime.movie_id)
-                const cinema = await CinemaModel.findById(showtime.cinema_id)
-                const room = await RoomModel.findById(showtime.room_id)
-                for (const ticket of tickets){
-                    const seat = await SeatModel.findById(ticket.seat_id)            
-                    seats.push(seat)                                    
-                }
-                const ticket_infor = {seats,tickets,showtime,movie,cinema,room}
-                const orderItems = await OrderItemModel.find({order_id:order_id._id})
-                let items=[];
-                for(const orderItem of orderItems){
-                    const item = await FoodAndDrinkModel.findById(orderItem.item_id)
-                    items.push(item)
-                }
-                const item_infor = {items,orderItems}
-                const orders_infor = {ticket_infor,item_infor}
-                result.push ({user,orders_infor})
-            }
 
-           return {result}
+            const order_infor = await OrdersModel.find({user_id:user_id})
+            .populate('user_id','fullname username email num')
+            .populate({
+                path:'seats_id',
+                select:'seat_number price seat_type'
+            })
+            .populate({
+                path:'showtime_id',
+                populate:'movie_id cinema_id room_id'            
+            })
+            .populate({
+                path:'FoodAndDrinks_id',
+                populate:{
+                    path:'item_id',
+                }
+            })
+           return {order_infor}
            
         } catch (error) {
             throw error
         }
     }
-    GetBookingById = async (data)=>{
-        try {
-            const order_id = data 
-            const oders = await OrdersModel.findById(order_id)
-            
-                const user = await userModel.find({_id:oders.user_id}).select("fullname email num username")
-                const tickets = await TicketsModel.find({order_id:order_id._id}).select("showtime_id seat_id price")
-                let seats = [];
-                const showtime = await ShowtimeModel.findOne(tickets.showtime_id)
-                const movie = await MovieModel.findById(showtime.movie_id)
-                const cinema = await CinemaModel.findById(showtime.cinema_id)
-                const room = await RoomModel.findById(showtime.room_id)
-                for (const ticket of tickets){
-                    const seat = await SeatModel.findById(ticket.seat_id)            
-                    seats.push(seat)                                    
-                }
-                const ticket_infor = {seats,tickets,showtime,movie,cinema,room}
-                const orderItems = await OrderItemModel.find({order_id:oders._id})
-                let items=[];
-                for(const orderItem of orderItems){
-                    const item = await FoodAndDrinkModel.findById(orderItem.item_id)
-                    items.push(item)
-                }
-                const item_infor = {items,orderItems}
-                const orders_infor = {ticket_infor,item_infor}
-               
-            
 
-           return {user,orders_infor}
+    GetBookingById = async (order_id)=>{
+        try {       
+                const orders_infor = await OrdersModel.findById(order_id) 
+                .populate('user_id','fullname username email num')
+                .populate({
+                    path:'seats_id',
+                    select:'seat_number price seat_type'
+                })
+                .populate({
+                    path:'showtime_id',
+                    populate:'movie_id cinema_id room_id' 
+                })
+                .populate({
+                    path:'FoodAndDrinks_id',
+                    populate:{
+                        path:'item_id',
+                    }
+                })
+           return {orders_infor}
         } catch (error) {
             throw error
         }
 
     }
+
+   DeleteBooking = async (order_id) => {
+        try {
+            const order = await OrdersModel.findById(order_id)
+            .populate({
+                path:'seats_id',
+                select:'seat_status'
+            })
+            if (!order) {
+                return { message: "Không có order này" };
+            }
+            for(const seat_status of order.seats_id){
+               if(seat_status.seat_status){
+                return {message:"booking này đang trong quá trình sử dụng nên không thể xóa"}
+               }
+            }
+
+            const deleteOrderResult = await OrdersModel.deleteOne({ _id: order._id });
+            if (deleteOrderResult.deletedCount === 0) {
+                return { message: "Xóa order không thành công" };
+            }  
+            return { message: "Xóa thành công" };
+        } catch (error) {
+            console.error("Lỗi khi xóa:", error);
+            return { message: "Có lỗi xảy ra khi xóa", error: error.message };
+        }
+    };
+    
 }
 
 module.exports = new bookingService();

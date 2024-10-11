@@ -34,7 +34,26 @@ class BookingController {
     GetBookingById = async(req,res)=>{
         try {
             const data = req.params.id;
+            if(!data){
+                return res.status(404).json({
+                    message: "no id"
+                })
+            }
             const result = await bookingService.GetBookingById(data)
+            return res.status(200).json(result)
+        } catch (error) {
+            throw error
+        }
+    }
+    DeleteBooking = async (req, res)=>{
+        try {
+            const data = req.params.id
+            if(!data){
+                return res.status(404).json({
+                    message: "no id"
+                })
+            }
+            const result = await bookingService.DeleteBooking(data);
             return res.status(200).json(result)
         } catch (error) {
             throw error
