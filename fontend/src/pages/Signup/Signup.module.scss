@@ -44,19 +44,23 @@
           }
 
           input {
-            padding: 10px; /* Padding cho input */
+            padding: 10px; /* Padding for input */
             font-size: 14px;
-            border: 1px solid #ccc;
+            border: 3px solid #ccc; /* Default border */
             border-radius: 6px;
             outline: none;
             transition: border-color 0.3s;
             height: 35px;
             width: 350px;
-
-            &:focus {
-              border-color: #007bff; /* Màu viền khi input được chọn */
+            &.error {
+                border: 3px solid red ; // Red border for error inputs
             }
-          }
+        
+            &:focus {
+                border-color: #007bff; /* Border color when input is focused */
+            }
+        }
+        
 
           /* New styles for password visibility toggle */
           .password-wrapper {

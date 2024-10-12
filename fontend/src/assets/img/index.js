@@ -5,7 +5,9 @@ const images= {
     banner4: require('~/assets/img/joker-sneakshow.webp'),
     banner5: require('~/assets/img/venom.webp'),
     backgroundlog: require('~/assets/img/background-log.png'),
-    icongoogle: require('~/assets/img/gg3.jpg')
+    icongoogle: require('~/assets/img/gg3.jpg'),
+    screen: require('~/assets/img/screen.png'),
+    food: require('~/assets/img/food.png')
 }
 
 export default images;

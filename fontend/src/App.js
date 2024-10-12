@@ -2,9 +2,7 @@ import { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '~/routes';
 import { DefaultLayout } from '~/Components/Layout';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import axios from 'axios';
-import SignIn from './pages/Signin/index';
 
 
 function App() {

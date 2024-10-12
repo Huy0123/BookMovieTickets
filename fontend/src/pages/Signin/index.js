@@ -16,6 +16,7 @@ function SignIn() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");  // State to hold error message
 
     const togglePasswordVisibility = () => {
         setIsShowPassword(!isShowPassword);
@@ -24,6 +25,7 @@ function SignIn() {
     const handleSignIn = async (event) => {
         event.preventDefault(); 
         console.log('signin', username, password);
+        setErrorMessage("");  
         const userData = { username, password };
         try {
             const response = await axios.post(
@@ -38,8 +40,11 @@ function SignIn() {
             if (token) {
                 localStorage.setItem('userToken', token);
                 navigate('/'); 
+            } else {
+                setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error if token not present
             }
         } catch (error) {
+            setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error on catch
             console.error('Error during sign-in:', error);
         }
     };
@@ -48,14 +53,18 @@ function SignIn() {
         navigate('/signup'); 
     };
 
+    const handlerNavigateForgot = () => {
+        navigate('/forgot');
+    };
+
     const handleGoogleSignIn = async (credentialResponse) => {
         try {
-            const googleToken = credentialResponse.credential; // Lấy ID token từ Google
+            const googleToken = credentialResponse.credential;
             console.log("Google Sign-In successful, ID Token:", googleToken);
 
             const response = await axios.post(
                 'http://localhost:8080/v1/Users/login',
-                { googleToken }, // Truyền ID token đến API backend
+                { googleToken },
                 { withCredentials: true }
             );
 
@@ -78,6 +87,13 @@ function SignIn() {
                 <div className={cx('sign-in')}>
                     <h1 className={cx('title', 'py-4')}>ĐĂNG NHẬP</h1>
                     <form className={cx('form')} onSubmit={handleSignIn}>
+                        {/* Error Message */}
+                        {errorMessage && (
+                            <div className={cx('error-message')}>
+                                {errorMessage}
+                            </div>
+                        )}
+
                         <div className={cx('form-group')}>
                             <label htmlFor="username">Tên Đăng Nhập</label>
                             <input
@@ -103,14 +119,19 @@ function SignIn() {
                                     value={password}
                                     onChange={(event) => setPassword(event.target.value)}
                                 />
-                                <button type="button" onClick={togglePasswordVisibility}>
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className={cx('toggle-password')}
+                                    aria-label={isShowPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                                >
                                     <FontAwesomeIcon icon={isShowPassword ? faEyeSlash : faEye} />
                                 </button>
                             </div>
                         </div>
 
                         <div className={cx('wrapp', 'd-flex', 'justify-content-between')}>
-                            <h4 className={cx('forgot-password')} onClick={() => {}}>Quên Mật Khẩu?</h4>
+                            <h4 className={cx('forgot-password')} onClick={handlerNavigateForgot}>Quên Mật Khẩu?</h4>
                             <h4 className={cx('sign-up')} onClick={handlerNavigateSignup}>Đăng Ký</h4>
                         </div>
 
@@ -119,9 +140,8 @@ function SignIn() {
                             className={cx('submit-btn', 'mt-2', 'mb-4')}
                         >Đăng Nhập</button>
 
-                        {/* Google Sign In Button */}
                         <GoogleLogin
-                            onSuccess={handleGoogleSignIn} // Truyền credential vào khi đăng nhập thành công
+                            onSuccess={handleGoogleSignIn}
                             onFailure={(error) => console.error('Google Sign-In failed:', error)}
                             scope="email profile"
                             prompt="select_account"

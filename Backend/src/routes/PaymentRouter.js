@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const PaymentController = require('../controllers/paymentController.js')
+const PaymentController = require('../controllers/paymentController')
 
 
 router.post('/callback',PaymentController.callback)

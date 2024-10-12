@@ -9,7 +9,8 @@ const createOrderItem = new Schema({
     },
     item_id: {
         type: Schema.Types.ObjectId,
-        required: true // Yêu cầu item_id, không để trống
+        ref:'Food_and_Drink',
+        required: true 
     },
     quantity: {
         type: Number,
