@@ -13,9 +13,6 @@ function route(app){
     app.use('/v1/Users',Users)
     app.use('/v1/Payment',Payment)
     app.use('/v1/Booking',Booking)
-    app.get('/v1', (req, res) => {
-        res.send('API đang hoạt động!');
-    });
     app.use('/v1',movie)
     // app.use('/v1',booking)
     app.use('/v1', showtime)
@@ -24,6 +21,9 @@ function route(app){
     // app.use('/v1',payment)
     app.use('/v1',promotion)
     app.use('/v1',room)
-
+    // app.use('/v1/SendEmail',SendEmail)
+    app.get('/v1', (req, res) => {
+        res.send('API đang hoạt động!');
+    });
 }
 module.exports = route;

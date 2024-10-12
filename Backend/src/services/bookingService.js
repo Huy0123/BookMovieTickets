@@ -1,16 +1,12 @@
 const FoodAndDrinkModel = require('../models/FoodAndDrinkModel.js');
-const TicketsModel = require('../models/TicketsModel.js');
 const OrdersModel = require('../models/OrdersModel.js');
-const OrderItemModel = require('../models/OrderItemModel.js');
 const PaymentModel = require('../models/PaymentModel.js');
 const userModel = require('../models/userModel.js');
 const SeatModel = require('../models/Seat.js');
-const RoomModel = require('../models/Room.js');
-const MovieModel = require('../models/Movie.js')
-const CinemaModel = require('../models/Cinema.js')
 const ShowtimeModel = require('../models/Showtime.js');
-const nodemailer = require('nodemailer'); 
+const SendEmailService = require('../services/SendEmailService.js')
 const QRCode = require('qrcode'); 
+
 
 class bookingService {
     createBooking = async (data) => {
@@ -19,17 +15,19 @@ class bookingService {
             if (!user_id || !showtime_id || !seats_id||!FoodAndDrinks_id) {
                 throw new Error('Missing required fields');
             }
-            
+            const showtime = await ShowtimeModel.findById(showtime_id).populate('cinema_id','_id')
+            console.log(showtime)
             var total_price_seat = 0;
             var total_price_food = 0;
             for (const seat_id of seats_id){
                 const seat = await SeatModel.findById(seat_id)
-                if(seat.seat_status){
-                    return {message :`${seat.seat_number} không tồn tại hoặc đã được đặt`}
-                }
+                // if(seat.seat_status){
+                //     return {message :`${seat.seat_number} không tồn tại hoặc đã được đặt`}
+                // }
                 total_price_seat += seat.price
             }
-          
+
+            
            
             for (const FoodAndDrink_id of FoodAndDrinks_id){
                 const FoodAndDrink = await FoodAndDrinkModel.findById(FoodAndDrink_id.item_id)
@@ -42,20 +40,21 @@ class bookingService {
             const order = new OrdersModel({
                 user_id,
                 showtime_id,
+                cinema_id:showtime.cinema_id,
                 seats_id:seats_id,
                 FoodAndDrinks_id:FoodAndDrinks_id,
                 order_date: new Date(),
                 total_price
             })
             const orders_infor = await order.save();
-
+            const order_id = orders_infor._id;
            for (const seat_id of seats_id){
                 await SeatModel.updateOne({_id:seat_id},{seat_status:"true"})
             }
             
             if (payment_method) {
                 const payment = new PaymentModel({
-                    order_id:orders_infor._id,
+                    order_id:order_id,
                     payment_method: payment_method,
                     amount: total_price, 
                     date: new Date()
@@ -65,12 +64,12 @@ class bookingService {
 
           const user = await userModel.findById(user_id)
             const qrData = {           
-                order_id:orders_infor._id.toString(),
+                order_id:order_id._id.toString(),
             };
             console.log(qrData.order_id)
             const qrCodeUrl = await QRCode.toDataURL(qrData.order_id);
             
-            await this.sendEmailWithQRCode(user, qrCodeUrl);
+            await SendEmailService.sendEmailWithQRCode(user, qrCodeUrl,order_id);
             return { message:"Thanh toán thành công ",orders_infor,qrCodeUrl};
         } catch (error) {
             console.error(error);
@@ -79,43 +78,7 @@ class bookingService {
     }
 
 
-    sendEmailWithQRCode = async (user, qrCodeUrl) => {
-        try {
-            console.log("email",user.email)
-            const email = user.email;
-            const fullname = user.fullname;
-            // Thiết lập transporter
-            const transporter = nodemailer.createTransport({
-                service: 'Gmail',
-                auth: {
-                    user: process.env.EMAIL_MYEMAIL, 
-                    pass: process.env.EMAIL_PASSWORD  
-                }
-            });
-
-            // Tạo nội dung email
-            const mailOptions = {
-                from: process.env.EMAIL_MYEMAIL,
-                to: email,
-                subject: 'Mã QR Code cho đơn hàng của bạn',
-                text: 'Dưới đây là mã QR Code cho đơn hàng của bạn.',
-                html:`<p>Cảm ơn ${fullname} đã đặt vé xem phim của chúng tôi</p>`,
-                attachments: [
-                    {
-                        filename: 'qr-code.png',
-                        content: qrCodeUrl.split(',')[1], 
-                        encoding: 'base64',
-                    },
-                ],
-            };
-
-            // Gửi email
-            await transporter.sendMail(mailOptions);
-            console.log('Email đã được gửi cho: ' + email);
-        } catch (error) {
-            console.error('Có lỗi xảy ra khi gửi email: ', error);
-        }
-    }
+    
 
     GetBooking = async ()=>{
         try {
@@ -126,8 +89,11 @@ class bookingService {
                 select:'seat_number price seat_type'
             })
             .populate({
+                path:'cinema_id',
+            })
+            .populate({
                 path:'showtime_id',
-                populate:'movie_id cinema_id room_id'            
+                populate:'movie_id  room_id'            
             })
             .populate({
                 path:'FoodAndDrinks_id',
@@ -154,8 +120,11 @@ class bookingService {
                 select:'seat_number price seat_type'
             })
             .populate({
+                path:'cinema_id',
+            })
+            .populate({
                 path:'showtime_id',
-                populate:'movie_id cinema_id room_id'            
+                populate:'movie_id room_id'            
             })
             .populate({
                 path:'FoodAndDrinks_id',
@@ -179,8 +148,11 @@ class bookingService {
                     select:'seat_number price seat_type'
                 })
                 .populate({
+                    path:'cinema_id',
+                })
+                .populate({
                     path:'showtime_id',
-                    populate:'movie_id cinema_id room_id' 
+                    populate:'movie_id room_id' 
                 })
                 .populate({
                     path:'FoodAndDrinks_id',
@@ -193,6 +165,32 @@ class bookingService {
             throw error
         }
 
+    }
+    getCinemaBookingById = async(cinema_id)=>{
+        try {       
+            const orders_infor = await OrdersModel.find({cinema_id}) 
+            .populate('user_id','fullname username email num')
+                .populate({
+                    path:'seats_id',
+                    select:'seat_number price seat_type'
+                })
+                .populate({
+                    path:'cinema_id',
+                })
+                .populate({
+                    path:'showtime_id',
+                    populate:'movie_id room_id' 
+                })
+                .populate({
+                    path:'FoodAndDrinks_id',
+                    populate:{
+                        path:'item_id',
+                    }
+                })
+       return {orders_infor}
+    } catch (error) {
+        throw error
+    }
     }
 
    DeleteBooking = async (order_id) => {
