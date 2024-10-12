@@ -62,7 +62,7 @@ class SendEmailService{
             
             };
             const result = await axios(options);
-            console.log(result.data)
+      
             const bookingInfo = result.data.orders_infor;
             const ticketContentPath = path.join(__dirname, '../views/TicketContent.hbs');
             // Đọc nội dung file HDB

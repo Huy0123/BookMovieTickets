@@ -10,10 +10,6 @@ const createSeat = new mongoose.Schema({
         type: String,
         required: true
     },
-    seat_status:{
-        type: Boolean,
-        required: true
-    },
     price:{
         type: Number,
         required: true
