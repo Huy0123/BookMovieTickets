@@ -14,5 +14,50 @@ class BookingController {
         }
         
     }
+    GetBooking = async (req,res) =>{
+        try {  
+            const result = await bookingService.GetBooking()
+            return res.status(200).json(result)
+        } catch (error) {
+            throw error
+        }
+    }
+    GetUserBookingById = async(req,res)=>{
+        try {
+            const data = req.params.id;
+            const result = await bookingService.GetUserBookingById(data)
+            return res.status(200).json(result)
+        } catch (error) {
+            throw error
+        }
+    }
+    GetBookingById = async(req,res)=>{
+        try {
+            const data = req.params.id;
+            if(!data){
+                return res.status(404).json({
+                    message: "no id"
+                })
+            }
+            const result = await bookingService.GetBookingById(data)
+            return res.status(200).json(result)
+        } catch (error) {
+            throw error
+        }
+    }
+    DeleteBooking = async (req, res)=>{
+        try {
+            const data = req.params.id
+            if(!data){
+                return res.status(404).json({
+                    message: "no id"
+                })
+            }
+            const result = await bookingService.DeleteBooking(data);
+            return res.status(200).json(result)
+        } catch (error) {
+            throw error
+        }
+    }
 }
 module.exports = new BookingController

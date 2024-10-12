@@ -1,36 +1,48 @@
 const showtime = require('../models/Showtime')
 const rooms = require('../models/Room')
+const seats = require('../models/Seat')
+const seatTime = require('../models/SeatTime')
 class ShowtimeService {
 
-    createShowtime = async (data) => {
-        return await showtime.create(data);
-    }
+    createShowtime =    async (data) => {
+        const newShowtime = await showtime.create(data);
+        const seatsInRoom = await seats.find({ room_id: newShowtime.room_id });
+        const seatTimes = seatsInRoom.map(seat =>({
+                seat_id: seat._id,
+                showtime_id: newShowtime._id,
+                seat_status: false
+            
+        }));
 
+        await seatTime.insertMany(seatTimes);
+
+        return newShowtime;
+    }
+    
     getRoomAvailabilityByCinemaIDAndDate = async (cinemaID, showtime_start, showtime_end) => {
         try {
+        
             const conflictingShowtimes = await showtime.find({
                 cinema_id: cinemaID,
+                // Tìm kiếm showtime theo utc
                 $or: [
-                    // Suất chiếu mới bắt đầu trong khoảng của suất chiếu hiện có
-                    { showtime_start: { $lt: showtime_end, $gte: showtime_start } },
-                    // Suất chiếu hiện tại kết thúc sau khi suất chiếu mới bắt đầu
-                    { showtime_end: { $gt: showtime_start, $lte: showtime_end } }
+                    {
+                        showtime_start: { $gte: showtime_start, $lte: showtime_end }
+                    },
+                    {
+                        showtime_end: { $gte: showtime_start, $lte: showtime_end }
+                    }
                 ]
-            }).select('room_id'); // phòng đang bận
-    
-            
-    
+            }).select('room_id').lean(); // phòng đang bận
             // Danh sách các phòng đang bận
             const busyRoomIds = conflictingShowtimes.map(showtime => showtime.room_id);
-    
-            
+
     
             const availableRooms = await rooms.find({
-                cinema_id: '66fbf96791e08c377610139b',
-            });
-    
+                cinema_id: cinemaID,
+                _id: { $nin: busyRoomIds }
+            }).lean();
             
-    
             return availableRooms;
     
         } catch (error) {

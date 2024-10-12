@@ -17,5 +17,5 @@ const foodAndDrinkSchema = new Schema({
     }
 });
 
-const FoodAndDrink = mongoose.model('Food_and_Drink', foodAndDrinkSchema);
+const   FoodAndDrink = mongoose.model('Food_and_Drink', foodAndDrinkSchema);
 module.exports = FoodAndDrink;
