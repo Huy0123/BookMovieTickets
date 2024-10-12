@@ -11,7 +11,7 @@ const publicRoutes = [
     { path: '/schedule', component:Schedule },
     { path: '/profile', component:Profile },
     { path: '/chooseCinema', component:ChooseCinema},
-    { path: '/signUp', component:Signup, layout:null},
+     { path: '/signUp', component:Signup, layout:null},
     { path: '/signIn', component:Signin, layout:null},
 
 ]

@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css'; // Import CSS for Tippy
 import { useNavigate } from 'react-router-dom';
+
 const cx = classNames.bind(styles);
 
 function Header() {
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
+    const [headerColor, setHeaderColor] = useState('#000000'); // Màu mặc định cho header
+    const dropdownRef = useRef(null); // Tạo ref để theo dõi dropdown
 
-    // Mảng chứa tên các rạp
     const cinemas = [
         'Tên rạp 1',
         'Tên rạp 2',
@@ -24,18 +25,6 @@ function Header() {
         'Tên rạp 10',
     ];
 
-    // Hàm render danh sách tên rạp
-    const renderCinemaList = () => (
-        <div className={cx('dropdown-menu')}>
-            {cinemas.map((cinema, index) => (
-                <div key={index} className={cx('dropdown-item')}>
-                    {cinema}
-                </div>
-            ))}
-        </div> // Move the closing parenthesis here
-    );
-    
-
     const navigate = useNavigate();
     const handlerNavigateSignin = () => {
         navigate('/signIn');
@@ -43,8 +32,36 @@ function Header() {
     const handlerNavigateSignup = () => {
         navigate('/signUp');
     };
+
+    // Hàm để đóng dropdown khi nhấn bên ngoài
+    const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setDropdownVisible(false);
+        }
+    };
+
+    // Hàm xử lý cuộn trang để đổi màu header
+    const handleScroll = () => {
+        if (window.scrollY > 50) {
+            setHeaderColor('rgba(12, 0, 0, 0.5'); // Đổi màu header khi cuộn xuống
+        } else {
+            setHeaderColor('#000000'); // Màu mặc định
+        }
+    };
+
+    // Sử dụng useEffect để thêm event listener cho nhấn ngoài và cuộn
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper')} style={{ backgroundColor: headerColor }}>
             <div className={cx('container')}>
                 <div className={cx('header1')}>
                     <div className='row'>
@@ -59,19 +76,25 @@ function Header() {
                                     />
                                 </div>
                                 <div className='col-lg-4'></div>
-                                <div className={cx('wrap1', 'col-lg-6', 'mt-5')}>
+                                <div className={cx('wrap1', 'col-lg-6', 'mt-3')}>
                                     <div className='row'>
                                         <div className='col-lg-6 d-flex flex-row-reverse pe-5'>
-                                            <button type="button" className={cx('btn', 'book')}>Đặt vé ngay</button>
+                                            <button type="button" className={cx('btn', 'book')}>
+                                                Đặt vé ngay
+                                            </button>
                                         </div>
                                         <div className={cx('sign', 'col-lg-6')}>
                                             <div className='row gap-2'>
-                                                <button type="button" className={cx('btn', 'sign-up', 'col-lg-6')} onClick={handlerNavigateSignup}>Đăng ký</button>
-                                                <button type="button" className={cx('btn', 'sign-in', 'col-lg-6')} onClick={handlerNavigateSignin}>Đăng nhập</button>
+                                                <button type="button" className={cx('btn', 'sign-up', 'col-lg-6')} onClick={handlerNavigateSignup}>
+                                                    Đăng ký
+                                                </button>
+                                                <button type="button" className={cx('btn', 'sign-in', 'col-lg-6')} onClick={handlerNavigateSignin}>
+                                                    Đăng nhập
+                                                </button>
                                             </div>
                                         </div>
-                                        <div className={cx('login','col-sm')}>
-
+                                        <div className={cx('login', 'col-sm')}>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -81,25 +104,27 @@ function Header() {
                     </div>
                 </div>
 
-                {/* Sử dụng Tippy cho dropdown chọn rạp */}
                 <div className={cx('header2')}>
                     <div className='row'>
                         <div className='col-lg-1'></div>
-                        <div className={cx('wrap2', 'pt-3', 'col-lg-3', 'pb-3')}>
-                            <Tippy
-
-                                interactive
-                                placement="bottom-start"
-                                render={renderCinemaList}
-                                trigger="click"
-                                theme='border-light'
-
+                        <div className={cx('wrap2', 'pt-3', 'col-lg-3', 'pb-3')} ref={dropdownRef}>
+                            <button
+                                type="button"
+                                className={cx('btn-choose', 'col-lg-6', 'me-3')}
+                                onClick={() => setDropdownVisible((prev) => !prev)} // Toggle dropdown
                             >
-                                <button type="button" className={cx('btn-choose', 'col-lg-6', 'me-3')}>
-                                    <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
-                                    Chọn rạp
-                                </button>
-                            </Tippy>
+                                <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
+                                Chọn rạp
+                            </button>
+                            {isDropdownVisible && (
+                                <div className={cx('dropdown-menu')}>
+                                    {cinemas.map((cinema, index) => (
+                                        <div key={index} className={cx('dropdown-item')}>
+                                            {cinema}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                             <button type="button" className={cx('btn-schedule', 'col-lg-6')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
                                 Lịch chiếu
