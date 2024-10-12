@@ -1,0 +1,94 @@
+.container{
+    background-color: #000;
+    height: 100%;
+    .search{
+        .wrap{
+            padding: 0 55px;
+            border-bottom: 1px solid #fff;     
+            h2{
+                color: #fff;
+            }
+            .date{
+                padding: 0 30px;
+                .select1 {
+                    width:300px;
+                    height: 38px;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                }
+            }
+            .movie{
+                padding: 0 30px;
+                .select2 {
+                    width:400px;
+                    height: 38px;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                }
+            }
+            .cinema{
+                padding: 0 30px;
+                .select3 {
+                    width:300px;
+                    height: 38px;
+                    padding: 0.5rem;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                }
+            }
+        }
+    }
+
+    .content{
+        .wrap-content{
+            .movie-detail{
+                .d-block{
+                    height: 70%;
+                }
+                .wrap-info{
+                    color: #fff;
+                    
+                    .title{
+
+                    }
+                    .info-group{
+                        align-items: center;
+                    }
+                }
+            }
+            .time{
+                color: #fff;
+                padding-right: 0;
+                
+                /* Thêm chiều cao cố định và con lăn dọc */
+                height: 700px; /* Chiều cao cố định */
+                overflow-y: auto; /* Cho phép cuộn dọc */
+                overflow-x: hidden; /* Ẩn cuộn ngang nếu có */
+                
+                .wrap-line{
+                    border-bottom: 1px solid #fff;
+                    padding: 15px 0;
+                }
+                .about{
+
+                }
+                .schedule{
+                    .group{
+                        width: 450px;
+
+                        .btn-schedule{
+                            margin: 5px;
+                            width: 80px;
+                            background-color: #000;
+                            color: #fff;
+                            border: 1px solid #fff;
+                            &:hover{
+                                background-color: #ffc100;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -3,32 +3,12 @@ import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // Import CSS for Tippy
 import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 function Header() {
-    const cinemaList = (
-        <div style={{ width: '700px', backgroundColor: '#f5f5f5', padding: '10px' }}> {/* Custom style applied here */}
-            <div className='row'>
-                <div className='col-lg-1'></div>
-                <div className='col-lg-10'>
-                    <div className={cx('row')}>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 1</div>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 2</div>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 3</div>
-                    </div>
-                    <div className={cx('row')}>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 4</div>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 5</div>
-                        <div className={cx('col-lg-4', 'title')}>Tên rạp 6</div>
-                    </div>
-                </div>
-                <div className='col-lg-1'></div>
-            </div>
-        </div>
-    );
+  
     const navigate = useNavigate();
     const handlerNavigateSignin = () => {
         navigate('/signIn');
@@ -76,18 +56,10 @@ function Header() {
                     <div className='row'>
                         <div className='col-lg-1'></div>
                         <div className={cx('wrap2', 'pt-3', 'col-lg-3', 'pb-3')}>
-                            <Tippy
-                                content={cinemaList} // Nội dung của dropdown
-                                interactive={true}    // Cho phép tương tác với dropdown
-                                placement="bottom-start" // Vị trí của dropdown
-                                trigger="click"      // Hiển thị khi click
-                                theme="light"        // Chủ đề light (tùy chỉnh được)
-                            >
                                 <button type="button" className={cx('btn-choose', 'col-lg-6', 'me-3')}>
                                     <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
                                     Chọn rạp
                                 </button>
-                            </Tippy>
                             <button type="button" className={cx('btn-schedule', 'col-lg-6')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
                                 Lịch chiếu

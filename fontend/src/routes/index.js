@@ -7,6 +7,7 @@ import Signup from '~/pages/Signup';
 import Signin from '~/pages/Signin';
 import ForgotPassword from '~/pages/Forgot';
 import ResetPassword from '~/pages/ResetPassword';
+import BookTicket from '~/pages/BookTicket';
 
 // Không cần đăng nhập vẫn xem được
 const publicRoutes = [
@@ -14,10 +15,11 @@ const publicRoutes = [
     { path: '/schedule', component:Schedule },
     { path: '/profile', component:Profile },
     { path: '/chooseCinema', component:ChooseCinema},
+    { path: '/bookTicket', component:BookTicket},
     { path: '/signUp', component:Signup, layout:null},
     { path: '/signIn', component:Signin, layout:null},
     { path: '/forgot', component:ForgotPassword, layout:null},
-    { path: '/reset-password/:token', component: ResetPassword, layout: null }, // Adjusted to include token
+    { path: '/reset-password/:token', component: ResetPassword, layout: null }, 
 
 ]
 //Ngược lại
