@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faCirclePlay, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight, faPlay } from '@fortawesome/free-solid-svg-icons';
 import images from '~/assets/img';
 import TrailerModal from '../Trailer/TrailerModal';
 const cx = classNames.bind(styles);

@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { faLocationDot, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -11,6 +12,7 @@ function Header() {
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [headerColor, setHeaderColor] = useState('#000000'); // Màu mặc định cho header
     const dropdownRef = useRef(null); // Tạo ref để theo dõi dropdown
+    const [fullname, setFullname] = [''];
 
     const cinemas = [
         'Tên rạp 1',
@@ -60,6 +62,30 @@ function Header() {
         };
     }, []);
 
+    // const logined = async (event) => {
+    //     event.preventDefault();
+
+    //     try {
+    //         const response = await axios.post(
+    //             'http://localhost:8080/v1/Users/getUserByID/', 
+    //             {
+    //                 withCredentials: true,  
+    //             }
+    //         );
+    //         console.log(response.data);
+    //         const token = response.data.accesstoken;
+    //         if (token) {
+    //             localStorage.setItem('userToken', token);
+    //             navigate('/'); 
+    //         } else {
+    //             setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error if token not present
+    //         }
+    //     } catch (error) {
+    //         setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error on catch
+    //         console.error('Error during sign-in:', error);
+    //     }
+    // }
+
     return (
         <div className={cx('wrapper')} style={{ backgroundColor: headerColor }}>
             <div className={cx('container')}>
@@ -83,8 +109,8 @@ function Header() {
                                                 Đặt vé ngay
                                             </button>
                                         </div>
-                                        <div className={cx('sign', 'col-lg-6')}>
-                                            <div className='row gap-2'>
+                                        <div className={cx('sign', 'col-lg-6','d-none')}>
+                                            <div className='row gap-2 '>
                                                 <button type="button" className={cx('btn', 'sign-up', 'col-lg-6')} onClick={handlerNavigateSignup}>
                                                     Đăng ký
                                                 </button>
@@ -93,8 +119,14 @@ function Header() {
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className={cx('login', 'col-sm')}>
-                                            
+                                        <div className={cx('logined', 'col-sm')}>
+                                            <div className={cx('wrap-logined','d-flex align-items-center w-100 h-100')}>
+                                            <FontAwesomeIcon className={cx('icon-user')} icon={faUser} />
+                                                    <h3 className={cx('fullname')}
+                                                    value={fullname}
+                                                    onChange={(event) => setFullname(event.target.value)}
+                                                    > Nguyễn trình chó ngu</h3>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
