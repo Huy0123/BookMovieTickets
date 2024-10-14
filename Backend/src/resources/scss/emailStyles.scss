@@ -1,0 +1,57 @@
+// emailStyles.scss
+
+$primary-color: #007bff; // Màu chính
+$secondary-color: #6c757d; // Màu phụ
+$background-color: #f8f9fa; // Màu nền
+$text-color: #212529; // Màu chữ
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: $background-color;
+    color: $text-color;
+    margin: 0;
+    padding: 20px;
+}
+
+.gioithieu {
+    background-color: #fff; // Nền trắng cho phần giới thiệu
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.thongtin {
+    background-color: #fff; // Nền trắng cho thông tin vé
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    p {
+        margin: 10px 0; // Khoảng cách giữa các đoạn
+    }
+
+    ul {
+        padding-left: 20px; // Khoảng cách bên trái cho danh sách
+    }
+
+    li {
+        margin-bottom: 5px; // Khoảng cách giữa các mục danh sách
+    }
+}
+
+strong {
+    color: $primary-color; // Đổi màu cho các phần được in đậm
+}
+
+.madv {
+    font-weight: bold;
+    color: $secondary-color; // Màu cho mã đặt vé
+}
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9em;
+    color: $secondary-color; // Màu cho phần chân trang
+}

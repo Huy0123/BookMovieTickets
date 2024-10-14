@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":[],"names":[],"mappings":"","file":"emailStyles.css"}
+{"version":3,"sourceRoot":"","sources":["../scss/emailStyles.scss"],"names":[],"mappings":"AAAA;EACI;;;AAEJ;EACI","file":"emailStyles.css"}

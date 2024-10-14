@@ -35,7 +35,7 @@ class bookingService {
             }
             
             var total_price = total_price_seat+total_price_food;
-            
+           
             console.log(total_price)
             const order = new OrdersModel({
                 user_id,
@@ -63,6 +63,10 @@ class bookingService {
             }
 
           const user = await userModel.findById(user_id)
+          console.log("point",user.point)
+          const point = (user.point)+((total_price*1)/1000)
+          console.log("point",point)
+          await userModel.updateOne({_id:user_id},{point:point})
             const qrData = {           
                 order_id:order_id._id.toString(),
             };

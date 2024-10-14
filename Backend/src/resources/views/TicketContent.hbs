@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cảm ơn bạn!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 5vw; 
+            
+        }
+        .qr{
+            margin-top: 10px;
+            background: #fff;
+            padding: 40px;
+            font-size: 20px;
+        }
+        .img{
+            max-width: 450px;
+            margin: 0 auto; 
+        }
+        .madatve{
+            text-align: center;
+        }
+        .madatve>p{
+            color: #eb2f96;
+            font-size: 1.75rem;
+        }
+        .sticket {
+            padding: 2rem; 
+            font-size: 1.25rem; /* 1.25rem tương đương với 20px (nếu font-size mặc định là 16px) */
+            background-color: #fff;
+            border: none;
+            border-radius: 20px;
+        }
+        .thongtin{
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #7b7b7b;
+            border-radius: 20px;
+        }
+        .khac{
+            margin-top: 50px;
+            color: #eb2f96;
+        }
+
+        /* Điều chỉnh lại margin cho các màn hình rất nhỏ */
+        @media (max-width: 480px) {
+            body {
+                margin: 3vw; /* Giảm margin thêm cho các màn hình cực nhỏ như điện thoại di động */
+            }
+        }
+    </style>
+</head>
+<body> 
+    <section class="sticket">
+        <table></table>
+        <div class="gioithieu">
+            <div class="img">
+                <img src="https://png.pngtree.com/png-vector/20221121/ourmid/pngtree-comic-style-cinema-ticket-icon-with-splash-effect-vector-png-image_41839066.jpg">
+            </div>
+            <div class="chao">
+                <p>xin chào <strong>{{fullname}}</strong>,</p>
+                <p>cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
+                <p>chúng tôi xác nhận bạn đã đặt vé xem phim của <strong>{{cinemaName}}</strong> thành công lúc <strong>{{orderdate}}</strong></p>
+                <p>chi tiết vé như sau :</p>
+            </div>
+        </div>
+        <div class="thongtin">
+            <div class="madatve">
+                <span>Mã Đặt Vé</span>
+                <p>{{orderId}}</p>
+            </div>
+            <p>thời gian chiếu :  <strong>{{showtimeStart}}</strong></p>
+            <p>phim :  <strong>{{title}}</strong></p>
+            <p>phòng chiếu : <strong>{{room}}</strong></p>
+            <p>số ghế: <strong>{{seats}}</strong></p>
+            <p>Danh sách món ăn và đồ uống:</p>
+            <ul>
+                {{#each foodAndDrinks}}
+                <li>{{quantity}}x {{item_id.name}} - {{item_id.price}} VND</li>
+                {{/each}}
+            </ul>
+            <p>rạp chiếu : <strong>{{cinemaName}}</strong></p>
+            <p>tổng tiền : <strong>{{totalPrice}}</strong></p>
+            <div class="khac">
+                <p>Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi.</p>
+                <p>Chúc bạn xem phim vui vẻ.</p>
+            </div>
+        </div>
+    </section>
+    <section class="qr"><p>Đây là mã QR Code đơn hàng của bạn:</p></section>
+    
+    
+</body>
+</html>

@@ -23,6 +23,10 @@ const createUser = new mongoose.Schema({
         type: String,
       
     },
+    point:{
+        type:Number,
+        default:0
+    },
     role: {
         type: String,
         default:"User"

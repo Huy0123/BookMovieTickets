@@ -1,3 +1,38 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  margin: 0;
+  padding: 20px; }
 
+.gioithieu {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
 
-/*# sourceMappingURL=emailStyles.css.map */
+.thongtin {
+  background-color: #fff;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+  .thongtin p {
+    margin: 10px 0; }
+  .thongtin ul {
+    padding-left: 20px; }
+  .thongtin li {
+    margin-bottom: 5px; }
+
+strong {
+  color: #007bff; }
+
+.madv {
+  font-weight: bold;
+  color: #6c757d; }
+
+footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.9em;
+  color: #6c757d; }

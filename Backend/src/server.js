@@ -1,5 +1,5 @@
 const express = require('express');
-
+const path = require('path');
 const router = require('./routes/indexRouter.js');
 const cookieParser = require('cookie-parser');
 const cors = require('cors'); // Thêm dòng này để import cors
@@ -31,8 +31,8 @@ app.engine('hbs', exphbs.engine({
     defaultLayout: false
 }));
 app.set('view engine', 'hbs');
-app.set('views', './src/views');
-
+app.set('views', path.join(__dirname, 'resources','views'));
+app.use(express.static(path.join(__dirname, 'public')));
 // Connect to MongoDB once when the server starts
 connectDB();
 app.listen(port, () => {
