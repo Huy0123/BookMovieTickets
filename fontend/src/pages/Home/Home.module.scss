@@ -1,23 +1,226 @@
-.container{
+
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@100..900&display=swap');
+@keyframes moveUp {
+    from {
+        transform: translateY(0); /* Vị trí ban đầu */
+    }
+    to {
+        transform: translateY(-10px); /* Di chuyển lên trên 10px */
+    }
+}
+@keyframes zoom-in-out {
+    0% {
+      transform: scale(1);
+     
+    }
+  
+  
+    100% {
+      transform: scale(1.1);
+     
+    }
+}
+
+.container {
     background-color: #000;
-    .icon-pre,
-    .icon-next{
+
+    .showing-title {
+        margin-top: 180px;
+    }
+
+   
+        .wrap-banner{
+            position: relative; /* Đặt vị trí tương đối cho nội dung để đảm bảo các phần tử bên trong được căn chỉnh đúng */
+            z-index: 0  ;
+            display: flex;
+            img{
+                z-index: 0  ;
+                width: 100%;
+                max-height: 620px;
+              
+                object-fit: cover;
+                animation: zoom-in-out 7s forwards  ease-in-out;
+            }
+            
+            .overlay {
+                position: absolute;
+                width: 100%;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: 
+                            linear-gradient( to bottom, rgba(0, 0, 0,0.7), rgba(0, 0, 0, 0) 30%),
+                         
+                            linear-gradient( to top, rgba(0, 0, 0, 0.7),rgb(0, 0, 0,0) 30%);
+                z-index: 10; /* Đặt z-index lớn hơn để overlay nằm trên hình */
+                color: #FFF;
+                
+                .wrap-banner-con{
+                    background: 
+                    linear-gradient( to left, rgba(0, 0, 0,0), rgba(0, 0, 0, 0.69) 70%);
+                    padding-left: 5%;
+                    
+                .datetime{
+                    animation: moveUp 3s forwards ease-in-out;
+                }
+                .title{
+                    background-image: linear-gradient(to right, #ffffff, #c8c5c3a8); /* Màu gradient */
+                    -webkit-background-clip: text; /* Cắt background theo chữ */
+                    -webkit-text-fill-color: transparent;
+                    width: 80%;
+                    font-size: 4em;
+                    font-weight: 1000;
+                    font-family: "Big Shoulders Display", sans-serif;
+                    font-optical-sizing: auto;
+                    letter-spacing: 4px;
+                    font-style: normal;
+                    animation: moveUp 3s forwards ease-in-out;
+                }
+                .wrap-decr{
+                    background-color: rgba(57, 56, 56, 0.527);
+                    width: 80%;
+                    
+                   text-align: justify;
+                    padding: 15px 30px;
+                    border-radius: 10px;
+                    animation: moveUp 3s forwards ease-in-out;
+                
+                }
+                .wrap-btn-banner{
+                    margin-bottom: 6%;
+                    width: 70%;
+                    height: 10%;
+                    display: flex;
+                    gap: 30px;
+                    animation: moveUp 3s forwards ease-in-out;
+                    .bookin{
+                        width: 25%;
+                        height: 70%;
+                        background-color: rgba(121, 101, 101, 0.168);
+                        color: #fff;
+                        border-radius: 15px;
+                        box-shadow: 0 1px 5px solid rgba(218, 216, 216, 0.168);
+                        
+                        &:hover{
+                            background-color: rgba(255, 255, 255, 0);
+
+                            box-shadow: 2px 2px 15px  rgb(126, 236, 249),-2px -2px 50px  rgb(240, 115, 234);
+                        }
+                    }
+                    .trailer-ban{
+                        width: 25%;
+                        height: 70%;
+                        color: #fff;
+                        background-color: #00000000;
+                        border: none;
+                        text-decoration: underline;
+                        text-align: center;
+                        
+                        .icon-play{
+                            color: #FFF;
+                            float: right; 
+                            font-size:    1em ; 
+                            margin-top: 6px;   
+                          
+                        }                
+                    }
+                }
+                }
+                
+            }
+        }
+    
+        
+    .carousel-control-prev, .carousel-control-next {
         width: 40px;
         height: 40px;
-    }
-    .wrap{
-        .title-movie{
+        background-color: #ffffff00;
+        border: none;
+       
+        .icon-pre, .icon-next {
+            width: 40px;
+            height: 40px;
             color: #fff;
         }
-        .btn-gr{
-            .trailer{ 
-                width: 100px;
-                height: 40px;
+    }
+   .showing-title{
+    margin: 100px 0 50px 0px;
+   }
+    .wrap-showing,.wrap-coming{
+      
+        border-bottom: none;
+        padding:  30px 0;
+        &:hover{
+            // box-shadow: 2px 2px 15px  rgb(126, 236, 249),-2px -2px 50px  rgb(240, 115, 234);
+            // background-color: #ffffff27;
+            // background-image: linear-gradient(to right , rgba(105, 237, 251, 0.711),#000000,#000000,#000000,#000000, rgba(245, 89, 224, 0.612)); /* Màu gradient */
+            border: 1px solid #313030;
+            background-color: #302f2f;
+        }
+        .showing-title{
+            background-color: #000;
+        }
+       
+        
+        .wrap {
+            width: 300px;
+            position: relative;
+            z-index: 3; /* Đảm bảo tiêu đề và nút không bị chồng lên bởi overlay */
+            padding: 10px;
+           
+            background-color: #000;
+            border-radius: 15px;
+            &:hover{
+                border: 2px solid #ffffff81;
+                
             }
-            .bookin{
-                width: 100px;
-                height: 40px;
+            img{
+                border-radius: 15px;
+            }
+            .title-movie {
+                color: #fff;
+                transition: color 0.3s ease;
+                margin-top: 10px;
+            }
+    
+            .btn-gr {
+              
+                gap: 20px;
+                .trailer, .bookin {
+                    width: 120px;
+                    height: 40px;
+                    color: #fff;
+                    background-color: #2f2f2daf;
+                    
+                    &:hover {
+                        background-color: #ffffff00;
+                        color: #fff;
+                        box-shadow: 2px 2px 15px  rgb(126, 236, 249),-2px -2px 50px  rgb(240, 115, 234);
+                    }
+                }
+            }
+    
+            .wrap-hover {
+                position: absolute;
+                width: 94%;
+                height: 83%;
+                background-color: rgba(0, 0, 0, 0.7); /* Màu nền khi hover */
+                color: white; /* Màu chữ */
+                display: none; /* Ẩn mặc định */
+                justify-content: start;
+                align-items: center;
+                padding: 10px;
+                border-radius: 15px;
+                transition: opacity 0.3s ease;
+                z-index: 4; /* Đảm bảo nó nằm trên tất cả các thành phần khác */
+            }
+    
+            &:hover .wrap-hover {
+                display: flex; /* Hiện khi hover */
+                color: #ffffff;
             }
         }
     }
+    
 }
