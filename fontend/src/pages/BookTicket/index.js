@@ -1,14 +1,38 @@
-import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './BookTicket.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import images from '~/assets/img';
+import React, { useEffect,useState} from 'react';
 import { faClock, faClosedCaptioning, faEarthAsia, faMinus, faPlus, faTag, faTv, faUserCheck } from '@fortawesome/free-solid-svg-icons';
-
+import axios from 'axios';
 const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const [title,setTitle] = useState("")
+    const [release_date,setReleaseDate] = useState("")
+    const user_id = localStorage.getItem('user_id')
+    console.log("user_id: ",user_id)
+    const movie_id = "670277154afb418b89120b85";
+    useEffect(()=>{
+        const getMovieByID = async()=>{
+            try {
+                const res = await axios.get(
+                    `http://localhost:8080/v1/getMovieByID/${movie_id}`
+                )
+                console.log(res.data)
+                setTitle(res.data.title); 
+                const date = new Date(res.data.release_date).toLocaleString();
+                setReleaseDate(date)    
+                
+                console.log(setTitle)
+            } catch (error) {
+                
+            }
+        }
+        getMovieByID();
+    },[])
+    
     
     // Giả sử mỗi hàng có 12 ghế, bạn có thể điều chỉnh số ghế theo nhu cầu
     const seatsPerRow = 12;
@@ -23,14 +47,14 @@ function BookTicket() {
                             <img src={images.banner4} className={cx('d-block','col-4')} alt="" />
                             <div className={cx('col-8')}>
                                 <div className={cx('wrap-info','ms-5','mt-4','pt-1')}>
-                                    <h1 className={cx('title')}>Tên phim: </h1>
+                                    <h1 id="title"  className={cx('title')}>Tên phim: {title}</h1>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faTag} />
                                         <div className={cx('type')}>Thể loại: </div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faClock} />
-                                        <div className={cx('duration')}>Thời gian: </div>
+                                        <div className={cx('duration')}>Thời gian: {release_date} </div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faEarthAsia} />
