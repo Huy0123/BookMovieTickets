@@ -301,50 +301,6 @@ refreshToken = async(token)=>{
     }
 }
 
-
-forgotpassword = async (email)=>{
-    if(!email){
-        return{
-            message: 'Bạn chưa nhập email !',
-        }
-    }
-    const users = await user.findOne({email})
-    if(!users){
-        return {
-            message: 'email chưa được đăng kí !',
-        }
-    }
-    const token = jwt.sign({email:users.email},process.env.JWT_SECRET,{ expiresIn: '30m' })
-    const link = `http://localhost:3000/reset-password/${token}`; // Updated URL
-
-    
-    console.log(token)
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_MYEMAIL, 
-            pass: process.env.EMAIL_PASSWORD 
-        }
-    });
-    
-    const mailOptions = {
-        from: process.env.EMAIL_MYEMAIL,
-        to: email,
-        subject: 'Đặt lại mật khẩu',
-        html: `<p>Xin chào,</p>
-               <p>Để đặt lại mật khẩu của bạn, hãy nhấp vào liên kết bên dưới:</p>
-               <a href="${link}">Đặt lại mật khẩu</a>
-               <p>Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này.</p>`,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    return {
-        message: 'Email đã được gửi để đặt lại mật khẩu!',
-    };
-}
-
-
 resetpassword = async (token , newpassword)=>{
     if(!token || !newpassword){
         return { message: 'Thiếu thông tin!' };

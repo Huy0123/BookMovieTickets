@@ -11,6 +11,12 @@ const createOrder = mongoose.Schema({
         type : Date,
         default: Date.now,
     },
+    cinema_id: 
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'cinemas', 
+        }
+    ,
     seats_id: [
         {
             type: Schema.Types.ObjectId,
