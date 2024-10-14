@@ -37,8 +37,11 @@ function SignIn() {
             );
             console.log(response.data);
             const token = response.data.accesstoken;
+            const userId= response.data.user.userId;
+            console.log(userId);
             if (token) {
                 localStorage.setItem('userToken', token);
+                localStorage.setItem('userId', userId);
                 navigate('/'); 
             } else {
                 setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error if token not present

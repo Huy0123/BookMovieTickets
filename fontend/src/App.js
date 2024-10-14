@@ -2,22 +2,10 @@ import { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '~/routes';
 import { DefaultLayout } from '~/Components/Layout';
-import axios from 'axios';
 
 
 function App() {
-  useEffect(() => {
-    fetchApi();
-  }, []);
-
-  const fetchApi = async () => {
-    try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL_BACKEND}`);
-        console.log('res', res.data); // In ra dữ liệu trả về từ backend
-    } catch (error) {
-        console.error('Lỗi khi gọi API:', error);
-    }
-  }
+  
 
   return (
     <Router>

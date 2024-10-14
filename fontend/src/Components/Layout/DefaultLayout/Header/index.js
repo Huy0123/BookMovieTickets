@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,7 +12,7 @@ function Header() {
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [headerColor, setHeaderColor] = useState('#000000'); // Màu mặc định cho header
     const dropdownRef = useRef(null); // Tạo ref để theo dõi dropdown
-    const [fullname, setFullname] = [''];
+    const [fullname, setFullname] = useState('');
 
     const cinemas = [
         'Tên rạp 1',
@@ -62,29 +62,24 @@ function Header() {
         };
     }, []);
 
-    // const logined = async (event) => {
-    //     event.preventDefault();
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const userId = localStorage.getItem('userId');  // Get the stored userId
+            console.log(userId);
+            if (userId) {
+                try {
+                    const response = await axios.get(`http://localhost:8080/v1/Users/getUserByID/${userId}`, {
+                        withCredentials: true,
+                    });
+                    setFullname(response.data.fullname);  // Assuming the API returns 'fullname'
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+            }
+        };
 
-    //     try {
-    //         const response = await axios.post(
-    //             'http://localhost:8080/v1/Users/getUserByID/', 
-    //             {
-    //                 withCredentials: true,  
-    //             }
-    //         );
-    //         console.log(response.data);
-    //         const token = response.data.accesstoken;
-    //         if (token) {
-    //             localStorage.setItem('userToken', token);
-    //             navigate('/'); 
-    //         } else {
-    //             setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error if token not present
-    //         }
-    //     } catch (error) {
-    //         setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error on catch
-    //         console.error('Error during sign-in:', error);
-    //     }
-    // }
+        fetchUserData();
+    }, []);
 
     return (
         <div className={cx('wrapper')} style={{ backgroundColor: headerColor }}>
@@ -122,10 +117,9 @@ function Header() {
                                         <div className={cx('logined', 'col-sm')}>
                                             <div className={cx('wrap-logined','d-flex align-items-center w-100 h-100')}>
                                             <FontAwesomeIcon className={cx('icon-user')} icon={faUser} />
-                                                    <h3 className={cx('fullname')}
-                                                    value={fullname}
-                                                    onChange={(event) => setFullname(event.target.value)}
-                                                    > Nguyễn trình chó ngu</h3>
+                                            <h3 className={cx('fullname')}>
+                                                {fullname ? fullname : 'Nguyễn trình chó ngu'} 
+                                            </h3>
                                             </div>
                                         </div>
                                     </div>

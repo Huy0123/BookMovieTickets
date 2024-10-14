@@ -104,7 +104,8 @@ login = async (data,res) => {
                     userId: userFound._id,
                     fullname: userFound.fullname,
                     email: userFound.email,
-                    role: userFound.role
+                    role: userFound.role,
+                    point: userFound.point
                 }
             };
         } else {
@@ -148,7 +149,8 @@ login = async (data,res) => {
                         userId: userFound._id,
                         fullname: userFound.fullname,
                         email: userFound.email,
-                        role: userFound.role
+                        role: userFound.role,
+                        point: userFound.point
                     }
                 };
             } else {
@@ -241,6 +243,7 @@ updateUser = async (userId, updateData) => {
                 email: updatedUser.email,
                 password: updateData.password ? hashPassword : updatedUser.password,
                 num: updatedUser.num,
+                point:updatedUser.point,
                 role: updatedUser.role    
         };
 
