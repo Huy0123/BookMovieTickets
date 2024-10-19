@@ -74,7 +74,7 @@ function SignIn() {
                 { googleToken },
                 { withCredentials: true }
             );
-
+            const userId = response.data.user.userId
             const token = response.data.accesstoken;
             if (token) {
                 localStorage.setItem('userToken', token);

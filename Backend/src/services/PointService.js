@@ -40,12 +40,13 @@ class PointService {
             user.point -= point.points;
             console.log(user.point);
             await user.save(); 
+            await User.updateOne({_id:userId},{ $push: { promotions_id: pointId } } )
 
 
             return {
                 message: 'Points exchanged successfully',
                 remainingPoints: user.point,
-                pointId: pointId
+                point: point
             };
         } catch (error) {
             throw error; // Rethrow the error to be handled in the controller

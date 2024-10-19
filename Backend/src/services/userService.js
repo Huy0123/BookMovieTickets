@@ -7,6 +7,7 @@ require('dotenv').config()
 const saltRounds =10
 const client_id = process.env.GG_CLIENT_ID
 const { OAuth2Client } = require('google-auth-library');
+const points = require('../models/Point.js');
 const client = new OAuth2Client(client_id);
 
 class userService{
@@ -25,7 +26,7 @@ class userService{
     
             // Check for existing user by username
             
-    
+          
             // Proceed with hashing the password and creating the user
             const hashPassword = await bcrypt.hash(data.password, saltRounds);
             let result = await user.create({
@@ -34,7 +35,9 @@ class userService{
                 email: data.email,
                 num: data.num,
                 password: hashPassword,
-                role: data.role
+                role: data.role,
+                point:data.point
+                
             });
     
             return { EC: 0, EM: "Đăng ký người dùng thành công!", data: result }; // User created successfully
