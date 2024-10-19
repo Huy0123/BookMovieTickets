@@ -37,11 +37,10 @@ function SignIn() {
             );
             console.log(response.data);
             const token = response.data.accesstoken;
-            const user_id = response.data.user.userId
-            console.log(user_id)
+            const userId= response.data.user.userId;
+            console.log(userId);
             if (token) {
                 localStorage.setItem('userToken', token);
-                localStorage.setItem('user_id',user_id)
                 navigate('/'); 
             } else {
                 setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error if token not present
@@ -70,11 +69,11 @@ function SignIn() {
                 { googleToken },
                 { withCredentials: true }
             );
-            const user_id = response.data.user.userId
+            const userId = response.data.user.userId
             const token = response.data.accesstoken;
             if (token) {
                 localStorage.setItem('userToken', token);
-                localStorage.setItem('user_id',user_id)
+                localStorage.setItem('userId',userId)
                 navigate('/');
             }
         } catch (error) {

@@ -4,6 +4,7 @@ const PaymentModel = require('../models/PaymentModel.js');
 const userModel = require('../models/userModel.js');
 const SeatModel = require('../models/Seat.js');
 const ShowtimeModel = require('../models/Showtime.js');
+const PointModel = require('../models/Point.js');
 const SendEmailService = require('../services/SendEmailService.js')
 const QRCode = require('qrcode'); 
 
@@ -11,8 +12,8 @@ const QRCode = require('qrcode');
 class bookingService {
     createBooking = async (data) => {
         try {
-            const { user_id, showtime_id, seats_id = [], FoodAndDrinks_id = [], payment_method } = data;
-            if (!user_id || !showtime_id || !seats_id||!FoodAndDrinks_id) {
+            const { user_id, showtime_id, seats_id = [], FoodAndDrinks_id = [], payment_method,point_id} = data;
+            if (!user_id || !showtime_id || !seats_id) {
                 throw new Error('Missing required fields');
             }
             const showtime = await ShowtimeModel.findById(showtime_id).populate('cinema_id','_id')
@@ -28,15 +29,36 @@ class bookingService {
             }
 
             
-           
+           if(FoodAndDrinks_id){
             for (const FoodAndDrink_id of FoodAndDrinks_id){
                 const FoodAndDrink = await FoodAndDrinkModel.findById(FoodAndDrink_id.item_id)
                 total_price_food += FoodAndDrink.price*FoodAndDrink_id.quantity
             }
+           }
+           
+           
             
             var total_price = total_price_seat+total_price_food;
-           
             console.log(total_price)
+            if(point_id){
+                const pointData = await PointModel.findById(point_id)
+                    total_price = total_price - total_price*pointData.discount;
+                const promotions = await userModel.findById(user_id).select('promotions_id')
+                console.log(promotions)
+                for(const promotion_id of promotions.promotions_id){
+                    console.log(promotion_id)
+                    if(point_id==promotion_id){
+                        await userModel.updateOne(
+                            { _id: user_id },                 
+                            { $pull: { promotions_id: promotion_id } } 
+                        );
+                    }
+                }
+                
+                console.log(promotions.promotions_id)
+                    console.log(total_price)
+            }
+            
             const order = new OrdersModel({
                 user_id,
                 showtime_id,
@@ -51,7 +73,8 @@ class bookingService {
            for (const seat_id of seats_id){
                 await SeatModel.updateOne({_id:seat_id},{seat_status:"true"})
             }
-            
+           
+          
             if (payment_method) {
                 const payment = new PaymentModel({
                     order_id:order_id,
@@ -63,7 +86,6 @@ class bookingService {
             }
 
           const user = await userModel.findById(user_id)
-          console.log("point",user.point)
           const point = (user.point)+((total_price*1)/1000)
           console.log("point",point)
           await userModel.updateOne({_id:user_id},{point:point})

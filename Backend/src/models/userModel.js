@@ -27,13 +27,12 @@ const createUser = new mongoose.Schema({
         type:Number,
         default:0
     },
-    promotions_id:[
-        {
-            type:Schema.Types.ObjectId,
-            ref:'points',
-            default:'670cff2bcf76de157b6ca24c'
-        }
-    ]
+    promotions_id: {
+        type: [Schema.Types.ObjectId],
+        ref: 'point',
+        default: [] // Đặt giá trị mặc định là một mảng chứa ObjectId
+    }
+    
 
     ,
     role: {
