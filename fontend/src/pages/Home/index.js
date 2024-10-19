@@ -6,7 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faPlay } from '@fortawesome/free-solid-svg-icons';
 import images from '~/assets/img';
 import TrailerModal from '../Trailer/TrailerModal';
+import axios from 'axios';
 const cx = classNames.bind(styles);
+
 const banners = [
     {
         id: 1,
@@ -38,7 +40,7 @@ const banners = [
 ];
 
 // Sample movie data
-const movies = [
+const movie = [
     { id: 1, image: images.banner1, title: "Phim Thứ Nhất", trailerLink: "https://www.youtube.com/embed/_OKAwz2MsJs?autoplay=1&mute=1" , },
     { id: 2, image: images.banner4, title: "Phim Thứ Hai" , trailerLink: "https://www.youtube.com/embed/_OKAwz2MsJs?autoplay=1&mute=1" ,},
     { id: 3, image: images.banner4, title: "Phim Thứ Ba" , trailerLink: "https://www.youtube.com/embed/_OKAwz2MsJs?autoplay=1&mute=1" ,},
@@ -61,8 +63,12 @@ const comingMovies = [
 ];
 
 function Home() {
+    const [movies,setMovie]= useState([])
+    const newmovie = (movies.sort((a,b)=> new Date(b.release_date) - new Date(a.release_date))).slice(0,3)
+    const movieshowing =movies.filter(movies=>new Date(movies.release_date)< new Date())
+    const upcomingmovie =movies.filter(movies=>new Date(movies.release_date)> new Date())
     const [moviesPerPage, setMoviesPerPage] = useState(4); // Default to 4 movies per page
-
+    
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 576) {
@@ -73,16 +79,26 @@ function Home() {
                 setMoviesPerPage(4);
             }
         };
-
+        const getHome = async()=>{
+            const response = await axios.get('http://localhost:8080/v1/getMovies')
+        
+            const setmovie=setMovie(response.data)
+            console.log(setmovie)
+            
+        }
+        getHome();
         window.addEventListener('resize', handleResize);
         handleResize(); // Initial call to set movies per page
         return () => {
             window.removeEventListener('resize', handleResize);
+            
         };
+
+       
     }, []);
 
-    const totalPages = Math.ceil(movies.length / moviesPerPage);
-    const comingTotalPages = Math.ceil(comingMovies.length / moviesPerPage);
+    const totalPages = Math.ceil(movieshowing.length / moviesPerPage);
+    const comingTotalPages = Math.ceil(upcomingmovie.length / moviesPerPage);
 
  
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -102,7 +118,7 @@ function Home() {
            
             
             <div className={cx('carousel-indicators')}>
-                {banners.map((_, index) => (
+                {newmovie.map((_, index) => (
                     <button
                         type="button"
                         data-bs-target="#carouselExampleIndicators"
@@ -117,20 +133,20 @@ function Home() {
 
            
                 <div className={cx('carousel-inner')}>
-                    {banners.map((banner, index) => (
-                        <div className={cx('carousel-item', { active: index === 0 })} key={banner.id}>
+                    {newmovie.map((movie, index) => (
+                        <div className={cx('carousel-item', { active: index === 0 })} key={movie._id}>
                             <div className={cx('wrap-banner', 'w-100')}>
-                                <img src={banner.image} className={cx('d-block')} alt={`Slide ${index + 1}`} />
+                                <img src={movie.poster} className={cx('d-block')} alt={`Slide ${index + 1}`} />
                                 <div className={cx('overlay', 'row')}>
                                     <div className={cx('wrap-banner-con', 'col-6 d-flex flex-column justify-content-end gap-4')}>
-                                        <p className={cx('datetime')}>{banner.datetime}</p>
-                                        <h1 className={cx('title')} data-text={banner.title}>{banner.title}</h1>
+                                        <p className={cx('datetime')}>{new Date(movie.release_date).toLocaleDateString()}</p>
+                                        <h1 className={cx('title')} data-text={movie.title}>{movie.title}</h1>
                                         <div className={cx('wrap-decr')}>
-                                            <p className={cx('decribetion')}>{banner.description}</p>
+                                            <p className={cx('decribetion')}>{movie.description}</p>
                                         </div>
                                         <div className={cx('wrap-btn-banner')}>
                                         <button type='button' className={cx('bookin')}>Đặt vé ngay</button>
-                                        <button onClick={() => openModal(banner.trailerLink)} type='button' className={cx('trailer-ban')}>Xem trailer
+                                        <button onClick={() => openModal(movie.trailer)} type='button' className={cx('trailer-ban')}>Xem trailer
                                             <FontAwesomeIcon className={cx('icon-play')} icon={faPlay} />
                                         </button>
                                                      <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
@@ -165,22 +181,22 @@ function Home() {
                             {Array.from({ length: totalPages }, (_, index) => (
                                 <div className={cx('carousel-item', { active: index === 0 })} key={index}>
                                     <div className="row d-flex justify-content-center gap-2">
-                                        {movies.slice(index * moviesPerPage, (index + 1) * moviesPerPage).map(movie => (
-                                            <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column   ')} key={movie.id}>
-                                                <img src={movie.image} className={cx('img-movie', 'd-block', 'w-100')} alt={movie.title} />
-                                                <h2 className={cx('title-movie', 'text-center')}>{movie.title}</h2>
+                                        {movieshowing.slice(index * moviesPerPage, (index + 1) * moviesPerPage).map(movieshowing => (
+                                            <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column   ')} key={movieshowing._id}>
+                                                <img src={movieshowing.poster} className={cx('img-movie', 'd-block', 'w-100')} alt={movieshowing.title} />
+                                                <h2 className={cx('title-movie', 'text-center')}>{movieshowing.title}</h2>
                                                 <div className={cx('btn-gr', 'd-flex justify-content-center')}>
-                                                    <button onClick={() => openModal(movie.trailerLink)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
+                                                    <button onClick={() => openModal(movieshowing.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
                                                      <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
                                                     <button type='button' className={cx('bookin', 'rounded-4')}>Đặt vé</button>
                                                 </div>
                                                 <div className={cx('wrap-hover')}>
                                                     <div>
-                                                        <h1 className='py-3'>Dóc Cơ Bến Tre</h1>
-                                                        <h3>Thể loại:</h3>
-                                                        <h3>Thời lượng:</h3>
-                                                        <h3>Quốc gia:</h3>
-                                                        <h3>Phiên bản:</h3>
+                                                        <h1 className='py-3'>{movieshowing.title}</h1>
+                                                        <h3>Thể loại: {movieshowing.genre}</h3>
+                                                        <h3>Thời lượng: {movieshowing.duration} phút</h3>                                                       
+                                                        <h3>Quốc gia: {movieshowing.country}</h3>
+                                                        <h3>Phiên bản: {movieshowing.subtitles}</h3>
                                                     </div>
                                                 </div>
                                             </div>
@@ -214,22 +230,22 @@ function Home() {
                             {Array.from({ length: comingTotalPages }, (_, index) => (
                                 <div className={cx('carousel-item', { active: index === 0 })} key={index}>
                                     <div className="row d-flex justify-content-center gap-2">
-                                        {comingMovies.slice(index * moviesPerPage, (index + 1) * moviesPerPage).map(movie => (
-                                            <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column p-3')} key={movie.id}>
-                                                <img src={movie.image} className={cx('img-movie', 'd-block', 'w-100')} alt={movie.title} />
-                                                <h2 className={cx('title-movie', 'text-center')}>{movie.title}</h2>
+                                        {upcomingmovie.slice(index * upcomingmovie, (index + 1) * moviesPerPage).map(upcomingmovie => (
+                                            <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column p-3')} key={upcomingmovie._id}>
+                                                <img src={upcomingmovie.poster} className={cx('img-movie', 'd-block', 'w-100')} alt={upcomingmovie.title} />
+                                                <h2 className={cx('title-movie', 'text-center')}>{upcomingmovie.title}</h2>
                                                 <div className={cx('btn-gr', 'd-flex  justify-content-center')}>
-                                                <button onClick={() => openModal(movie.trailerLink)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
+                                                <button onClick={() => openModal(upcomingmovie.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
                                                 <TrailerModal isOpen={isModalOpen} onClose={closeModal}trailerUrl={trailerUrl} />
                                                     <button type='button' className={cx('bookin', 'rounded-4')}>Đặt vé</button>
                                                 </div>
                                                 <div className={cx('wrap-hover')}>
-                                                    <div>
-                                                        <h1 className='py-3'>Dóc Cơ Bến Tre</h1>
-                                                        <h3>Thể loại:</h3>
-                                                        <h3>Thời lượng:</h3>
-                                                        <h3>Quốc gia:</h3>
-                                                        <h3>Phiên bản:</h3>
+                                                <div>
+                                                        <h1 className='py-3'>{upcomingmovie.title}</h1>
+                                                        <h3>Thể loại: {upcomingmovie.genre}</h3>
+                                                        <h3>Thời lượng: {upcomingmovie.duration} phút</h3>                                                       
+                                                        <h3>Quốc gia: {upcomingmovie.country}</h3>
+                                                        <h3>Phiên bản: {upcomingmovie.subtitles}</h3>
                                                     </div>
                                                 </div>
                                             </div>
