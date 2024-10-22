@@ -11,7 +11,8 @@ router.post('/logout',UserController.logout)
 router.post('/forgotpassword',SendEmailController.SendEmailforgotpassword)
 router.put('/reset-password',UserController.resetpassword)
 router.get('/getUsers',autUser,UserController.getUsers)
-router.get('/getUserByID/:id', UserController.getUserByID);
+router.get('/getUserByID/:id',autAdmin, UserController.getUserByID) //query
+router.get('/getUserbyid',autUser,UserController.getUserbyid)//user
 router.post('/refresh_token',autUser,UserController.refreshToken);
 router.put('/updateUser/:id',autUser, UserController.updateUser);
 router.delete('/deleteUser/:id',autUser, UserController.deleteUser);

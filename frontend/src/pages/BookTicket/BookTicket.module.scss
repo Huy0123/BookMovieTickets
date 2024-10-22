@@ -146,11 +146,12 @@
             .all-seat{
                 .group-seat{
                     display: flex;
+                    width: 100%;
                     .seat-name{
                         display: flex;
                         align-items: center;
                         font-size: 22px;
-                        width: 100%;
+                        width: 20px;
                     }
                     .group-btn-seat{
                         display: flex;

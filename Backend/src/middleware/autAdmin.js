@@ -14,7 +14,7 @@ const autAdmin = async(req, res, next) => {
             }
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-     
+            
             if (!decoded) {
                 return res.status(404).json({
                     message: "Người dùng không tồn tại!"
@@ -25,6 +25,7 @@ const autAdmin = async(req, res, next) => {
                     message: "Người dùng không có quyền truy cập!"
                 })
             }
+            
             next()
 
         } else {

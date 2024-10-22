@@ -3,19 +3,21 @@ import styles from './BookTicket.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import images from '~/assets/img';
+import { useParams } from 'react-router-dom';
 import React, { useEffect,useState} from 'react';
 import { faClock, faClosedCaptioning, faEarthAsia, faMinus, faPlus, faTag, faTv, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const [getMovies,setMovies]=useState([])
     const [selectedSeats, setSelectedSeats] = useState([]);
 
-    const [title,setTitle] = useState("")
-    const [release_date,setReleaseDate] = useState("")
+    
     const user_id = localStorage.getItem('user_id')
     console.log("user_id: ",user_id)
-    const movie_id = "670277154afb418b89120b85";
+    const movie_id =useParams().id; 
+    console.log(movie_id)
     useEffect(()=>{
         const getMovieByID = async()=>{
             try {
@@ -23,11 +25,17 @@ function BookTicket() {
                     `http://localhost:8080/v1/getMovieByID/${movie_id}`
                 )
                 console.log(res.data)
-                setTitle(res.data.title); 
-                const date = new Date(res.data.release_date).toLocaleString();
-                setReleaseDate(date)    
+                setMovies(res.data); 
+              
+            } catch (error) {
                 
-                console.log(setTitle)
+            }
+        }
+        const getShowtime = async () => {
+            try {
+                const res = await axios.get(
+                    
+                )
             } catch (error) {
                 
             }
@@ -52,25 +60,25 @@ function BookTicket() {
                     <div className='col-1'></div>
                     <div className={cx('content-movie','col-10')}>
                         <div className='row'>
-                            <img src={images.banner4} className={cx('d-block','col-4')} alt="" />
+                            <img src={getMovies.poster} className={cx('d-block','col-4')} alt="" />
                             <div className={cx('col-8')}>
                                 <div className={cx('wrap-info','ms-5','mt-4','pt-1')}>
-                                    <h1 id="title"  className={cx('title')}>Tên phim: {title}</h1>
+                                    <h1 id="title"  className={cx('title')}>Tên phim: {getMovies.title}</h1>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faTag} />
-                                        <div className={cx('type')}>Thể loại: </div>
+                                        <div className={cx('type')}>Thể loại: {getMovies.genre}</div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faClock} />
-                                        <div className={cx('duration')}>Thời gian: {release_date} </div>
+                                        <div className={cx('duration')}>Thời gian: {getMovies.duration} phút </div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faEarthAsia} />
-                                        <div className={cx('country')}>Quốc gia: </div>
+                                        <div className={cx('country')}>Quốc gia: {getMovies.country}</div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faClosedCaptioning} />
-                                        <div className={cx('sub')}>Phụ đề: </div>
+                                        <div className={cx('sub')}>Phụ đề: {getMovies.subtitles}</div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faUserCheck} />
@@ -79,21 +87,21 @@ function BookTicket() {
                                 </div> 
                                                       {/* Thông tin */}
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
-                                    <h1 className={cx('title')}>Mô tả </h1>
+                                    <h1 className={cx('title')}> Mô Tả </h1>
                                     <div className='info-group '>
-                                        <div className={cx('director')}>Đạo diễn: </div>
+                                        <div className={cx('director')}>Đạo diễn: {getMovies.voice_actors}</div>
                                     </div>
                                     <div className='info-group '>
-                                        <div className={cx('performer')}>Diễn viên: </div>
+                                        <div className={cx('performer')}>Diễn viên:  {getMovies.cast}</div>
                                     </div>
                                     <div className='info-group'>
-                                        <div className={cx('premiere')}>Khởi chiếu: </div>
+                                        <div className={cx('premiere')}>Khởi chiếu:  { new Date(getMovies.release_date).toLocaleString()}</div>
                                     </div>
                                     
                                 </div>  
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
-                                    <h1 className={cx('title')}>Mô tả </h1>
-                                    <div className={cx('description')}>Phim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấnPhim này là joker trịnh trần anh tuấn </div>                                                                     
+                                    <h1 className={cx('title')}>Nội Dung Phim</h1>
+                                    <div className={cx('description')}> {getMovies.description} </div>                                                                     
                                 </div>
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
                                     <div className='info-group d-flex'>
@@ -209,7 +217,7 @@ function BookTicket() {
                             <div className='col-8'>
                                 {seatRows.map((rowName, rowIndex) => (
                                     <div key={rowIndex} className={cx('group-seat')}>
-                                        <div className={cx('seat-name', 'me-4')}>{rowName}</div>
+                                        <div className={cx('seat-name')}>{rowName}</div>
                                         <div className={cx('group-btn-seat')}>
                                             {Array.from({ length: seatsPerRow }, (_, seatIndex) => {
                                                 const seat = `${rowName}${seatIndex + 1}`;
