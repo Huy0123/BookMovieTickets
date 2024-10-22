@@ -64,22 +64,18 @@ class UserController{
    // refresh_token
     refreshToken = async (req, res, next) => {
         try {
-            const { refresh_token } = req.body; // Lấy Refresh Token từ body
-            console.log(refresh_token);
+            const  token  = req.token;
+            const refreshToken = req.cookies.refreshToken; 
+            // Lấy Refresh Token từ body
             
+            console.log(refreshToken)
             // Kiểm tra xem Refresh Token có tồn tại không
-            if (!refresh_token) {
+            if (!token) {
                 return res.status(401).json({ message: "Refresh Token is required!" });
             }
 
             // Gọi service để làm mới Access Token
-            const dataToken = await userService.refreshToken(refresh_token); // Gọi service với Refresh Token
-
-            res.cookie('refreshToken', refreshToken, {
-                httpOnly: true, // Không thể truy cập từ JavaScript
-                secure: process.env.NODE_ENV === 'production', // Chỉ gửi qua HTTPS nếu ở môi trường sản xuất
-                maxAge: 30 * 24 * 60 * 60 * 1000 // Thời gian sống của cookie (ví dụ: 30 ngày)
-            });
+            const dataToken = await userService.refreshToken(token,refreshToken); // Gọi service với Refresh Token
             // Trả về Access Token mới
             return res.status(200).json(dataToken);
         } catch (error) {
@@ -90,12 +86,11 @@ class UserController{
 
      //Get User
      getUsers = async (req,res,next)=>{
-        const data = req.body
-        const dataUsers=await userService.getUsers(data)
+        const dataUsers=await userService.getUsers()
         return res.status(200).json(dataUsers)
     }
 
-    // Get user by ID
+    // Get user by ID query
     getUserByID = async (req, res, next) => {
         const userId = req.params.id; 
         try {
@@ -111,6 +106,17 @@ class UserController{
             return res.status(500).json({
                 message: 'Lỗi máy chủ, vui lòng thử lại sau', // Internal server error message
             });
+        }
+    }
+
+    getUserbyid = async (req,res)=>{     
+        try {
+            const user =  req.user
+            console.log(user)
+            const result = await userService.getUserbyid(user)
+            return res.status(200).json(result)
+        } catch (error) {
+            throw error
         }
     }
 

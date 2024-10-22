@@ -8,6 +8,7 @@ const saltRounds =10
 const client_id = process.env.GG_CLIENT_ID
 const { OAuth2Client } = require('google-auth-library');
 const points = require('../models/Point.js');
+const { messaging } = require('firebase-admin');
 const client = new OAuth2Client(client_id);
 
 class userService{
@@ -198,7 +199,7 @@ getUsers=async()=>{
     }
 }
 
-// Get user by ID
+// Get user by ID query
 getUserById = async (id) => {
     try {
         const userFound = await user.findById(id); // Find user by ID
@@ -218,6 +219,14 @@ getUserById = async (id) => {
     } catch(error){
         throw error; 
     }
+}
+//user
+getUserbyid = async (users) =>{
+    if(!users){
+        return {message:"bạn không có quyền truy cập"}
+    }
+    const userFound = await user.findById(users.userId)
+    return {userFound}
 }
 
 updateUser = async (userId, updateData) => {
@@ -257,7 +266,7 @@ updateUser = async (userId, updateData) => {
 
 deleteUser = async (userId) => {
     try{
-        const deletedUser = await user.findByIdAndDelete(userId);
+     await user.findByIdAndDelete(userId);
     } catch(error){
         throw error; 
     }
@@ -265,13 +274,22 @@ deleteUser = async (userId) => {
 
 
 
-refreshToken = async(token)=>{
+refreshToken = async(token,refreshToken)=>{
     try {
-  
+        
+        if(!refreshToken || !token){
+            return {
+                message: "Authorization!",
+                code: 401
+            }
+        }
+        const decodedref = jwt.verify(refreshToken,process.env.JWT_SECRET)
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         console.log(decoded)
         const users = await user.findOne({ _id: decoded.userId }); 
-        
+        if(decodedref.userId != decoded.userId){
+            return {message:"Authorization!"}
+        }
         if(users){
             const payload ={
                 userId:users._id,  
@@ -297,13 +315,31 @@ refreshToken = async(token)=>{
                 }
         }else{
             return {
-                message: "Authorization!"
+                message: "Authorization!",
+                code: 401
             }
         }
 
     }  catch (error) {
-        console.error("Error in jwt.verify:", error.message); // Ghi log chi tiết lỗi
-        throw new Error("Failed to verify token: " + error.message);
+            // Kiểm tra loại lỗi (ví dụ: lỗi token hết hạn, token không hợp lệ)
+            if (error.name === 'TokenExpiredError') {
+                return {
+                    message: "Token đã hết hạn!",
+                    code: 401
+                };
+            } else if (error.name === 'JsonWebTokenError') {
+                return {
+                    message: "Token không hợp lệ!",
+                    code: 401
+                };
+            } else {
+                // Log lỗi chi tiết và trả về lỗi nội bộ server
+                console.error("Lỗi trong jwt.verify:", error.message);
+                return {
+                    message: "Lỗi trong quá trình xác thực!",
+                    code: 500
+                };
+            }
     }
 }
 

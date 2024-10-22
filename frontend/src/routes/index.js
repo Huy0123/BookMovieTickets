@@ -15,7 +15,7 @@ const publicRoutes = [
     { path: '/schedule', component:Schedule },
     { path: '/profile', component:Profile },
     { path: '/chooseCinema', component:ChooseCinema},
-    { path: '/bookTicket', component:BookTicket},
+    { path: '/bookTicket/:id', component:BookTicket},
     { path: '/signUp', component:Signup, layout:null},
     { path: '/signIn', component:Signin, layout:null},
     { path: '/forgot', component:ForgotPassword, layout:null},

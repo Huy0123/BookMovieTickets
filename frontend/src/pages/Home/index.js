@@ -7,6 +7,8 @@ import { faChevronLeft, faChevronRight, faPlay } from '@fortawesome/free-solid-s
 import images from '~/assets/img';
 import TrailerModal from '../Trailer/TrailerModal';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 const cx = classNames.bind(styles);
 
 const banners = [
@@ -68,7 +70,7 @@ function Home() {
     const movieshowing =movies.filter(movies=>new Date(movies.release_date)< new Date())
     const upcomingmovie =movies.filter(movies=>new Date(movies.release_date)> new Date())
     const [moviesPerPage, setMoviesPerPage] = useState(4); // Default to 4 movies per page
-    
+    const navigate = useNavigate();
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 576) {
@@ -109,7 +111,10 @@ function Home() {
     };
     const closeModal = () => setIsModalOpen(false);
     const [trailerUrl, setTrailerUrl] = useState(''); // State để lưu link trailer
-
+    const handleBooking = (movieId) => {
+        console.log(movieId)
+        navigate(`/bookticket/${movieId}`); 
+    };
   
     return (
         <div className={cx('container')}>
@@ -145,7 +150,7 @@ function Home() {
                                             <p className={cx('decribetion')}>{movie.description}</p>
                                         </div>
                                         <div className={cx('wrap-btn-banner')}>
-                                        <button type='button' className={cx('bookin')}>Đặt vé ngay</button>
+                                        <button type='button' className={cx('bookin')} onClick={()=>handleBooking(movie._id)}> Đặt vé ngay</button>
                                         <button onClick={() => openModal(movie.trailer)} type='button' className={cx('trailer-ban')}>Xem trailer
                                             <FontAwesomeIcon className={cx('icon-play')} icon={faPlay} />
                                         </button>
@@ -188,7 +193,7 @@ function Home() {
                                                 <div className={cx('btn-gr', 'd-flex justify-content-center')}>
                                                     <button onClick={() => openModal(movieshowing.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
                                                      <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
-                                                    <button type='button' className={cx('bookin', 'rounded-4')}>Đặt vé</button>
+                                                    <button type='button' className={cx('bookin', 'rounded-4')}onClick={()=>handleBooking(movieshowing._id)}>Đặt vé</button>
                                                 </div>
                                                 <div className={cx('wrap-hover')}>
                                                     <div>
@@ -237,7 +242,7 @@ function Home() {
                                                 <div className={cx('btn-gr', 'd-flex  justify-content-center')}>
                                                 <button onClick={() => openModal(upcomingmovie.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
                                                 <TrailerModal isOpen={isModalOpen} onClose={closeModal}trailerUrl={trailerUrl} />
-                                                    <button type='button' className={cx('bookin', 'rounded-4')}>Đặt vé</button>
+                                                    <button type='button' className={cx('bookin', 'rounded-4')}onClick={()=>handleBooking(upcomingmovie._id)}>Đặt vé</button>
                                                 </div>
                                                 <div className={cx('wrap-hover')}>
                                                 <div>

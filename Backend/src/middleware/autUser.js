@@ -14,12 +14,20 @@ const autUser = async(req, res, next) => {
             }
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-     
+            
             if (!decoded) {
                 return res.status(404).json({
                     message: "Người dùng không tồn tại!"
                 })
             }
+            if(decoded.role==="Admin"){
+                return res.status(404).json({
+                    message: "Người dùng không có quyền truy cập!"
+                })
+            }
+            req.user = decoded
+            req.token = token
+            
             next()
 
         } else {
