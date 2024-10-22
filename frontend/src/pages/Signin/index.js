@@ -37,19 +37,24 @@ function SignIn() {
             );
             console.log(response.data);
             const token = response.data.accesstoken;
-            const userId= response.data.user.userId;
+            const userId = response.data.user.userId;
             console.log(userId);
             if (token) {
                 localStorage.setItem('userToken', token);
-                navigate('/'); 
+                localStorage.setItem('userId', userId);
+    
+                // Get the previous page from localStorage
+                const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
+                navigate(previousPage);  // Redirect to the previous page
             } else {
-                setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error if token not present
+                setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.');
             }
         } catch (error) {
-            setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.'); // Show error on catch
+            setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.');
             console.error('Error during sign-in:', error);
         }
     };
+    
 
     const handlerNavigateSignup = () => {
         navigate('/signup'); 
@@ -73,8 +78,8 @@ function SignIn() {
             const token = response.data.accesstoken;
             if (token) {
                 localStorage.setItem('userToken', token);
-                localStorage.setItem('userId',userId)
-                navigate('/');
+                const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
+                navigate(previousPage);  // Redirect to the previous page
             }
         } catch (error) {
             console.error('Error during Google sign-in:', error);
@@ -84,7 +89,7 @@ function SignIn() {
     return (
         <div
             className={cx('container')}
-            style={{ backgroundImage: `url(${images.backgroundlog})` }}
+            style={{ backgroundImage: `url(${images.backgroundlog}) `}}
         >
             <div className={cx('filter')}>
                 <div className={cx('sign-in')}>

@@ -11,6 +11,9 @@ const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const [getMovies,setMovies]=useState([])
+    const [selectedSeats, setSelectedSeats] = useState([]);
+
+    
     const user_id = localStorage.getItem('user_id')
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
@@ -40,10 +43,16 @@ function BookTicket() {
         getMovieByID();
     },[])
     
-    
+    const handleSeatClick = (seat) => {
+        setSelectedSeats((prevSelectedSeats) =>
+            prevSelectedSeats.includes(seat)
+                ? prevSelectedSeats.filter((s) => s !== seat) // Unselect if already selected
+                : [...prevSelectedSeats, seat] // Add if not selected
+        );
+    };
     // Giả sử mỗi hàng có 12 ghế, bạn có thể điều chỉnh số ghế theo nhu cầu
     const seatsPerRow = 12;
-
+    
     return (
         <div className={cx('container')}>
             <div className={cx('info-movie')}>
@@ -210,17 +219,27 @@ function BookTicket() {
                                     <div key={rowIndex} className={cx('group-seat')}>
                                         <div className={cx('seat-name')}>{rowName}</div>
                                         <div className={cx('group-btn-seat')}>
-                                            {Array.from({ length: seatsPerRow }, (_, seatIndex) => (
-                                                <button 
-                                                    key={seatIndex} 
-                                                    type="button" 
-                                                    className={cx('num-seat', {
-                                                        'vip-seat': rowName >= 'D' && rowName <= 'J'
-                                                    })}
-                                                >
-                                                    {rowName}{seatIndex + 1}
-                                                </button>
-                                            ))}
+                                            {Array.from({ length: seatsPerRow }, (_, seatIndex) => {
+                                                const seat = `${rowName}${seatIndex + 1}`;
+                                                return (
+                                                    <button
+                                                        key={seatIndex}
+                                                        type="button"
+                                                        className={cx('num-seat', {
+                                                            'vip-seat': rowName >= 'D' && rowName <= 'J',
+                                                            'selected-seat': selectedSeats.includes(seat),
+                                                        })}
+                                                        style={{
+                                                            backgroundColor: selectedSeats.includes(seat)
+                                                                ? '#F9E400' // Yellow for selected seat
+                                                                : '', // Default color
+                                                        }}
+                                                        onClick={() => handleSeatClick(seat)}
+                                                    >
+                                                        {seat}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 ))}
