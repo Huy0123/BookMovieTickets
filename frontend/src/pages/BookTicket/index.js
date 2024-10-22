@@ -10,9 +10,14 @@ const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const [selectedSeats, setSelectedSeats] = useState([]);
-
+    const [regularTicketCount, setRegularTicketCount] = useState(0);
+    const [vipTicketCount, setVipTicketCount] = useState(0);
+    const [FoodCount, setFoodCount] = useState(0);
     const [title,setTitle] = useState("")
     const [release_date,setReleaseDate] = useState("")
+    const [showOrderDetail, setShowOrderDetail] = useState(false);
+    const [seats, setSeats] = useState([]);
+
     const user_id = localStorage.getItem('user_id')
     console.log("user_id: ",user_id)
     const movie_id = "670277154afb418b89120b85";
@@ -28,8 +33,14 @@ function BookTicket() {
                 setReleaseDate(date)    
                 
                 console.log(setTitle)
+                // Gọi API để lấy thông tin ghế
+                const seatsRes = await axios.get('http://localhost:8080/v1/getSeats');
+                setSeats(seatsRes.data);
+                console.log(seatsRes.data);
+
             } catch (error) {
-                
+                console.error('Error fetching data:', error);
+
             }
         }
         getMovieByID();
@@ -38,14 +49,79 @@ function BookTicket() {
     const handleSeatClick = (seat) => {
         setSelectedSeats((prevSelectedSeats) =>
             prevSelectedSeats.includes(seat)
-                ? prevSelectedSeats.filter((s) => s !== seat) // Unselect if already selected
-                : [...prevSelectedSeats, seat] // Add if not selected
+                ? prevSelectedSeats.filter((s) => s !== seat) // Bỏ chọn nếu đã chọn
+                : [...prevSelectedSeats, seat] // Thêm nếu chưa chọn
         );
+    
+        // Cập nhật showOrderDetail
+        if (selectedSeats.includes(seat)) {
+            // Nếu ghế đang được bỏ chọn, kiểm tra xem có ghế nào còn chọn không
+            if (selectedSeats.length === 1) {
+                setShowOrderDetail(false); // Nếu không còn ghế nào được chọn, ẩn order
+            }
+        } else {
+            // Nếu ghế mới được chọn
+            setShowOrderDetail(true); // Luôn hiển thị order khi có ghế được chọn
+        }
+    };
+    
+    const increaseRegularTicket = () => {
+        setRegularTicketCount(regularTicketCount + 1);
+        setShowOrderDetail(true); 
+    };
+
+    // Function to decrease regular ticket count
+    const decreaseRegularTicket = () => {
+        if (regularTicketCount > 0) {
+            setRegularTicketCount(regularTicketCount - 1);
+            // Kiểm tra xem có còn vé không
+            if (regularTicketCount - 1 === 0 && vipTicketCount === 0) {
+                setShowOrderDetail(false); // Ẩn order nếu không còn vé
+            }
+        }
+    };
+
+    // Function to increase VIP ticket count
+    const increaseVipTicket = () => {
+        setVipTicketCount(vipTicketCount + 1);
+        setShowOrderDetail(true); 
+    };
+
+    // Function to decrease VIP ticket count
+    const decreaseVipTicket = () => {
+        if (vipTicketCount > 0) {
+            setVipTicketCount(vipTicketCount - 1);
+            // Kiểm tra xem có còn vé không
+            if (vipTicketCount - 1 === 0 && regularTicketCount === 0) {
+                setShowOrderDetail(false); // Ẩn order nếu không còn vé
+            }
+        }
+    };
+
+    const increaseFood = () => {
+        setFoodCount(FoodCount + 1);
+        setShowOrderDetail(true); 
+    };
+
+    const decreaseFood = () => {
+        if (FoodCount > 0) {
+            setFoodCount(FoodCount - 1);
+            // Kiểm tra xem có còn thực phẩm không
+            if (FoodCount - 1 === 0 && regularTicketCount === 0 && vipTicketCount === 0) {
+                setShowOrderDetail(false); // Ẩn order nếu không còn thực phẩm và vé
+            }
+        }
     };
     // Giả sử mỗi hàng có 12 ghế, bạn có thể điều chỉnh số ghế theo nhu cầu
     const seatsPerRow = 12;
-    
-    return (
+    const totalPrice = selectedSeats.reduce((total, seat) => {
+        const seatInfo = seats.find(s => s.seat_number === seat); // Tìm ghế trong danh sách
+        if (seatInfo) {
+            return total + seatInfo.price; // Thêm giá của ghế vào tổng
+        }
+        return total; // Nếu không tìm thấy ghế, trả lại tổng hiện tại
+    }, 0) + (FoodCount * 50000); // Thêm giá đồ ăn
+        return (
         <div className={cx('container')}>
             <div className={cx('info-movie')}>
                 <div className='row'>
@@ -169,11 +245,11 @@ function BookTicket() {
                         <div className={cx('price-quantity')}>
                             <h3 className={cx('price')}>Giá vé: </h3>
                             <div className={cx('wrap-quantity')}>
-                                <div className={cx('wrap-icon')}>
+                                <div className={cx('wrap-icon')} onClick={decreaseRegularTicket}>
                                     <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
                                 </div>                                            
-                                <div className={cx('count')}>0</div>
-                                <div className={cx('wrap-icon')}>
+                                <div className={cx('count')}>{regularTicketCount}</div>
+                                <div className={cx('wrap-icon')} onClick={increaseRegularTicket}>
                                 <FontAwesomeIcon className={cx('icon-plus', )} icon={faPlus} />
                                 </div>
                             </div>
@@ -184,11 +260,11 @@ function BookTicket() {
                         <div className={cx('price-quantity')}>
                             <h3 className={cx('price')}>Giá vé: </h3>
                             <div className={cx('wrap-quantity')}>
-                            <div className={cx('wrap-icon')}>
+                            <div className={cx('wrap-icon')} onClick={decreaseVipTicket}>
                                     <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
                                 </div>                                            
-                                <div className={cx('count')}>0</div>
-                                <div className={cx('wrap-icon')}>
+                                <div className={cx('count')}>{vipTicketCount}</div>
+                                <div className={cx('wrap-icon')} onClick={increaseVipTicket}>
                                 <FontAwesomeIcon className={cx('icon-plus', )} icon={faPlus} />
                                 </div>
                             </div>
@@ -207,35 +283,52 @@ function BookTicket() {
                         <div className='row'>
                             <div className='col-2'></div>
                             <div className='col-8'>
-                                {seatRows.map((rowName, rowIndex) => (
-                                    <div key={rowIndex} className={cx('group-seat')}>
-                                        <div className={cx('seat-name', 'me-4')}>{rowName}</div>
-                                        <div className={cx('group-btn-seat')}>
-                                            {Array.from({ length: seatsPerRow }, (_, seatIndex) => {
-                                                const seat = `${rowName}${seatIndex + 1}`;
-                                                return (
-                                                    <button
-                                                        key={seatIndex}
-                                                        type="button"
-                                                        className={cx('num-seat', {
-                                                            'vip-seat': rowName >= 'D' && rowName <= 'J',
-                                                            'selected-seat': selectedSeats.includes(seat),
-                                                        })}
-                                                        style={{
-                                                            backgroundColor: selectedSeats.includes(seat)
-                                                                ? '#F9E400' // Yellow for selected seat
-                                                                : '', // Default color
-                                                        }}
-                                                        onClick={() => handleSeatClick(seat)}
-                                                    >
-                                                        {seat}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+    {seatRows.map((rowName, rowIndex) => {
+        // Tìm các ghế trong hàng hiện tại
+        const availableSeatsInRow = seats.filter(seat => seat.seat_number.startsWith(rowName));
+
+        return (
+            <div key={rowIndex} className={cx('group-seat')}>
+                <div className={cx('seat-name', 'me-4')}>{rowName}</div>
+                <div className={cx('group-btn-seat')}>
+                    {availableSeatsInRow.map((seatInfo) => {
+                        const seatNumber = seatInfo.seat_number; // Số ghế từ seatInfo
+
+                        return (
+                            <button
+                                key={seatNumber}
+                                type="button"
+                                className={cx('num-seat', {
+                                    'vip-seat': seatInfo.seat_type === 'vip' || seatInfo.seat_type === 'Vip',
+                                    'selected-seat': selectedSeats.includes(seatNumber),
+                                    'occupied': seatInfo.seat_status, // Thêm lớp cho ghế đã được đặt
+                                })}
+                                style={{
+                                    backgroundColor: selectedSeats.includes(seatNumber)
+                                        ? '#F9E400' // Màu vàng cho ghế đã chọn
+                                        : seatInfo.seat_status // Nếu ghế đã được đặt
+                                            ? '#f5004f' // Màu cho ghế đã đặt
+                                            : '', // Màu mặc định
+                                    color: (seatInfo.seat_status) ? '#000' : '',
+                                }}
+                                onClick={() => {
+                                    // Chỉ cho phép chọn ghế chưa được đặt
+                                    if (!seatInfo.seat_status) {
+                                        handleSeatClick(seatNumber);
+                                    }
+                                }}
+                                disabled={seatInfo.seat_status} // Vô hiệu hóa nút cho ghế đã đặt
+                            >
+                                {seatNumber}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    })}
+</div>
+
                             <div className='col-2'></div>
                         </div>
                     </div>
@@ -299,11 +392,11 @@ function BookTicket() {
                                     <div className={cx('des')}>Mô tả (nếu có): </div>
                                     <div className={cx('price')}>Giá: </div>
                                     <div className={cx('wrap-quantity')}>
-                                        <div className={cx('wrap-icon-food')}>
+                                        <div className={cx('wrap-icon-food')} onClick={decreaseFood}>
                                             <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
                                         </div>                                            
-                                        <div className={cx('count')}>0</div>
-                                        <div className={cx('wrap-icon-food')}>
+                                        <div className={cx('count')}>{FoodCount}</div>
+                                        <div className={cx('wrap-icon-food')} onClick={increaseFood}>
                                             <FontAwesomeIcon className={cx('icon-plus', )} icon={faPlus} />
                                         </div>
                                     </div>
@@ -334,35 +427,42 @@ function BookTicket() {
                     </div>
                 </div>             
             </div>
-            <div className={cx('order')}>
-                <div className='row'>
-                    <div className='col-1'></div>
-                    <div className='col-6'>
-                        <div className={cx('order-detail')}>
-                            <h1 className={cx('title')}>Tên phim: Qủy đá ăn tạng</h1>
-                            <div className={cx('address-type','d-flex')}>
-                                <div className={cx('address','me-5')}>Địa chỉ rạp: Q8, HCM</div>
-                                <div className={cx('type-ticket')}>Loại vé: VIP</div>
-                            </div>
-                            <div className={cx('room-seat-time','d-flex')}>
-                                <div className={cx('room','me-5')}>Phòng chiếu: 2</div>
-                                <div className={cx('number-seat','me-5')}>Số ghế: E1</div>
-                                <div className={cx('time')}>Thời gian chiếu: 8:00</div>
-                            </div>
-                            <div className={cx('food-order')}>Đồ ăn: 1 con bò</div>
-                        </div>
-                    </div>
-                    <div className='col-4'>
-                        <div className={cx('total','me-5')}>
-                            <h2 className={cx('total-price')}>Tạm tính: 1.000.000 VNĐ</h2>
-                            <button type='button'className={cx('booking-btn')}>Đặt vé</button>
-                        </div>
-                    </div>
-                    <div className='col-1'></div>
+            <div className={cx('order', { 'fixed': showOrderDetail })}>
+            <div className='row'>
+                <div className='col-1'></div>
+                <div className='col-6'>
+        
+
+            <div className={cx('order-detail')}>
+                <h1 className={cx('title')}>Tên phim: {title}</h1>
+                <div className={cx('address-type', 'd-flex')}>
+                    <div className={cx('address', 'me-5')}>Địa chỉ rạp: Q8, HCM</div>
+                    <div className={cx('type-ticket')}>Loại vé: {vipTicketCount > 0 ? 'VIP' : 'Thường'}</div>
                 </div>
+                <div className={cx('room-seat-time', 'd-flex')}>
+                    <div className={cx('room', 'me-5')}>Phòng chiếu: 2</div>
+                    <div className={cx('number-seat', 'me-5')}>Số ghế: {selectedSeats.join(', ')}</div>
+                    <div className={cx('time')}>Thời gian chiếu: 8:00</div>
+                </div>
+                <div className={cx('food-order')}>Đồ ăn: {FoodCount} món</div>
+            </div>
+        </div>
+        <div className='col-4'>
+            <div className={cx('total', 'me-5')}>
+            <h2 className={cx('total-price')}>Tạm tính: {totalPrice.toLocaleString()} VNĐ</h2>
+            <button type='button' className={cx('booking-btn')}>Đặt vé</button>
+            </div>
+        </div>
+        <div className='col-1'></div>
+
+    </div>
             </div>
         </div>
     );
 }
 
 export default BookTicket;
+
+
+
+
