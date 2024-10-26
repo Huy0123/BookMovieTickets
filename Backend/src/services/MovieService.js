@@ -39,7 +39,7 @@ class MovieService {
 
     updateMovie = async (id, movieData) => {
         const posterFile = movieData.files.poster ? movieData.files.poster[0] : null;
-    const trailerFile = movieData.files.trailer ? movieData.files.trailer[0] : null;
+        const trailerFile = movieData.files.trailer ? movieData.files.trailer[0] : null;
         const exitingMovie = await movie.findById(id);
         if (posterFile){
             if (exitingMovie.poster){
