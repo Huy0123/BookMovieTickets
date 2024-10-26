@@ -5,6 +5,8 @@ const seatTime = require('../models/SeatTime')
 class ShowtimeService {
 
     createShowtime =    async (data) => {
+        data.showtime_start = new Date(data.showtime_start);
+        data.showtime_end = new Date(data.showtime_end);
         const newShowtime = await showtime.create(data);
         const seatsInRoom = await seats.find({ room_id: newShowtime.room_id });
         const seatTimes = seatsInRoom.map(seat =>({
@@ -21,7 +23,6 @@ class ShowtimeService {
     
     getRoomAvailabilityByCinemaIDAndDate = async (cinemaID, showtime_start, showtime_end) => {
         try {
-        
             const conflictingShowtimes = await showtime.find({
                 cinema_id: cinemaID,
                 // Tìm kiếm showtime theo utc

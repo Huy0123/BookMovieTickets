@@ -71,6 +71,7 @@ class MovieService {
         }
         return await movie.findByIdAndDelete(id);
     }
+
 }
 
 module.exports = new MovieService;

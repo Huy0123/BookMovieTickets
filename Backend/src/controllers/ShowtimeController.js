@@ -12,7 +12,7 @@ class ShowtimeController {
     getRoomAvailabilityByCinemaIDAndDate = async (req, res) => {
         const { cinema_id, showtime_start, showtime_end } = req.query;
         try {
-            const showtimes = await showtimeService.getRoomAvailabilityByCinemaIDAndDate(cinema_id,showtime_start , showtime_end);
+            const showtimes = await showtimeService.getRoomAvailabilityByCinemaIDAndDate(cinema_id, showtime_start , showtime_end);
             res.status(200).send(showtimes);
         } catch (error) {
             res.status(400).send(error.message);

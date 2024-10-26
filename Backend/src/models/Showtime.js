@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const seatTimes = require('./SeatTime');
 const createShowtime = new mongoose.Schema({
     movie_id:{
         type: mongoose.Schema.Types.ObjectId,
@@ -28,3 +28,12 @@ const createShowtime = new mongoose.Schema({
 
 const showtimes = mongoose.model('showtimes', createShowtime);
 module.exports = showtimes;
+
+createShowtime.pre('remove', async function(next){
+    try{
+        await seatTimes.DateMany({showtime_id: this._id});
+        next();
+    } catch (error){
+        next(error);
+    }
+});
