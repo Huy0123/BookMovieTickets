@@ -5,7 +5,7 @@ class SendEmailController{
         try {
             const {email} = req.body
             const forgotpassword = await SendEmailService.SendEmailforgotpassword(email);
-            return res.status(200).json({forgotpassword})
+            return res.status(201).json({forgotpassword})
         } catch (error) {
             throw error
         }

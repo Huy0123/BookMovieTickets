@@ -10,6 +10,7 @@ const promotion = require('../routes/PromotionRouter.js')
 const room = require('../routes/RoomRouter.js')
 const seatTime = require('../routes/SeatTimeRouter.js')
 const point = require('../routes/PointRouter.js')
+const food = require('./FoodRouter.js')
 function route(app){
     app.use('/v1/Users',Users)
     app.use('/v1/Payment',Payment)
@@ -22,6 +23,7 @@ function route(app){
     app.use('/v1',room)
     app.use('/v1',seatTime)
     app.use('/v1',point)
+    app.use('/v1/Food',food)
 
 }
 

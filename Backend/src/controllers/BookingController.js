@@ -8,7 +8,7 @@ class BookingController {
                 return res.status(404).json({message: 'chưa có thông tin để đặt vé'})
             }
             const result = await bookingService.createBooking(data)
-            return res.status(200).json(result)
+            return res.status(201).json(result)
         } catch (error) {
             throw error
         }

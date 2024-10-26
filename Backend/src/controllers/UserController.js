@@ -9,7 +9,7 @@ class UserController{
         
         const create = await userService.createUserService(data) // Lưu đối tượng vào cơ sở dữ liệu
         
-        return res.status(200).json(create)
+        return res.status(201).json(create)
        } catch (error) {
         if (error.code === 11000) {
             // Lỗi trùng lặp
