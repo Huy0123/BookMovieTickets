@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import styles from './ChooseCinema.module.scss';
 import classNames from 'classnames/bind';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,6 +6,8 @@ import images from '~/assets/img';
 import TrailerModal from '../Trailer/TrailerModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight,faClock, faClosedCaptioning, faEarthAsia, faTag, faUserCheck } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -15,7 +17,9 @@ function ChooseCinema() {
   const [visibleMovies, setVisibleMovies] = useState(movies.slice(0, 5)); // Hiển thị 5 phim đầu tiên
   const [startIndex, setStartIndex] = useState(0); // Chỉ số hiện tại
   const [selectedMovie, setSelectedMovie] = useState(null); // Theo dõi thẻ được chọn
-
+  const [allmovie,setAllmovie] = useState([]);
+  const cinema_id =useParams().id; 
+  console.log(cinema_id)
   const handleBack = () => {
     if (startIndex < movies.length - 5) {
       setStartIndex(startIndex + 1);
@@ -50,7 +54,19 @@ function ChooseCinema() {
   };
   const closeModal = () => setIsModalOpen(false);
   const [trailerUrl, setTrailerUrl] = useState(''); // State để lưu link trailer
+  useEffect(() => {
+    const fetchMoviebyCinemaId = async () => {
+        try{
+          const res = await axios.get(`http://localhost:8080/v1/getShowtimeByCinemaID/${cinema_id}`)
+          setAllmovie(res.data);
+          console.log(res.data)
+        }catch {
 
+        }
+    };
+
+    fetchMoviebyCinemaId();
+}, []);
   return (
     <div className={cx('container')}>
       <div className={cx('wrap-card')}>

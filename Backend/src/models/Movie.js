@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const showtimes = require('./Showtime');
+const { post } = require('../routes/PaymentRouter');
 const createMovie = new mongoose.Schema({
     title:{
         type: String,
         required: true
     },
+   
     genre:{
         type: String,
         required: true
@@ -29,7 +31,11 @@ const createMovie = new mongoose.Schema({
         type: [String],
         required: true
     },
-    poster:{
+    poster1:{
+        type: String,
+        required: true
+    },
+    poster2:{
         type: String,
         required: true
     },
@@ -47,6 +53,10 @@ const createMovie = new mongoose.Schema({
     },
     country:{
         type: String,
+        required: true
+    },
+    limit:{
+        type: Number,
         required: true
     },
 });
