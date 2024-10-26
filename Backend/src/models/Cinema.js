@@ -13,5 +13,16 @@ const createCinema = new mongoose.Schema({
     },
 });
 
+
 const cinemas = mongoose.model('cinemas', createCinema);
 module.exports = cinemas;
+
+createCinema.pre('remove', async function(next){
+    try{
+        await rooms.deleteMany({cinema_id: this._id});
+        await showtimes.deleteMany({cinema_id: this._id});
+        next();
+    } catch (error){
+        next(error);
+    }
+});

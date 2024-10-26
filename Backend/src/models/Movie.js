@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const showtimes = require('./Showtime');
+const { post } = require('../routes/PaymentRouter');
 const createMovie = new mongoose.Schema({
     title:{
         type: String,
@@ -29,7 +31,11 @@ const createMovie = new mongoose.Schema({
         type: [String],
         required: true
     },
-    poster:{
+    poster1:{
+        type: String,
+        required: true
+    },
+    poster2:{
         type: String,
         required: true
     },
@@ -56,4 +62,13 @@ const createMovie = new mongoose.Schema({
 });
 const movies = mongoose.model('movies', createMovie);
 module.exports = movies;
+
+createMovie.pre('remove', async function(next){
+    try{
+        await showtimes.deleteMany({movie_id: this._id});
+        next();
+    } catch (error){
+        next(error);
+    }
+});
 

@@ -16,6 +16,7 @@ const createSeatTime = new mongoose.Schema({
         required: true
     },
 });
+createSeatTime.index({ seat_id: 1, showtime_id: 1 }, { unique: true });
 
 const seatTimes = mongoose.model('seatTimes', createSeatTime);
 module.exports = seatTimes;

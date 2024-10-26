@@ -120,7 +120,7 @@ function BookTicket() {
     const getShowTimesByDate = (date) => {
         return showTimeAll.filter(show => {
             const showtimeUTC = new Date(show.showtime_start);
-            showtimeUTC.setHours(showtimeUTC.getHours() - 7);
+            // showtimeUTC.setHours(showtimeUTC.getHours() + 7);
             const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
                 day: '2-digit',
                 month: '2-digit',
@@ -223,7 +223,7 @@ console.log(totalFoodPrice)
                         <div className={cx('date-show', 'gap-3')}>
                             {showTimeAll.map((show, index) => {
                                 const showtimeUTC = new Date(show.showtime_start);
-                                showtimeUTC.setHours(showtimeUTC.getHours() - 7);
+                                {/* showtimeUTC.setHours(showtimeUTC.getHours() + 7); */}
                                 const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
                                     day: '2-digit',
                                     month: '2-digit',
@@ -257,7 +257,7 @@ console.log(totalFoodPrice)
                                 <div className={cx('time-start')}>
                                     {selectedDate && getShowTimesByDate(selectedDate).map((show, index) => {
                                         const showtimeUTC = new Date(show.showtime_start);
-                                        showtimeUTC.setHours(showtimeUTC.getHours() - 7);
+                                        {/* showtimeUTC.setHours(showtimeUTC.getHours() + 7); */}
                                         const formattedHour = showtimeUTC.toLocaleTimeString('vi-VN', {
                                             hour: '2-digit',
                                             minute: '2-digit',
