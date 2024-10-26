@@ -1,11 +1,11 @@
 const paymentService = require('../services/paymentService')
 class paymentController  {
-    payment =async(req,res,next)=>{
+    payment =async(req,res)=>{
         const data = req.body
         const result=await paymentService.paymentCreater(data)
         return res.status(200).json(result)
     }   
-    callback = async(req,res,next)=>{
+    callback = async(req,res)=>{
         console.log("callback:: ")
         console.log(req.body) 
         res.sendStatus(200);

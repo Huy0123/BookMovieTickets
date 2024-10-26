@@ -144,8 +144,10 @@ function Home() {
                                 <img src={movie.poster} className={cx('d-block')} alt={`Slide ${index + 1}`} />
                                 <div className={cx('overlay', 'row')}>
                                     <div className={cx('wrap-banner-con', 'col-6 d-flex flex-column justify-content-end gap-4')}>
-                                        <p className={cx('datetime')}>{new Date(movie.release_date).toLocaleDateString()}</p>
+                                        
                                         <h1 className={cx('title')} data-text={movie.title}>{movie.title}</h1>
+                                        <h2 >Thời Gian Khởi Chiếu</h2>
+                                        <p className={cx('datetime')}> {new Date(movie.release_date).toLocaleDateString()}</p>
                                         <div className={cx('wrap-decr')}>
                                             <p className={cx('decribetion')}>{movie.description}</p>
                                         </div>

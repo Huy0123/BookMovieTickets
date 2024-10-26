@@ -6,6 +6,7 @@ const SeatModel = require('../models/Seat.js');
 const ShowtimeModel = require('../models/Showtime.js');
 const PointModel = require('../models/Point.js');
 const SendEmailService = require('../services/SendEmailService.js')
+const SeatTimeModel = require('../models/SeatTime.js')
 const QRCode = require('qrcode'); 
 
 
@@ -17,18 +18,26 @@ class bookingService {
                 throw new Error('Missing required fields');
             }
             const showtime = await ShowtimeModel.findById(showtime_id).populate('cinema_id','_id')
-            console.log(showtime)
+            console.log("showtime",showtime)
             var total_price_seat = 0;
             var total_price_food = 0;
-            for (const seat_id of seats_id){
-                const seat = await SeatModel.findById(seat_id)
-                // if(seat.seat_status){
-                //     return {message :`${seat.seat_number} không tồn tại hoặc đã được đặt`}
-                // }
-                total_price_seat += seat.price
-            }
-
             
+            for (const seat_id of seats_id){
+                let i = 0;
+                const seat = await SeatTimeModel.find({seat_id:seat_id}).populate('seat_id')
+               
+                console.log(seat)
+               
+                if(seat[i].seat_status){
+                    return {message :`${seat[i].seat_id.seat_number} không tồn tại hoặc đã được đặt`}
+                }
+                console.log("seat",seat[i].seat_id.price)
+                total_price_seat += seat[i].seat_id.price
+                i++
+               
+            }
+            console.log(total_price_seat)
+          
            if(FoodAndDrinks_id){
             for (const FoodAndDrink_id of FoodAndDrinks_id){
                 const FoodAndDrink = await FoodAndDrinkModel.findById(FoodAndDrink_id.item_id)
@@ -71,7 +80,7 @@ class bookingService {
             const orders_infor = await order.save();
             const order_id = orders_infor._id;
            for (const seat_id of seats_id){
-                await SeatModel.updateOne({_id:seat_id},{seat_status:"true"})
+                await SeatTimeModel.updateOne({seat_id:seat_id},{seat_status:"true"})
             }
            
           

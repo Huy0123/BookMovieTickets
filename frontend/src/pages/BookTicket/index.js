@@ -15,7 +15,7 @@ function BookTicket() {
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [regularTicketCount, setRegularTicketCount] = useState(0);
     const [vipTicketCount, setVipTicketCount] = useState(0);
-    const [FoodCount, setFoodCount] = useState(0);
+    const [FoodCount, setFoodCount] = useState([]);
     const [title,setTitle] = useState("")
     const [showOrderDetail, setShowOrderDetail] = useState(false);
     const [seats, setSeats] = useState([]);
@@ -25,6 +25,7 @@ function BookTicket() {
     const [nameCinema,setNameCinema]=useState('');
     const [room,setRoom]=useState('');
     const [selectedDate, setSelectedDate] = useState(null);
+    const [Food,setFood]=useState([])   
     
     let lastDisplayedDate = '';
 
@@ -56,13 +57,26 @@ function BookTicket() {
                 setNameCinema(showtime.data.cinema_id.name);
                 setRoom(showtime.data.room_id.name);
                 
+                
             } catch (error) {
                 console.error('Error fetching data:', error);
 
             }
         }
+        const getFood = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/v1/Food/getFood');
+                setFood(response.data.Food);
+                setFoodCount(Array(response.data.Food.length).fill(0)); // Khởi tạo FoodCount với số lượng tương ứng
+                console.log("food", response.data.Food);
+            } catch (error) {
+                console.error("Error fetching food:", error);
+            }
+        };
+        getFood();
         getMovieByID();
     },[])
+    
     
     const handleSeatClick = (seat) => {
         setSelectedSeats((prevSelectedSeats) =>
@@ -84,21 +98,25 @@ function BookTicket() {
     };
     
    
-
-    const increaseFood = () => {
-        setFoodCount(FoodCount + 1);
-        setShowOrderDetail(true); 
+    const increaseFood = (index) => {
+        setFoodCount((prevCounts) => {
+            const newCounts = [...prevCounts];
+            newCounts[index] += 1; // Tăng số lượng cho món ăn cụ thể
+            return newCounts;
+        });
     };
 
-    const decreaseFood = () => {
-        if (FoodCount > 0) {
-            setFoodCount(FoodCount - 1);
-            // Kiểm tra xem có còn thực phẩm không
-            if (FoodCount - 1 === 0 && regularTicketCount === 0 && vipTicketCount === 0) {
-                setShowOrderDetail(false); // Ẩn order nếu không còn thực phẩm và vé
+    const decreaseFood = (index) => {
+        setFoodCount((prevCounts) => {
+            const newCounts = [...prevCounts];
+            if (newCounts[index] > 0) {
+                newCounts[index] -= 1; // Giảm số lượng cho món ăn cụ thể
             }
-        }
+            return newCounts;
+        });
     };
+    const totalFoodCount = FoodCount.reduce((total, count) => total + count, 0);
+    
     const getShowTimesByDate = (date) => {
         return showTimeAll.filter(show => {
             const showtimeUTC = new Date(show.showtime_start);
@@ -112,14 +130,25 @@ function BookTicket() {
         });
     };
     // Giả sử mỗi hàng có 12 ghế, bạn có thể điều chỉnh số ghế theo nhu cầu
-    const seatsPerRow = 12;
-    const totalPrice = selectedSeats.reduce((total, seat) => {
-        const seatInfo = seats.find(s => s.seat_number === seat); // Tìm ghế trong danh sách
-        if (seatInfo) {
-            return total + seatInfo.price; // Thêm giá của ghế vào tổng
-        }
-        return total; // Nếu không tìm thấy ghế, trả lại tổng hiện tại
-    }, 0) + (FoodCount * 50000); // Thêm giá đồ ăn
+// Tính tổng giá đồ ăn
+const totalFoodPrice = Food.reduce((total, food, index) => {
+    return total + (FoodCount[index] * food.price); // Tổng giá của tất cả món ăn
+}, 0);
+
+// Tính tổng giá ghế
+const totalSeatPrice = selectedSeats.reduce((total, seat) => {
+    const seatInfo = seats.find(s => s.seat_number === seat); // Tìm ghế trong danh sách
+    if (seatInfo && typeof seatInfo.price === 'number') {
+        return total + seatInfo.price; // Thêm giá của ghế vào tổng
+    }
+    return total; // Nếu không tìm thấy ghế, trả lại tổng hiện tại
+}, 0);
+
+// Tính tổng tất cả
+const totalPrice = totalSeatPrice + totalFoodPrice; // Tổng giá ghế và giá đồ ăn
+console.log(totalFoodPrice);
+
+console.log(totalFoodPrice)
         return (
         <div className={cx('container')}>
             <div className={cx('info-movie')}>
@@ -344,64 +373,39 @@ function BookTicket() {
             </div>
             <div className={cx('food')}>
                 <h1>CHỌN BẮP NƯỚC</h1>
+
                 <div className={cx('wrap-food'  )}>
                     <h2 className={cx('name-food')}>TÊN LOẠI HÀNG</h2>
                     <div className={cx('wrap-item')}>
                     <div className='row'>
                         <div className='col-1'></div>
                         <div className={cx('item-food','col-10')}>  
-                            
-                            <div className={cx('item-detail')}>
-                                <img src={images.food} className={cx('img-food')} alt="" />
-                                <div className={cx('food-info','ms-3')}>
-                                    <h3 className={cx('food-name')}>TÊN ĐỒ ĂN: </h3>
-                                    <div className={cx('des')}>Mô tả (nếu có): </div>
-                                    <div className={cx('price')}>Giá: </div>
-                                    <div className={cx('wrap-quantity')}>
-                                        <div className={cx('wrap-icon-food')}>
-                                            <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
-                                        </div>                                            
-                                        <div className={cx('count')}>0</div>
-                                        <div className={cx('wrap-icon-food')}>
-                                            <FontAwesomeIcon className={cx('icon-plus', )} icon={faPlus} />
+                        {Food.length > 0 ? (
+                            Food.map((Element, index) => (
+                                <div key={Element._id} className={cx('item-detail')}>
+                                    <img src={Element.Image} className={cx('img-food')} alt={Element.name} />
+                                    <div className={cx('food-info', 'ms-3')}>
+                                        <h3 className={cx('food-name')}>TÊN ĐỒ ĂN: {Element.name}</h3>
+                                        <div className={cx('des')}>Loại: {Element.category}</div>
+                                        <div className={cx('price')}>Giá: {Element.price.toLocaleString()} VNĐ</div>
+                                        <div className={cx('wrap-quantity')}>
+                                            <div className={cx('wrap-icon-food')} onClick={() => decreaseFood(index)}>
+                                                <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
+                                            </div>
+                                            <div className={cx('count')}>{FoodCount[index]}</div>
+                                            <div className={cx('wrap-icon-food')} onClick={() => increaseFood(index)}>
+                                                <FontAwesomeIcon className={cx('icon-plus')} icon={faPlus} />
+                                            </div>
                                         </div>
+                                        <div className={cx('total-price')}>Tổng giá: {(FoodCount[index] * Element.price).toLocaleString()} VNĐ</div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className={cx('item-detail')}>
-                                <img src={images.food} className={cx('img-food')} alt="" />
-                                <div className={cx('food-info','ms-3')}>
-                                    <h3 className={cx('food-name')}>TÊN ĐỒ ĂN: </h3>
-                                    <div className={cx('des')}>Mô tả (nếu có): </div>
-                                    <div className={cx('price')}>Giá: </div>
-                                    <div className={cx('wrap-quantity')}>
-                                        <div className={cx('wrap-icon-food')} onClick={decreaseFood}>
-                                            <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
-                                        </div>                                            
-                                        <div className={cx('count')}>{FoodCount}</div>
-                                        <div className={cx('wrap-icon-food')} onClick={increaseFood}>
-                                            <FontAwesomeIcon className={cx('icon-plus', )} icon={faPlus} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={cx('item-detail')}>
-                                <img src={images.food} className={cx('img-food')} alt="" />
-                                <div className={cx('food-info','ms-3')}>
-                                    <h3 className={cx('food-name')}>TÊN ĐỒ ĂN: </h3>
-                                    <div className={cx('des')}>Mô tả (nếu có): </div>
-                                    <div className={cx('price')}>Giá: </div>
-                                    <div className={cx('wrap-quantity')}>
-                                        <div className={cx('wrap-icon-food')}>
-                                            <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
-                                        </div>                                            
-                                        <div className={cx('count')}>0</div>
-                                        <div className={cx('wrap-icon-food')}>
-                                            <FontAwesomeIcon className={cx('icon-plus', )} icon={faPlus} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            ))
+                        ) : (
+                            <p>Đang tải dữ liệu món ăn...</p>
+                        )}
+
+                       
                             
                         </div>
                         <div className='col-1'></div>
@@ -426,7 +430,7 @@ function BookTicket() {
                     <div className={cx('number-seat', 'me-5')}>Số ghế: {selectedSeats.join(', ')}</div>
                     <div className={cx('time')}>Thời gian chiếu: 8:00</div>
                 </div>
-                <div className={cx('food-order')}>Đồ ăn: {FoodCount} món</div>
+                <div className={cx('food-order')}>Đồ ăn: {totalFoodCount} món</div>
             </div>
         </div>
         <div className='col-4'>
