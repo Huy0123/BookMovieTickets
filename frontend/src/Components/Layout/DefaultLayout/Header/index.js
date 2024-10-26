@@ -51,12 +51,18 @@ function Header() {
     useEffect(() => {
         const fetchUserData = async () => {
             const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('userToken')
             if (userId) {
                 try {
-                    const response = await axios.get(`http://localhost:8080/v1/Users/getUserByID/${userId}`, {
+                    const response = await axios.get(`http://localhost:8080/v1/Users/getUserbyid`, {
                         withCredentials: true,
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                        
                     });
-                    setFullname(response.data.fullname);
+                    console.log(response.data)
+                    setFullname(response.data.userFound.fullname);
                     setIsLoggedIn(true);
                 } catch (error) {
                     console.error('Error fetching user data:', error);

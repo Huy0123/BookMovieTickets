@@ -1,0 +1,31 @@
+.container{
+    background-color: rgb(230, 231, 231);
+    width: 100;
+    
+    .wrap{
+    
+        height: 900px;
+        margin: 0 auto;
+        .tool-bar{
+            width: 100%;
+            height:600px ;
+            .tool{
+                background-color: aqua;
+                height: 390px;
+                margin-bottom: 8px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .reset-pass{
+                background-color: aqua;
+                height: 200px;
+            }
+        }
+        .wrap-info{
+            width: 100%;
+            height:600px ;
+            background-color: aqua;
+        }
+    }
+}
