@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect,useState} from 'react';
 import { faClock, faClosedCaptioning, faEarthAsia, faMinus, faPlus, faTag, faTv, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+
 const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -18,9 +19,15 @@ function BookTicket() {
     const [title,setTitle] = useState("")
     const [showOrderDetail, setShowOrderDetail] = useState(false);
     const [seats, setSeats] = useState([]);
-
-
+    const [showTime, setShowTime] = useState('');
+    const [showTimeAll, setShowTimeAll] = useState([]);
+    const [address,setAddress]=useState('');
+    const [nameCinema,setNameCinema]=useState('');
+    const [room,setRoom]=useState('');
+    const [selectedDate, setSelectedDate] = useState(null);
     
+    let lastDisplayedDate = '';
+
     const user_id = localStorage.getItem('user_id')
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
@@ -38,7 +45,17 @@ function BookTicket() {
                 const seatsRes = await axios.get('http://localhost:8080/v1/getSeats');
                 setSeats(seatsRes.data);
                 console.log(seatsRes.data);
-
+                const showtimeall= await axios.get('http://localhost:8080/v1/getShowtimes');
+                setShowTimeAll(showtimeall.data);
+                console.log(showtimeall.data)
+                const id="66fd03dd6aeb1422260149ce"
+                const showtime = await axios.get(`http://localhost:8080/v1/getShowtimeByID/${id}`);
+                console.log(showtime.data)
+                setShowTime(showtime.data);
+                setAddress(showtime.data.cinema_id.address);
+                setNameCinema(showtime.data.cinema_id.name);
+                setRoom(showtime.data.room_id.name);
+                
             } catch (error) {
                 console.error('Error fetching data:', error);
 
@@ -66,38 +83,7 @@ function BookTicket() {
         }
     };
     
-    const increaseRegularTicket = () => {
-        setRegularTicketCount(regularTicketCount + 1);
-        setShowOrderDetail(true); 
-    };
-
-    // Function to decrease regular ticket count
-    const decreaseRegularTicket = () => {
-        if (regularTicketCount > 0) {
-            setRegularTicketCount(regularTicketCount - 1);
-            // Kiểm tra xem có còn vé không
-            if (regularTicketCount - 1 === 0 && vipTicketCount === 0) {
-                setShowOrderDetail(false); // Ẩn order nếu không còn vé
-            }
-        }
-    };
-
-    // Function to increase VIP ticket count
-    const increaseVipTicket = () => {
-        setVipTicketCount(vipTicketCount + 1);
-        setShowOrderDetail(true); 
-    };
-
-    // Function to decrease VIP ticket count
-    const decreaseVipTicket = () => {
-        if (vipTicketCount > 0) {
-            setVipTicketCount(vipTicketCount - 1);
-            // Kiểm tra xem có còn vé không
-            if (vipTicketCount - 1 === 0 && regularTicketCount === 0) {
-                setShowOrderDetail(false); // Ẩn order nếu không còn vé
-            }
-        }
-    };
+   
 
     const increaseFood = () => {
         setFoodCount(FoodCount + 1);
@@ -112,6 +98,18 @@ function BookTicket() {
                 setShowOrderDetail(false); // Ẩn order nếu không còn thực phẩm và vé
             }
         }
+    };
+    const getShowTimesByDate = (date) => {
+        return showTimeAll.filter(show => {
+            const showtimeUTC = new Date(show.showtime_start);
+            showtimeUTC.setHours(showtimeUTC.getHours() - 7);
+            const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                weekday: 'long'
+            }).replace(/-/g, '/'); 
+            return formattedShowtime === date;
+        });
     };
     // Giả sử mỗi hàng có 12 ghế, bạn có thể điều chỉnh số ghế theo nhu cầu
     const seatsPerRow = 12;
@@ -188,91 +186,75 @@ function BookTicket() {
             </div>
             {/* Lich chieu */}
             <div className={cx('schedule')}>
-                <div className='row'>
-                    <div className='col-1'></div>
-                    <div className={cx('wrap','col-10')}>
-                        <h1 className={cx('show')}>Lịch chiếu</h1>
-                        <div className={cx('group-btn')}>
-                            <div className={cx('date-show','gap-3')}>
-                                <div className={cx('btn-date')}>
-                                    <h2 className={cx('date','pt-1')}>10/10</h2>
-                                    <div className={cx('dow')}>THỨ 2</div>
-                                </div>
-                                <div className={cx('btn-date','pt-1')}>
-                                    <h2 className={cx('date','pt-1')}>10/10</h2>
-                                    <div className={cx('dow')}>THỨ 2</div>
-                                </div>
-                                <div className={cx('btn-date','pt-1')}>
-                                    <h2 className={cx('date')}>10/10</h2>
-                                    <div className={cx('dow')}>THỨ 2</div>
-                                </div>
-                                <div className={cx('btn-date','pt-1')}>
-                                    <h2 className={cx('date')}>10/10</h2>
-                                    <div className={cx('dow')}>THỨ 2</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={cx('about')}>
-                            <div className='row'>
-                            <div className='col-1'></div>
-                            <div className='col-10 '>
-                                <h2>TÊN RẠP:</h2>
-                                <h3 className={cx('address')}>Địa chỉ:</h3>
-                                <div className={cx('time-start')}>
-                                    <button type='button' className={cx('btn-time')}>8:00</button>
-                                    <button type='button' className={cx('btn-time')}>8:00</button>
-                                    <button type='button' className={cx('btn-time')}>8:00</button>
-                                    <button type='button' className={cx('btn-time')}>8:00</button>
-                                    <button type='button' className={cx('btn-time')}>8:00</button>
-                                    <button type='button' className={cx('btn-time')}>8:00</button>
-                                    <button type='button' className={cx('btn-time')}>8:00</button>
-                                    <button type='button' className={cx('btn-time')}>8:00</button>
-                                    <button type='button' className={cx('btn-time')}>8:00</button>
-                                </div>
-                            </div>
-                            <div className='col-1'></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='col-1'></div>
+            <div className='row'>
+                <div className='col-1'></div>
+                <div className={cx('wrap', 'col-10')}>
+                    <h1 className={cx('show')}>Lịch chiếu</h1>
+                    <div className={cx('group-btn')}>
+                        <div className={cx('date-show', 'gap-3')}>
+                            {showTimeAll.map((show, index) => {
+                                const showtimeUTC = new Date(show.showtime_start);
+                                showtimeUTC.setHours(showtimeUTC.getHours() - 7);
+                                const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    weekday: 'long'
+                                }).replace(/-/g, '/'); 
 
-                </div>
-            </div>
-            <div className={cx('choose-ticket')}>
-                <h1>CHỌN LOẠI VÉ</h1>
-                <div className={cx('wrap-ticket','gap-5')}>
-                    <div className={cx('ticket','regular')}>
-                        <h2>VÉ THƯỜNG</h2>
-                        <div className={cx('price-quantity')}>
-                            <h3 className={cx('price')}>Giá vé: </h3>
-                            <div className={cx('wrap-quantity')}>
-                                <div className={cx('wrap-icon')} onClick={decreaseRegularTicket}>
-                                    <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
-                                </div>                                            
-                                <div className={cx('count')}>{regularTicketCount}</div>
-                                <div className={cx('wrap-icon')} onClick={increaseRegularTicket}>
-                                <FontAwesomeIcon className={cx('icon-plus', )} icon={faPlus} />
-                                </div>
-                            </div>
+                                if (formattedShowtime !== lastDisplayedDate) {
+                                    lastDisplayedDate = formattedShowtime; // Cập nhật ngày đã hiển thị
+                                    return (
+                                        <div 
+                                            className={cx('btn-date', { active: selectedDate === formattedShowtime })} 
+                                            key={show._id} 
+                                            onClick={() => setSelectedDate(formattedShowtime)} // Cập nhật trạng thái
+                                        >
+                                            <h2 className={cx('date', 'pt-1')}>
+                                                {formattedShowtime}
+                                            </h2>
+                                        </div>
+                                    );
+                                } 
+                                return null;
+                            })}
                         </div>
                     </div>
-                    <div className={cx('ticket','vip')}>
-                        <h2>VÉ VIP</h2>
-                        <div className={cx('price-quantity')}>
-                            <h3 className={cx('price')}>Giá vé: </h3>
-                            <div className={cx('wrap-quantity')}>
-                            <div className={cx('wrap-icon')} onClick={decreaseVipTicket}>
-                                    <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
-                                </div>                                            
-                                <div className={cx('count')}>{vipTicketCount}</div>
-                                <div className={cx('wrap-icon')} onClick={increaseVipTicket}>
-                                <FontAwesomeIcon className={cx('icon-plus', )} icon={faPlus} />
+                    <div className={cx('about')}>
+                        <div className='row'>
+                            <div className='col-1'></div>
+                            <div className='col-10'>
+                                <h2>TÊN RẠP: {nameCinema}</h2>
+                                <h3 className={cx('address')}>Địa chỉ: {address}</h3>
+                                <div className={cx('time-start')}>
+                                    {selectedDate && getShowTimesByDate(selectedDate).map((show, index) => {
+                                        const showtimeUTC = new Date(show.showtime_start);
+                                        showtimeUTC.setHours(showtimeUTC.getHours() - 7);
+                                        const formattedHour = showtimeUTC.toLocaleTimeString('vi-VN', {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            hour12: false,
+                                        });
+
+                                        return (
+                                            <button 
+                                                type='button' 
+                                                className={cx('btn-time', { active: index === 0 })} 
+                                                key={show._id}
+                                            >
+                                                {formattedHour}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
+                            <div className='col-1'></div>
                         </div>
                     </div>
                 </div>
+                <div className='col-1'></div>
             </div>
+        </div>
+          
             {/* ghe */}
             <div className={cx('seat')}>
                 <div className={cx('wrap-seat')}>
@@ -284,51 +266,51 @@ function BookTicket() {
                         <div className='row'>
                             <div className='col-2'></div>
                             <div className='col-8'>
-    {seatRows.map((rowName, rowIndex) => {
-        // Tìm các ghế trong hàng hiện tại
-        const availableSeatsInRow = seats.filter(seat => seat.seat_number.startsWith(rowName));
+                        {seatRows.map((rowName, rowIndex) => {
+                            // Tìm các ghế trong hàng hiện tại
+                            const availableSeatsInRow = seats.filter(seat => seat.seat_number.startsWith(rowName));
 
-        return (
-            <div key={rowIndex} className={cx('group-seat')}>
-                <div className={cx('seat-name', 'me-4')}>{rowName}</div>
-                <div className={cx('group-btn-seat')}>
-                    {availableSeatsInRow.map((seatInfo) => {
-                        const seatNumber = seatInfo.seat_number; // Số ghế từ seatInfo
+                            return (
+                                <div key={rowIndex} className={cx('group-seat')}>
+                                    <div className={cx('seat-name', 'me-4')}>{rowName}</div>
+                                    <div className={cx('group-btn-seat')}>
+                                        {availableSeatsInRow.map((seatInfo) => {
+                                            const seatNumber = seatInfo.seat_number; // Số ghế từ seatInfo
 
-                        return (
-                            <button
-                                key={seatNumber}
-                                type="button"
-                                className={cx('num-seat', {
-                                    'vip-seat': seatInfo.seat_type === 'vip' || seatInfo.seat_type === 'Vip',
-                                    'selected-seat': selectedSeats.includes(seatNumber),
-                                    'occupied': seatInfo.seat_status, // Thêm lớp cho ghế đã được đặt
-                                })}
-                                style={{
-                                    backgroundColor: selectedSeats.includes(seatNumber)
-                                        ? '#F9E400' // Màu vàng cho ghế đã chọn
-                                        : seatInfo.seat_status // Nếu ghế đã được đặt
-                                            ? '#f5004f' // Màu cho ghế đã đặt
-                                            : '', // Màu mặc định
-                                    color: (seatInfo.seat_status) ? '#000' : '',
-                                }}
-                                onClick={() => {
-                                    // Chỉ cho phép chọn ghế chưa được đặt
-                                    if (!seatInfo.seat_status) {
-                                        handleSeatClick(seatNumber);
-                                    }
-                                }}
-                                disabled={seatInfo.seat_status} // Vô hiệu hóa nút cho ghế đã đặt
-                            >
-                                {seatNumber}
-                            </button>
-                        );
-                    })}
-                </div>
-            </div>
-        );
-    })}
-</div>
+                                            return (
+                                                <button
+                                                    key={seatNumber}
+                                                    type="button"
+                                                    className={cx('num-seat', {
+                                                        'vip-seat': seatInfo.seat_type === 'vip' || seatInfo.seat_type === 'Vip',
+                                                        'selected-seat': selectedSeats.includes(seatNumber),
+                                                        'occupied': seatInfo.seat_status, // Thêm lớp cho ghế đã được đặt
+                                                    })}
+                                                    style={{
+                                                        backgroundColor: selectedSeats.includes(seatNumber)
+                                                            ? '#F9E400' // Màu vàng cho ghế đã chọn
+                                                            : seatInfo.seat_status // Nếu ghế đã được đặt
+                                                                ? '#f5004f' // Màu cho ghế đã đặt
+                                                                : '', // Màu mặc định
+                                                        color: (seatInfo.seat_status) ? '#000' : '',
+                                                    }}
+                                                    onClick={() => {
+                                                        // Chỉ cho phép chọn ghế chưa được đặt
+                                                        if (!seatInfo.seat_status) {
+                                                            handleSeatClick(seatNumber);
+                                                        }
+                                                    }}
+                                                    disabled={seatInfo.seat_status} // Vô hiệu hóa nút cho ghế đã đặt
+                                                >
+                                                    {seatNumber}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
 
                             <div className='col-2'></div>
                         </div>
@@ -435,13 +417,12 @@ function BookTicket() {
         
 
             <div className={cx('order-detail')}>
-                <h1 className={cx('title')}>Tên phim: {title}</h1>
+                <h1 className={cx('title')}>Tên phim: {getMovies.title}</h1>
                 <div className={cx('address-type', 'd-flex')}>
-                    <div className={cx('address', 'me-5')}>Địa chỉ rạp: Q8, HCM</div>
-                    <div className={cx('type-ticket')}>Loại vé: {vipTicketCount > 0 ? 'VIP' : 'Thường'}</div>
+                    <div className={cx('address', 'me-5')}>Địa chỉ rạp: {address}</div>
                 </div>
                 <div className={cx('room-seat-time', 'd-flex')}>
-                    <div className={cx('room', 'me-5')}>Phòng chiếu: 2</div>
+                    <div className={cx('room', 'me-5')}>Phòng chiếu: {room}</div>
                     <div className={cx('number-seat', 'me-5')}>Số ghế: {selectedSeats.join(', ')}</div>
                     <div className={cx('time')}>Thời gian chiếu: 8:00</div>
                 </div>

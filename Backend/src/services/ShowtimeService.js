@@ -15,7 +15,7 @@ class ShowtimeService {
         }));
 
         await seatTime.insertMany(seatTimes);
-
+        console.log(newShowtime)
         return newShowtime;
     }
     
@@ -53,11 +53,20 @@ class ShowtimeService {
     
 
     getShowtimes = async () => {
-        return await showtime.find();
+
+        return await showtime.find()
+        .populate(
+            'cinema_id'
+        )
+
+        
     }
 
     getShowtimeByID = async (id) => {
-        return await showtime.findById(id);
+        return await showtime.findById(id)
+        .populate(
+            'cinema_id room_id movie_id'
+        );
     }
 
     updateShowtime = async (id, data) => {
@@ -69,7 +78,10 @@ class ShowtimeService {
     }
 
     getShowtimesByMovieID = async (id) => {
-        return await showtime.find({ movie: id });
+        return await showtime.find({ movie_id: id })
+        .populate(
+            'cinema_id room_id movie_id'
+        );
     }
 
     getShowtimesByCinemaID = async (id) => {

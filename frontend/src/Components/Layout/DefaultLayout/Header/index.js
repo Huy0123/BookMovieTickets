@@ -182,7 +182,7 @@ function Header() {
                                     ))}
                                 </div>
                             )}
-<button type="button" className={cx('btn-schedule', 'col-lg-6')}>
+                                <button type="button" className={cx('btn-schedule', 'col-lg-6')} onClick={() => navigate('/schedule')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
                                 Lịch chiếu
                             </button>
