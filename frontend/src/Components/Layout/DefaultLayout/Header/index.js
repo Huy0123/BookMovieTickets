@@ -3,7 +3,8 @@ import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot, faUser } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import images from '~/assets/img';
 import axios from 'axios';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // Import Tippy styles
@@ -11,16 +12,19 @@ import 'tippy.js/dist/tippy.css'; // Import Tippy styles
 const cx = classNames.bind(styles);
 
 function Header() {
+    // Kiểm tra ngay từ localStorage
+
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [headerColor, setHeaderColor] = useState('#000000');
     const [fullname, setFullname] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('userId'));
     const dropdownRef = useRef(null);
     const [errorMessage, setErrorMessage] = useState("");  // State to hold error message
+    const [isLoading, setIsLoading] = useState(true); // Thêm trạng thái chờ
+
 
     const navigate = useNavigate();
-    const location = useLocation();
-    localStorage.setItem('previousPage', location.pathname);
+
     const cinemas = [
         'Tên rạp 1', 'Tên rạp 2', 'Tên rạp 3', 'Tên rạp 4',
         'Tên rạp 5', 'Tên rạp 6', 'Tên rạp 7', 'Tên rạp 8',
@@ -29,7 +33,11 @@ function Header() {
 
     const handleNavigateSignin = () => navigate('/signIn');
     const handleNavigateSignup = () => navigate('/signUp');
-   
+    const handleLogout = () => {
+        localStorage.removeItem('userId');
+        setIsLoggedIn(false);
+        navigate('/signIn');
+    };
 
     const handleScroll = () => {
         setHeaderColor(window.scrollY > 50 ? 'rgba(12, 0, 0, 0.5)' : '#000000');
@@ -43,17 +51,24 @@ function Header() {
     useEffect(() => {
         const fetchUserData = async () => {
             const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('userToken')
             if (userId) {
                 try {
-                    const response = await axios.get(`http://localhost:8080/v1/Users/getUserByID/${userId}`, {
+                    const response = await axios.get(`http://localhost:8080/v1/Users/getUserbyid`, {
                         withCredentials: true,
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                        
                     });
-                    setFullname(response.data.fullname);
+                    console.log(response.data)
+                    setFullname(response.data.userFound.fullname);
                     setIsLoggedIn(true);
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                 }
             }
+            setIsLoading(false);
         };
 
         fetchUserData();
@@ -79,14 +94,13 @@ function Header() {
         setErrorMessage("");  
         try {
             await axios.post(
-            'http://localhost:8080/v1/Users/logout',
+                'http://localhost:8080/v1/Users/logout',
                 {},  // Đảm bảo body không trống
                 { withCredentials: true } // Đảm bảo gửi cookie cùng request
             );
             setIsLoggedIn(false);
-            const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
-                navigate(previousPage);  // Redirect to the previous page
             localStorage.clear();
+            navigate('/');
         } catch (error) {
             console.error('Error during logout:', error);
             setErrorMessage("Logout failed. Please try again.");
@@ -104,7 +118,7 @@ function Header() {
                                 <div className="col-lg-2 mt-4">
                                     <img
                                         className={cx('logo')}
-                                        src="https://png.pngtree.com/png-vector/20220525/ourmid/pngtree-spa-logo-png-image_4721219.png"
+                                        src= {images.logos}
                                         alt="Logo"
                                     />
                                 </div>
@@ -116,43 +130,47 @@ function Header() {
                                                 Đặt vé ngay
                                             </button>
                                         </div>
-                                        {!isLoggedIn ? (
-                                            <div className={cx('sign', 'col-lg-6')}>
-                                                <div className="row gap-2">
-                                                    <button
-                                                        type="button"
-                                                        className={cx('btn', 'sign-up', 'col-lg-6')}
-                                                        onClick={handleNavigateSignup}
-                                                    >
-                                                        Đăng ký
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className={cx('btn', 'sign-in', 'col-lg-6')}
-                                                        onClick={handleNavigateSignin}
-                                                    >
-Đăng nhập
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                         
-                                                <div className={cx('logined', 'col-sm')}>
-                                                <Tippy
-                                                content={renderUserDropdown()}
-                                                interactive={true}
-                                                trigger="click"
-                                                placement="bottom-start" // Đặt vị trí dưới và căn về bên trái
-                                                offset={[0, 10]} // Điều chỉnh khoảng cách giữa Tippy và thẻ logined
-                                            >
-                                                    <div className={cx('wrap-logined', 'd-flex align-items-center w-100 h-100')}>
-                                                        <FontAwesomeIcon className={cx('icon-user')} icon={faUser} />
-                                                        <h3 className={cx('fullname')}>{fullname}</h3>
-                                                    </div>
-                                                    </Tippy>
-                                                </div>
-                                           
-                                        )}
+                                        {isLoading ? (
+    <div>Loading...</div> // Hoặc thêm một spinner nếu cần
+) : !isLoggedIn ? (
+    <div className={cx('sign', 'col-lg-6')}>
+        <div className="row gap-2">
+            {/* <button
+                type="button"
+                className={cx('btn', 'sign-up', 'col-lg-6')}
+                onClick={handleNavigateSignup}
+            >
+                Đăng ký
+            </button> */}
+            <button
+                type="button"
+                className={cx('btn', 'sign-in', 'col-lg-6')}
+                onClick={handleNavigateSignin}
+            >
+                Đăng nhập
+            </button>
+        </div>
+    </div>
+) : (
+    <div className={cx('logined', 'col-sm')}>
+        <Tippy
+            content={renderUserDropdown()}
+            arrow={false}
+            interactive={true}
+            animation="shift-away"
+            trigger="click"
+            placement="bottom"
+            offset={[0, 10]}
+            className={cx("custom-tooltip")}
+        >
+            <div className={cx('wrap-logined', 'd-flex align-items-center w-100 h-100')}>
+                <FontAwesomeIcon className={cx('icon-user')} icon={faUser} />
+                <h3 className={cx('fullname')}>{fullname}</h3>
+            </div>
+        </Tippy>
+    </div>
+)}
+
                                     </div>
                                 </div>
                             </div>
@@ -182,7 +200,7 @@ function Header() {
                                     ))}
                                 </div>
                             )}
-<button type="button" className={cx('btn-schedule', 'col-lg-6')}>
+                                <button type="button" className={cx('btn-schedule', 'col-lg-6')} onClick={() => navigate('/schedule')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
                                 Lịch chiếu
                             </button>
