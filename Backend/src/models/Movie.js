@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const createMovie = new mongoose.Schema({
     title:{
         type: String,
         required: true
     },
+   
     genre:{
         type: String,
         required: true
@@ -47,6 +49,10 @@ const createMovie = new mongoose.Schema({
     },
     country:{
         type: String,
+        required: true
+    },
+    limit:{
+        type: Number,
         required: true
     },
 });
