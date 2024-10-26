@@ -17,15 +17,12 @@ function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const dropdownRef = useRef(null);
     const [errorMessage, setErrorMessage] = useState("");  // State to hold error message
+    const [cinemas, setCinemas] = useState([]); // State to hold fetched cinemas
 
     const navigate = useNavigate();
     const location = useLocation();
     localStorage.setItem('previousPage', location.pathname);
-    const cinemas = [
-        'Tên rạp 1', 'Tên rạp 2', 'Tên rạp 3', 'Tên rạp 4',
-        'Tên rạp 5', 'Tên rạp 6', 'Tên rạp 7', 'Tên rạp 8',
-        'Tên rạp 9', 'Tên rạp 10'
-    ];
+    
 
     const handleNavigateSignin = () => navigate('/signIn');
     const handleNavigateSignup = () => navigate('/signUp');
@@ -56,6 +53,9 @@ function Header() {
                     console.log(response.data)
                     setFullname(response.data.userFound.fullname);
                     setIsLoggedIn(true);
+                    const resCinema = await axios.get('http://localhost:8080/v1/getCinemas');
+                    setCinemas(resCinema.data);
+                    console.log(resCinema);
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                 }
@@ -98,7 +98,10 @@ function Header() {
             setErrorMessage("Logout failed. Please try again.");
         }
     };
-
+    const handleBooking = (cinemaId) => {
+        console.log(cinemaId)
+        navigate(`/chooseCinema/${cinemaId}`); 
+    };
     return (
         <div className={cx('wrapper')} style={{ backgroundColor: headerColor }}>
             <div className={cx('container')}>
@@ -180,12 +183,12 @@ function Header() {
                                 Chọn rạp
                             </button>
                             {isDropdownVisible && (
-                                <div className={cx('dropdown-menu')}>
-                                    {cinemas.map((cinema, index) => (
-                                        <div key={index} className={cx('dropdown-item')}>
-                                            {cinema}
-                                        </div>
-                                    ))}
+                        <div className={cx('dropdown-menu')}>
+                            {cinemas.map((cinema, index) => (
+                                <div key={index} className={cx('dropdown-item')} onClick={()=>handleBooking(cinema._id)}>
+                                    {cinema.name} {/* Adjust based on the structure of your cinema data */}
+                                </div>
+                            ))}
                                 </div>
                             )}
                                 <button type="button" className={cx('btn-schedule', 'col-lg-6')} onClick={() => navigate('/schedule')}>
