@@ -8,7 +8,9 @@ const images= {
     backgroundlog: require('~/assets/img/background-log.png'),
     icongoogle: require('~/assets/img/gg3.jpg'),
     screen: require('~/assets/img/screen.png'),
-    food: require('~/assets/img/food.png')
+    food: require('~/assets/img/food.png'),
+    prom: require('~/assets/img/pngegg.png')
+
 }
 
 export default images;

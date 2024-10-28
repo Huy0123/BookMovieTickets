@@ -8,6 +8,7 @@ import Signin from '~/pages/Signin';
 import ForgotPassword from '~/pages/Forgot';
 import ResetPassword from '~/pages/ResetPassword';
 import BookTicket from '~/pages/BookTicket';
+import Payment from '~/pages/Payment';
 
 // Không cần đăng nhập vẫn xem được
 const publicRoutes = [
@@ -20,7 +21,7 @@ const publicRoutes = [
     { path: '/signIn', component:Signin, layout:null},
     { path: '/forgot', component:ForgotPassword, layout:null},
     { path: '/reset-password/:token', component: ResetPassword, layout: null }, 
-
+    { path: '/Payment', component:Payment},
 ]
 //Ngược lại
 const privateRoutes = [

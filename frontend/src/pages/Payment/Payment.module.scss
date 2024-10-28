@@ -1,0 +1,21 @@
+.container{
+    display: flex;
+    color: #fff;
+    flex-wrap: wrap;
+    min-height:1139px ;
+    margin: 20px 135px;
+    background: #0c0c0c;
+    border-radius: 40px;
+}
+.movie{   
+    flex: 1;
+    margin: 20px 43px;
+    padding: auto;
+}
+.in4{
+    margin: 10px 0px;
+}
+.user{
+    margin: 20px 43px;
+    padding: auto;
+}
