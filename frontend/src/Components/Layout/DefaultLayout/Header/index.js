@@ -31,13 +31,22 @@ function Header() {
     const handleScroll = () => {
         setHeaderColor(window.scrollY > 50 ? 'rgba(12, 0, 0, 0.5)' : '#000000');
     };
-
+    
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     useEffect(() => {
+        const fetchCinema = async () => {
+            try {
+                const resCinema = await axios.get('http://localhost:8080/v1/getCinemas');
+                    setCinemas(resCinema.data);
+                    console.log(resCinema);
+            }catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
         const fetchUserData = async () => {
             const userId = localStorage.getItem('userId');
             const token = localStorage.getItem('userToken')
@@ -53,16 +62,18 @@ function Header() {
                     console.log(response.data)
                     setFullname(response.data.userFound.fullname);
                     setIsLoggedIn(true);
-                    const resCinema = await axios.get('http://localhost:8080/v1/getCinemas');
-                    setCinemas(resCinema.data);
-                    console.log(resCinema);
+                    
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                 }
             }
         };
-
-        fetchUserData();
+       
+        const fetchData = async () => {
+            await Promise.all([fetchUserData(), fetchCinema()]);
+        };
+    
+        fetchData();
     }, []);
 
     const renderUserDropdown = () => (

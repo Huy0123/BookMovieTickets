@@ -8,7 +8,6 @@ import Signin from '~/pages/Signin';
 import ForgotPassword from '~/pages/Forgot';
 import ResetPassword from '~/pages/ResetPassword';
 import BookTicket from '~/pages/BookTicket';
-
 // Không cần đăng nhập vẫn xem được
 const publicRoutes = [
     { path: '/', component:Home },

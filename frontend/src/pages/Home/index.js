@@ -70,6 +70,8 @@ function Home() {
     const movieshowing =movies.filter(movies=>new Date(movies.release_date)< new Date())
     const upcomingmovie =movies.filter(movies=>new Date(movies.release_date)> new Date())
     const [moviesPerPage, setMoviesPerPage] = useState(4); // Default to 4 movies per page
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const navigate = useNavigate();
     useEffect(() => {
         const handleResize = () => {
@@ -103,7 +105,6 @@ function Home() {
     const comingTotalPages = Math.ceil(upcomingmovie.length / moviesPerPage);
 
  
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = (link) => {
         setTrailerUrl(link);
