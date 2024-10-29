@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser ,faStar, faCartShopping, faArrowsRotate, faLock} from '@fortawesome/free-solid-svg-icons';
 import axios
  from 'axios';
+import ResetPassword from '../ResetPassword';
 
 const cx = classNames.bind(styles);
 
@@ -227,7 +228,7 @@ function Profile() {
                     <div className={cx('modal-info','modal-histor', 'border p-4')}>
                     <h3 className={cx('title-info')}>THÔNG TIN THANH TOÁN</h3>
 
-                        <div className={cx('histor-contain')}>
+                        <div className={cx('histor-contain','main-contain')}>
                             <div className='w-100 row'>
 
                           
@@ -391,6 +392,9 @@ function Profile() {
                         </button>
                     </div>
                 </div>
+            )}
+            {resetPass && (
+                <div>
             )}
         </div>
     );

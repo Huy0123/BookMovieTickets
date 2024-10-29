@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
+import images from '~/assets/img';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -125,7 +126,7 @@ function Header() {
                                 <div className="col-lg-2 mt-4">
                                     <img
                                         className={cx('logo')}
-                                        src="https://png.pngtree.com/png-vector/20220525/ourmid/pngtree-spa-logo-png-image_4721219.png"
+                                        src={images.logos}
                                         alt="Logo"
                                     />
                                 </div>

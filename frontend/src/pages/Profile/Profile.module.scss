@@ -82,15 +82,23 @@
   
         .reset-pass {
             background-color: rgb(29, 30, 30);
-         
+          
           height: 200px;
+          .wrap-pass{   display: flex;
+            justify-content: center;
+            align-items: center;
+            .btn-reset-pass{
+            font-size: 24px;
+            padding: 30px;
+          }}
+         
         }
       }
   
       .modal-info {
         width: 100%;
         height: 600px;
-        background-color: rgba(29, 30, 30, 0.751);
+        background-color: rgba(29, 30, 30, 0.84);
         display: flex;
         flex-direction: column;
         align-items: center ;
@@ -130,20 +138,22 @@
             }
         }
         // lich su giao dich
+        
         .histor-contain{
             width: 100%;
             display: flex;
             justify-content: center;
           
             .rower{
-                border: 2px solid #f6b554;
-                background-color: #fff;
+                border: 2px solid #302f2f;
+                background-color: #a19f9f;
                 display: flex;
                 justify-content: center;  /* Căn giữa ngang */
                 align-items: center;   
                
             }
         }
+     
         .histor-content{
             width: 100%;
             overflow-y: auto;
@@ -154,8 +164,8 @@
             align-items: center ;
         
             .rower{
-                border: 2px solid #f6b554;
-                background-color: #fff;
+                border: 2px solid #302f2f;
+                background-color: #ededed;
                 display: flex;
                 justify-content: center;  
                 align-items: center;   
