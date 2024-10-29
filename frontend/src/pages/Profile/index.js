@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser ,faStar, faCartShopping, faArrowsRotate, faLock} from '@fortawesome/free-solid-svg-icons';
 import axios
  from 'axios';
+
 const cx = classNames.bind(styles);
 
 function Profile() {
@@ -18,8 +19,8 @@ function Profile() {
     const [fullname,setFullname] = useState('');
     const [num, setNum] = useState('');
     const [email, setEmail] = useState('')
-        const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('userId'));
-
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('userId'));
+    const [allVouncher, setAllVouncher] = useState('')
     // Handle point redemption
     // const handleRedeem = () => {
     //     if (points >= 6000) {
@@ -50,7 +51,9 @@ function Profile() {
                     setEmail(response.data.userFound.email);
                     setPoints(response.data.userFound.point);
                     setIsLoggedIn(true);
-                    
+                    const resvouncher = await axios.get(`http://localhost:8080/v1/getPoints`);
+                    setAllVouncher(resvouncher.data)
+                    console.log(resvouncher.data)
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                 }
@@ -118,6 +121,7 @@ function Profile() {
         setShowModal(false);
         setShowYNModal(false);
       };
+     
     return (
         <div className={cx('container', 'py-4')}>
             <div className={cx('wrap-profile', 'row justify-content-center')}>
@@ -293,47 +297,37 @@ function Profile() {
                         <div className={cx('side','row')}>
                         { activeTabVoucher=== 'left' &&( 
                             <div className={cx('left')}>
-                                <div className={cx('modal-voucher')}>
-                                    <div className={cx('voucher')}>
+                            <div className={cx('modal-voucher')}>
+                                {allVouncher.map((item, index) => (
+                                    <div key={index} className={cx('voucher')}>
                                         <div className={cx('wrap-img')}>
-                                              <img className={cx('img-vou')} src='https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'/>
+                                            <img 
+                                                className={cx('img-vou')} 
+                                                src={item.image || 'https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'} 
+                                                alt={`Voucher ${item.title || 'Giảm 20%'}`}
+                                            />
                                         </div>
-                                       <div className={cx('vou-info')}>
+                                        <div className={cx('vou-info')}>
                                             <div>
-                                                <h4 className={cx('ten-ma')}>Giảm 20%</h4>
-                                                <p className={cx('mota')}>qa d adwdas đư awd ffe wd sd qưa</p>
+                                                <h4 className={cx('ten-ma')}>{item.title || 'Giảm 20%'}</h4>
+                                                <p className={cx('mota')}>{item.description || 'Mô tả voucher không có sẵn'}</p>
                                             </div>
                                             <div className='fs-5'>
-                                                <p className={cx('datestart')}>Ngày bắt đầu: 20/10/2024</p>
-                                                <p className={cx('dateend')}>Ngày kết thúc: 19/10/2024</p>
+                                                <p className={cx('datestart')}>Ngày bắt đầu: {new Date (item.start_date).toLocaleDateString() }</p>
+                                                <p className={cx('dateend')}>Ngày kết thúc: {new Date (item.end_date).toLocaleDateString() }</p>
                                             </div>
-                                            
-
                                         </div>
-                                        <button className={cx('btn-poi')} onClick={() => handleYNClick('Giảm 20%')}>
-                                        <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />1000</button>
+                                        <button 
+                                            className={cx('btn-poi')} 
+                                            onClick={() => handleYNClick(item.title || 'Giảm 20%')}
+                                        >
+                                            <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />
+                                            {item.points || 1000}
+                                        </button>
                                     </div>
-                                    <div className={cx('voucher')}>
-                                        <div className={cx('wrap-img')}>
-                                              <img className={cx('img-vou')} src='https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'/>
-                                        </div>
-                                       <div className={cx('vou-info')}>
-                                            <div>
-                                                <h4 className={cx('ten-ma')}>Giảm 20%</h4>
-                                                <p className={cx('mota')}>qa d adwdas đư awd ffe wd sd qưa</p>
-                                            </div>
-                                            <div className='fs-5'>
-                                                <p className={cx('datestart')}>Ngày bắt đầu: 20/10/2024</p>
-                                                <p className={cx('dateend')}>Ngày kết thúc: 19/10/2024</p>
-                                            </div>
-                                            
+                                ))}
+                            </div>
 
-                                        </div>
-                                        <button className={cx('btn-poi')} onClick={() => handleYNClick('Giảm 20%')}>
-                                        <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />1000</button>
-                                    </div>
-                                 
-                                </div>
                             </div>
                         )}
                         {activeTabVoucher === 'right' && (
