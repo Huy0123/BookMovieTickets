@@ -226,6 +226,7 @@ getUserbyid = async (users) =>{
         return {message:"bạn không có quyền truy cập"}
     }
     const userFound = await user.findById(users.userId)
+    .populate('promotions_id');
     return {userFound}
 }
 
