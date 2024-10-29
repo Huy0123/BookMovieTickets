@@ -3,18 +3,17 @@ import styles from './BookTicket.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import images from '~/assets/img';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate   } from 'react-router-dom';
 import React, { useEffect,useState} from 'react';
 import { faClock, faClosedCaptioning, faEarthAsia, faMinus, faPlus, faTag, faTv, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import TrailerModal from '../Trailer/TrailerModal';
 
 const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const [getMovies,setMovies]=useState([])
     const [selectedSeats, setSelectedSeats] = useState([]);
-    const [regularTicketCount, setRegularTicketCount] = useState(0);
-    const [vipTicketCount, setVipTicketCount] = useState(0);
     const [FoodCount, setFoodCount] = useState([]);
     const [title,setTitle] = useState("")
     const [showOrderDetail, setShowOrderDetail] = useState(false);
@@ -26,95 +25,182 @@ function BookTicket() {
     const [room,setRoom]=useState('');
     const [selectedDate, setSelectedDate] = useState(null);
     const [Food,setFood]=useState([])   
+    const [showTimeId, setShowTimeId] = useState([]);
+    const [selectedShowtimeId, setSelectedShowtimeId] = useState(null);
+    const [selectedShowtime, setSelectedShowtime] = useState(''); // Thay đổi thành thời gian chiếu được chọn
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [trailerUrl, setTrailerUrl] = useState(''); // State để lưu link trailer
+    const [seatid,setSeatid]= useState([])
+    const [foodId, setFoodId] = useState([]); 
+    const [foodin4, setFoodin4] = useState([]);
     
+    const navigate = useNavigate();
     let lastDisplayedDate = '';
-
     const user_id = localStorage.getItem('user_id')
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
     console.log(movie_id)
-    useEffect(()=>{
-        const getMovieByID = async()=>{
+    const openModal = (link) => {
+        setTrailerUrl(link);
+        setIsModalOpen(true);
+        console.log("link",link)
+    };
+    useEffect(() => {
+        const getMovieByID = async () => {
             try {
-                const res = await axios.get(
-                    `http://localhost:8080/v1/getMovieByID/${movie_id}`
-                )
-                console.log(res.data)
-                setMovies(res.data); 
-                              
-                console.log(setTitle)
-                const seatsRes = await axios.get('http://localhost:8080/v1/getSeats');
-                setSeats(seatsRes.data);
-                console.log(seatsRes.data);
-                const showtimeall= await axios.get('http://localhost:8080/v1/getShowtimes');
+                const res = await axios.get(`http://localhost:8080/v1/getMovieByID/${movie_id}`);
+                setMovies(res.data);
+                console.log("Movie Details:", res.data);
+                
+                const showtimeall = await axios.get('http://localhost:8080/v1/getShowtimes');
                 setShowTimeAll(showtimeall.data);
-                console.log(showtimeall.data)
-                const id="66fd03dd6aeb1422260149ce"
-                const showtime = await axios.get(`http://localhost:8080/v1/getShowtimeByID/${id}`);
-                console.log(showtime.data)
-                setShowTime(showtime.data);
-                setAddress(showtime.data.cinema_id.address);
-                setNameCinema(showtime.data.cinema_id.name);
-                setRoom(showtime.data.room_id.name);
                 
-                
+                console.log("All Showtimes:", showtimeall.data);
+
+                const showtimeData = showtimeall.data.map(async (st) => {
+                    const showtimeRes = await axios.get(`http://localhost:8080/v1/getShowtimeByID/${st._id}`);
+                    const seatsRes = await axios.get(`http://localhost:8080/v1/getSeatTimeByShowtimeID/${st._id}`);
+                    console.log("Seats for Showtime ID:", st._id, seatsRes.data);
+                    return { showtime: showtimeRes.data, seats: seatsRes.data };
+                });
+
+                const showtimeDetail = await Promise.all(showtimeData);
+                setShowTimeId(showtimeDetail);
+                console.log("Individual Showtimes with Seats:", showtimeDetail);
+                setAddress(showtimeDetail.showtime.cinema_id.address);
+
+                if (showtimeDetail.length > 0) {
+                    setNameCinema(showtimeDetail[0].showtime.cinema_id.name);
+                    setRoom(showtimeDetail[0].showtime.room_id.name);
+                   
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
-
             }
-        }
+        };
+
         const getFood = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/v1/Food/getFood');
                 setFood(response.data.Food);
-                setFoodCount(Array(response.data.Food.length).fill(0)); // Khởi tạo FoodCount với số lượng tương ứng
-                console.log("food", response.data.Food);
+                setFoodCount(Array(response.data.Food.length).fill(0));
+                console.log("Food:", response.data.Food);
             } catch (error) {
                 console.error("Error fetching food:", error);
             }
         };
+
         getFood();
         getMovieByID();
-    },[])
-    
-    
-    const handleSeatClick = (seat) => {
-        setSelectedSeats((prevSelectedSeats) =>
-            prevSelectedSeats.includes(seat)
-                ? prevSelectedSeats.filter((s) => s !== seat) // Bỏ chọn nếu đã chọn
-                : [...prevSelectedSeats, seat] // Thêm nếu chưa chọn
-        );
-    
-        // Cập nhật showOrderDetail
-        if (selectedSeats.includes(seat)) {
-            // Nếu ghế đang được bỏ chọn, kiểm tra xem có ghế nào còn chọn không
-            if (selectedSeats.length === 1) {
-                setShowOrderDetail(false); // Nếu không còn ghế nào được chọn, ẩn order
-            }
-        } else {
-            // Nếu ghế mới được chọn
-            setShowOrderDetail(true); // Luôn hiển thị order khi có ghế được chọn
+        
+    }, [movie_id]);
+
+    const handleShowtimeClick = async (showtimeId) => {
+        const seatsRes = await axios.get(`http://localhost:8080/v1/getSeatTimeByShowtimeID/${showtimeId}`);
+        setSeats(seatsRes.data);
+        setSelectedShowtimeId(showtimeId);
+
+        // Lưu thời gian chiếu được chọn
+        const selectedShowtimeData = showTimeId.find(showtime => showtime.showtime._id === showtimeId);
+        if (selectedShowtimeData) {
+            const showtimeUTC = new Date(selectedShowtimeData.showtime.showtime_start);
+            const formattedTime = showtimeUTC.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false });
+            setSelectedShowtime(formattedTime); // Lưu thời gian chiếu
         }
     };
     
+    const handleBooking = () => {
+        const orderDetails = {
+            title: getMovies.title,
+            nameCinema,
+            room,
+            selectedSeats,
+            selectedShowtime,   
+            totalFoodCount,
+            totalPrice,
+            selectedShowtimeId,
+            seatid,
+            foodId,
+            FoodCount
+        };
+        console.log(orderDetails);
+        navigate('/payment', { state: orderDetails }); // 
+    };
+    const handleSeatClick = (seat, seatId) => {
+        setSelectedSeats((prevSelectedSeats) => {
+            const isSelected = prevSelectedSeats.includes(seat);
+            const updatedSeats = isSelected
+                ? prevSelectedSeats.filter((s) => s !== seat) // Bỏ chọn nếu đã chọn
+                : [...prevSelectedSeats, seat]; // Thêm nếu chưa chọn
+    
+            // Cập nhật showOrderDetail dựa trên updatedSeats
+            setShowOrderDetail(updatedSeats.length > 0); // Hiển thị order khi có ghế được chọn
+    
+            return updatedSeats; // Trả về danh sách ghế cập nhật
+        });
+    
+        // Cập nhật seatIds tương ứng
+        setSeatid((prevSeatIds) => {
+            const isSeatIdSelected = prevSeatIds.includes(seatId);
+            return isSeatIdSelected
+                ? prevSeatIds.filter((id) => id !== seatId) // Bỏ chọn nếu đã chọn
+                : [...prevSeatIds, seatId]; // Thêm nếu chưa chọn
+        });
+    };
+    
+    const in4Food = (foodId)=>{
+        setFoodin4(foodId)
+        console.log("llll",foodId)
+    }
    
-    const increaseFood = (index) => {
+    const increaseFood = (index, foodid) => {
         setFoodCount((prevCounts) => {
             const newCounts = [...prevCounts];
             newCounts[index] += 1; // Tăng số lượng cho món ăn cụ thể
-            return newCounts;
+    
+            // Cập nhật foodId
+            setFoodId((prevFoodIds) => {
+                // Kiểm tra xem foodId đã có trong mảng chưa
+                const existingFoodId = prevFoodIds.find(item => item.foodid === foodid);
+                if (!existingFoodId) {
+                    // Nếu foodId chưa có, thêm mới
+                    return [...prevFoodIds, { foodid, count: newCounts[index] }]; // Lưu số lượng
+                } else {
+                    // Nếu foodId đã có, cập nhật số lượng
+                    return prevFoodIds.map(item => 
+                        item.foodid === foodid ? { ...item, count: newCounts[index] } : item
+                    );
+                }
+            });
+    
+            return newCounts; // Trả về mảng số lượng cập nhật
         });
     };
+    
+    
+    
+    
 
-    const decreaseFood = (index) => {
+    
+
+    
+    const closeModal = () => setIsModalOpen(false);
+    const decreaseFood = (index,foodid) => {
         setFoodCount((prevCounts) => {
             const newCounts = [...prevCounts];
             if (newCounts[index] > 0) {
                 newCounts[index] -= 1; // Giảm số lượng cho món ăn cụ thể
+                setFoodId((prevFoodIds) => {
+                    if (newCounts[index] === 0) {
+                        return prevFoodIds.filter((id) => id !== foodid); // Bỏ foodId nếu số lượng bằng 0
+                    }
+                    return prevFoodIds; // Trả về danh sách không thay đổi nếu số lượng > 0
+                });
             }
             return newCounts;
         });
     };
+
     const totalFoodCount = FoodCount.reduce((total, count) => total + count, 0);
     
     const getShowTimesByDate = (date) => {
@@ -148,7 +234,6 @@ const totalSeatPrice = selectedSeats.reduce((total, seat) => {
 const totalPrice = totalSeatPrice + totalFoodPrice; // Tổng giá ghế và giá đồ ăn
 console.log(totalFoodPrice);
 
-console.log(totalFoodPrice)
         return (
         <div className={cx('container')}>
             <div className={cx('info-movie')}>
@@ -178,7 +263,10 @@ console.log(totalFoodPrice)
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faUserCheck} />
-                                        <div className={cx('limit')}>Nhãn phim: </div>
+                                        <div className={cx('limit')}>
+                                            Nhãn phim: {getMovies.limit ? `${getMovies.limit}+` : ''}
+                                        </div>
+
                                     </div>
                                 </div> 
                                                       {/* Thông tin */}
@@ -200,9 +288,10 @@ console.log(totalFoodPrice)
                                     <div className={cx('description')}> {getMovies.description} </div>                                                                     
                                 </div>
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
-                                    <div className='info-group d-flex'>
+                                    <div className='info-group d-flex' >
                                         <FontAwesomeIcon className={cx('icon-trailer','pe-2','pt-1')} icon={faTv} />
-                                        <div className={cx('trailer')} style={{ textDecoration: 'underline',cursor:'pointer' }}>Xem Trailer</div>
+                                        <div className={cx('trailer')} style={{ textDecoration: 'underline',cursor:'pointer' }} onClick={() => openModal(getMovies.trailer)}>Xem Trailer</div>
+                                                     <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
                                     </div>                                                                     
                                 </div>                                       
                             </div>
@@ -269,6 +358,8 @@ console.log(totalFoodPrice)
                                                 type='button' 
                                                 className={cx('btn-time', { active: index === 0 })} 
                                                 key={show._id}
+                                                onClick={() => handleShowtimeClick(show._id)}
+
                                             >
                                                 {formattedHour}
                                             </button>
@@ -285,18 +376,20 @@ console.log(totalFoodPrice)
         </div>
           
             {/* ghe */}
-            <div className={cx('seat')}>
-                <div className={cx('wrap-seat')}>
-                    <div className={cx('screen')}>
-                        <img src={images.screen} className={cx('screen-img')} alt="Screen" />
-                        <h2>MÀN HÌNH</h2>
-                    </div>
-                    <div className={cx('all-seat')}>
-                        <div className='row'>
-                            <div className='col-2'></div>
-                            <div className='col-8'>
+            
+            {selectedShowtimeId && (
+    <div className={cx('seat')}>
+        <div className={cx('wrap-seat')}>
+            <div className={cx('screen')}>
+                <img src={images.screen} className={cx('screen-img')} alt="Screen" />
+                <h2>MÀN HÌNH</h2>
+            </div>
+            <div className={cx('all-seat')}>
+                <div className='row'>
+                    <div className='col-2'></div>
+                    <div className='col-8'>
                         {seatRows.map((rowName, rowIndex) => {
-                            // Tìm các ghế trong hàng hiện tại
+                            // Find seats in the current row
                             const availableSeatsInRow = seats.filter(seat => seat.seat_number.startsWith(rowName));
 
                             return (
@@ -304,32 +397,31 @@ console.log(totalFoodPrice)
                                     <div className={cx('seat-name', 'me-4')}>{rowName}</div>
                                     <div className={cx('group-btn-seat')}>
                                         {availableSeatsInRow.map((seatInfo) => {
-                                            const seatNumber = seatInfo.seat_number; // Số ghế từ seatInfo
-
+                                            const seatNumber = seatInfo.seat_number;
+                                            const seatId = seatInfo._id;
                                             return (
                                                 <button
                                                     key={seatNumber}
                                                     type="button"
                                                     className={cx('num-seat', {
-                                                        'vip-seat': seatInfo.seat_type === 'vip' || seatInfo.seat_type === 'Vip',
+                                                        'vip-seat': seatInfo.seat_type.toLowerCase() === 'vip',
                                                         'selected-seat': selectedSeats.includes(seatNumber),
-                                                        'occupied': seatInfo.seat_status, // Thêm lớp cho ghế đã được đặt
+                                                        'occupied': seatInfo.seat_status,
                                                     })}
                                                     style={{
                                                         backgroundColor: selectedSeats.includes(seatNumber)
-                                                            ? '#F9E400' // Màu vàng cho ghế đã chọn
-                                                            : seatInfo.seat_status // Nếu ghế đã được đặt
-                                                                ? '#f5004f' // Màu cho ghế đã đặt
-                                                                : '', // Màu mặc định
-                                                        color: (seatInfo.seat_status) ? '#000' : '',
+                                                            ? '#F9E400' // Yellow for selected seats
+                                                            : seatInfo.seat_status
+                                                                ? '#f5004f' // Red for occupied seats
+                                                                : '', // Default color
+                                                        color: seatInfo.seat_status ? '#000' : '',
                                                     }}
                                                     onClick={() => {
-                                                        // Chỉ cho phép chọn ghế chưa được đặt
                                                         if (!seatInfo.seat_status) {
-                                                            handleSeatClick(seatNumber);
+                                                            handleSeatClick(seatNumber,seatId);
                                                         }
                                                     }}
-                                                    disabled={seatInfo.seat_status} // Vô hiệu hóa nút cho ghế đã đặt
+                                                    disabled={seatInfo.seat_status} // Disable button for occupied seats
                                                 >
                                                     {seatNumber}
                                                 </button>
@@ -340,37 +432,39 @@ console.log(totalFoodPrice)
                             );
                         })}
                     </div>
-
-                            <div className='col-2'></div>
-                        </div>
-                    </div>
-
-                </div>
-                <div className={cx('type-seat')}>
-                    <div className='row'>
-                        <div className='col-1'></div>
-                            <div className={cx('wrap-type','col-10')}>
-                                <div className={cx('status-seat')}>
-                                    <div className={cx('btn-casual')} style={{ backgroundColor: '#d9d9d9' }}></div>
-                                    <h3>Ghế thường</h3>
-                                </div>
-                                <div className={cx('status-seat')}>
-                                    <div className={cx('btn-vip')} style={{ backgroundColor: '#FFAF00' }}></div>
-                                    <h3>Ghế VIP</h3>
-                                </div>
-                                <div className={cx('status-seat')}>
-                                    <div className={cx('btn-choose')} style={{ backgroundColor: '#F9E400' }}></div>
-                                    <h3>Ghế chọn</h3>
-                                </div>
-                                <div className={cx('status-seat')}>
-                                    <div className={cx('btn-placed')} style={{ backgroundColor: '#F5004F' }}></div>
-                                    <h3>Ghế đã đặt</h3>
-                                </div>
-                            </div>
-                        <div className='col-1'></div>
-                    </div>
+                    <div className='col-2'></div>
                 </div>
             </div>
+        </div>
+        
+        {/* Seat type legend */}
+        <div className={cx('type-seat')}>
+            <div className='row'>
+                <div className='col-1'></div>
+                <div className={cx('wrap-type', 'col-10')}>
+                    <div className={cx('status-seat')}>
+                        <div className={cx('btn-casual')} style={{ backgroundColor: '#d9d9d9' }}></div>
+                        <h3>Ghế thường</h3>
+                    </div>
+                    <div className={cx('status-seat')}>
+                        <div className={cx('btn-vip')} style={{ backgroundColor: '#FFAF00' }}></div>
+                        <h3>Ghế VIP</h3>
+                    </div>
+                    <div className={cx('status-seat')}>
+                        <div className={cx('btn-choose')} style={{ backgroundColor: '#F9E400' }}></div>
+                        <h3>Ghế chọn</h3>
+                    </div>
+                    <div className={cx('status-seat')}>
+                        <div className={cx('btn-placed')} style={{ backgroundColor: '#F5004F' }}></div>
+                        <h3>Ghế đã đặt</h3>
+                    </div>
+                </div>
+                <div className='col-1'></div>
+            </div>
+        </div>
+    </div>
+)}
+
             <div className={cx('food')}>
                 <h1>CHỌN BẮP NƯỚC</h1>
 
@@ -389,11 +483,11 @@ console.log(totalFoodPrice)
                                         <div className={cx('des')}>Loại: {Element.category}</div>
                                         <div className={cx('price')}>Giá: {Element.price.toLocaleString()} VNĐ</div>
                                         <div className={cx('wrap-quantity')}>
-                                            <div className={cx('wrap-icon-food')} onClick={() => decreaseFood(index)}>
+                                            <div className={cx('wrap-icon-food')} onClick={() => {decreaseFood(index,Element._id)} }>
                                                 <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
                                             </div>
                                             <div className={cx('count')}>{FoodCount[index]}</div>
-                                            <div className={cx('wrap-icon-food')} onClick={() => increaseFood(index)}>
+                                            <div className={cx('wrap-icon-food')} onClick={() => increaseFood(index,Element._id)}>
                                                 <FontAwesomeIcon className={cx('icon-plus')} icon={faPlus} />
                                             </div>
                                         </div>
@@ -428,15 +522,17 @@ console.log(totalFoodPrice)
                 <div className={cx('room-seat-time', 'd-flex')}>
                     <div className={cx('room', 'me-5')}>Phòng chiếu: {room}</div>
                     <div className={cx('number-seat', 'me-5')}>Số ghế: {selectedSeats.join(', ')}</div>
-                    <div className={cx('time')}>Thời gian chiếu: 8:00</div>
-                </div>
+                    <div className={cx('time')}>Thời gian chiếu: {selectedShowtime || 'Chưa chọn'}</div>
+                    </div>
                 <div className={cx('food-order')}>Đồ ăn: {totalFoodCount} món</div>
             </div>
         </div>
         <div className='col-4'>
             <div className={cx('total', 'me-5')}>
             <h2 className={cx('total-price')}>Tạm tính: {totalPrice.toLocaleString()} VNĐ</h2>
-            <button type='button' className={cx('booking-btn')}>Đặt vé</button>
+            <button type='button' className={cx('booking-btn')} onClick={handleBooking}>
+                Đặt vé
+            </button>
             </div>
         </div>
         <div className='col-1'></div>

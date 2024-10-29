@@ -6,11 +6,11 @@ var accessKey = 'F8BBA842ECF85';
 var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 var orderInfo = 'pay with MoMo';
 var partnerCode = 'MOMO';
-var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
+var redirectUrl = 'http://localhost:3000';
 var ipnUrl = 'https://d2de-14-161-10-15.ngrok-free.app/v1/callback';
 var requestType = "payWithMethod";
-var orderId = partnerCode + new Date().getTime();
-var requestId = orderId;
+
+
 var extraData ='';
 var orderGroupId ='';
 var autoCapture =true;
@@ -19,6 +19,8 @@ var lang = 'vi';
 
 class paymentService {
     paymentCreater=async(data)=>{
+        var orderId = partnerCode + new Date().getTime();
+        var requestId = orderId;
         console.log(data)
         //before sign HMAC SHA256 with format
         //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
@@ -61,13 +63,23 @@ class paymentService {
             },
             data: requestBody
         }
-        let result
+      
         try {
-            result = await axios(opptions)
-            return result.data
+            const createResult = await axios(opptions);
+            if (createResult.data && createResult.data.payUrl) {
+                console.log("URL thanh toán MoMo:", createResult.data.payUrl);
+
+                // Gọi hàm kiểm tra trạng thái sau khi tạo thanh toán
+                setTimeout(async () => {
+                    const statusResult = await this.status({ orderId });
+                    console.log("Trạng thái thanh toán:", statusResult);
+                }, 5000); // Kiểm tra trạng thái sau 5 giây, có thể điều chỉnh thời gian này
+            }
+
+            return createResult.data;
         } catch (error) {
-            console.error('MoMo API error response:', error.response?.data);
-            throw error; 
+            console.error('Lỗi khi tạo giao dịch:', error.response?.data || error.message);
+            throw error;
         }
 
        
@@ -101,15 +113,18 @@ class paymentService {
             },
             data: requestBody
         };
-
+        
         try {
             const result = await axios(options);
+            console.log(result.data)
             return result.data; // Trả về dữ liệu của phản hồi
         } catch (error) {
             console.error('Error querying MoMo API:', error.response?.data || error.message);
             throw error; // Ném lỗi để xử lý ở nơi khác nếu cần
         }
     }
+
+    
 
 }
 

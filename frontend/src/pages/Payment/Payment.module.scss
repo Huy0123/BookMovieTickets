@@ -1,21 +1,63 @@
+
 .container{
     display: flex;
-    color: #fff;
     flex-wrap: wrap;
-    min-height:1139px ;
-    margin: 20px 135px;
-    background: #0c0c0c;
-    border-radius: 40px;
+    background:#eaeaea;
+    min-height: 70rem;
+    padding: 50px 200px;
+    
+        .movie{   
+            flex: 1;          
+            color: #444;
+            padding: 30px;
+            margin-right: 20px;
+            background: #fff;
+            min-width: 500px;
+            
+           
+        
+            .in4{
+                margin: 10px 0px;
+
+                h1{
+                    text-align: center;
+                    padding-bottom: 20px;
+                }
+                h3{
+                    padding-bottom: 10px;
+                }
+                
+            }
+            .promotion{
+            padding-top: 10px; 
+            padding-bottom: 10px; 
+             
+            }
+        }
+        .user{
+            min-width: 300px;
+            flex: 0.4;
+            background: #fff;
+            padding: 30px;
+            color:#444;
+            .in4user h1{
+                padding-bottom: 20px;
+                text-align: center;
+            }
+            .in4user h3{
+                padding-bottom: 10px;
+            }
+            button{
+                margin-top: 50px;
+                width: 90%;
+                padding: 10px;
+                background-color: #fff;
+            }
+            button:hover{
+                color: #fff;
+                background-color:#CC3333;
+            }
+
+        }
 }
-.movie{   
-    flex: 1;
-    margin: 20px 43px;
-    padding: auto;
-}
-.in4{
-    margin: 10px 0px;
-}
-.user{
-    margin: 20px 43px;
-    padding: auto;
-}
+
