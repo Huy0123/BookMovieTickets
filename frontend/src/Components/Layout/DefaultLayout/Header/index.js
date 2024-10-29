@@ -50,6 +50,7 @@ function Header() {
         const fetchUserData = async () => {
             const userId = localStorage.getItem('userId');
             const token = localStorage.getItem('userToken')
+            console.log("tk",token)
             if (userId) {
                 try {
                     const response = await axios.get(`http://localhost:8080/v1/Users/getUserbyid`, {

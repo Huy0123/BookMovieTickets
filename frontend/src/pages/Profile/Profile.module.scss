@@ -1,7 +1,7 @@
 .container {
     background-color: rgb(230, 231, 231);
     width: 100%;
-  
+    position: relative;
     .wrap-profile {
       .tool-bar {
         height: 600px;
@@ -19,6 +19,7 @@
             width: 100%; /* Sửa lại để chiếm toàn bộ chiều ngang của container */
             max-width: 400px; /* Giới hạn kích thước để không bị quá lớn */
             text-align: center;
+           
   
             .point-display {
               font-size: 20px;
@@ -26,13 +27,14 @@
             }
   
             .progress {
-              width: 100%; 
+              width: 70%; 
               height: 15px;
               background-color: #f6b554;
               border-radius: 10px;
               border: 2px solid #54d9fa;
               overflow: hidden;
-              margin-bottom: 20px;
+              margin: 10px auto;
+
   
               .progress-bar {
                 height: 100%;
@@ -88,15 +90,189 @@
       .modal-info {
         width: 100%;
         height: 600px;
-        background-color: rgb(29, 30, 30);
+        background-color: rgba(29, 30, 30, 0.751);
+        display: flex;
+        flex-direction: column;
+        align-items: center ;
+        position: relative;
         .title-info{
             color: #fff;
+            font-size: 26px;
+            margin-bottom: 30px;
         }
         .wrap-info-user{
+            width: 70%;
+          
             color: #fff;
-            
+           margin: 10px auto;
+       
+           .info-user-etc{
+            padding: 0 20px;
+           }
+            .form-info{
+                width: 100%;
+                padding: 5px 20px;
+                border-radius: 5px;
+                color: #000;
+                background-color: #fff;
+              
+            }
+          
+        }
+        .save-change{
+            position: absolute;
+            top: 90%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            transition: background-color 1s ease;
+            &:hover{
+                background-color: #f6b554;
+            }
+        }
+        // lich su giao dich
+        .histor-contain{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+          
+            .rower{
+                border: 2px solid #f6b554;
+                background-color: #fff;
+                display: flex;
+                justify-content: center;  /* Căn giữa ngang */
+                align-items: center;   
+               
+            }
+        }
+        .histor-content{
+            width: 100%;
+            overflow-y: auto;
+            scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
+            -ms-overflow-style: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center ;
+        
+            .rower{
+                border: 2px solid #f6b554;
+                background-color: #fff;
+                display: flex;
+                justify-content: center;  
+                align-items: center;   
+               
+            }
+        }
+        .side{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            .left,.right{
+                
+                  
+                    padding: 0px;
+                background-color: #f6cb55;
+                .modal-voucher{
+                    width:100%;
+                    
+                     max-height: 500px;
+                    display: flex;
+                    flex-direction: column;
+                    overflow-y : auto;
+                    
+                    .voucher{
+                        background-color: #f6b554;
+                        width: 95%;
+                        margin: 10px ;
+                        height: 100%;
+                        display: flex;
+                        justify-content: space-between  ;
+                        padding: 10px 15px;
+                        align-items: center;
+                        transition: 0.8 ease;
+                        border-radius: 5px;
+                        .wrap-img{
+                            width: 25%;
+                            max-width: 130px;
+                            overflow: hidden; // Giới hạn nội dung hiển thị trong k
+                            .img-vou{
+                               width: 100%;
+                               
+                               
+                            }
+                        }
+                     
+                        .vou-info{
+                            width: 55%;
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                         
+                            justify-content: space-between;
+                            h4{
+                                font-weight: bold;  
+                                font-size: 20px;
+                            }
+                            p{
+                                margin: 0;
+                            }
+                        }
+                        .btn-poi{
+                            width: 15%;
+                            height: 20%;
+                            border-radius: 15px;
+                            &:hover{
+                                background-color: #fefda9;
+                            }
+                        }
+                        &:hover .img-vou{
+                              transform: scale(1.1);
+                           
+                        }
+                         &:hover {
+                            
+                          box-shadow: 0px 2px 5px #54d9fa;
+                      }
+                    }
+                }
+            }
+          
+            .mid{
+              
+                background-color: #fefda900;
+               
+                max-height: 510px;
+                position: absolute;
+                right: 0%;
+                top :-8% ;
+                padding: 5px;
+                margin: 2px;
+            }
         }
       }
+   
     }
+    .modal-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      }
+    }
+    
+
   }
   
