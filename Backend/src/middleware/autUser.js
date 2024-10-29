@@ -7,6 +7,7 @@ const autUser = async(req, res, next) => {
     try {
         if (req.headers && req.headers.authorization) {
             const token = req.headers.authorization.split(' ')[1]
+            console.log("ádasdad",token)
             if (!token) {
                 return res.status(403).json({
                     message: "Bạn chưa đăng nhập!"
