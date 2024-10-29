@@ -332,44 +332,7 @@ function Profile() {
                                         <button className={cx('btn-poi')} onClick={() => handleYNClick('Giảm 20%')}>
                                         <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />1000</button>
                                     </div>
-                                    <div className={cx('voucher')}>
-                                        <div className={cx('wrap-img')}>
-                                              <img className={cx('img-vou')} src='https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'/>
-                                        </div>
-                                       <div className={cx('vou-info')}>
-                                            <div>
-                                                <h4 className={cx('ten-ma')}>Giảm 20%</h4>
-                                                <p className={cx('mota')}>qa d adwdas đư awd ffe wd sd qưa</p>
-                                            </div>
-                                            <div className='fs-5'>
-                                                <p className={cx('datestart')}>Ngày bắt đầu: 20/10/2024</p>
-                                                <p className={cx('dateend')}>Ngày kết thúc: 19/10/2024</p>
-                                            </div>
-                                            
-
-                                        </div>
-                                        <button className={cx('btn-poi')} onClick={() => handleYNClick('Giảm 20%')}>
-                                        <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />1000</button>
-                                    </div>
-                                    <div className={cx('voucher')}>
-                                        <div className={cx('wrap-img')}>
-                                              <img className={cx('img-vou')} src='https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'/>
-                                        </div>
-                                       <div className={cx('vou-info')}>
-                                            <div>
-                                                <h4 className={cx('ten-ma')}>Giảm 20%</h4>
-                                                <p className={cx('mota')}>qa d adwdas đư awd ffe wd sd qưa</p>
-                                            </div>
-                                            <div className='fs-5'>
-                                                <p className={cx('datestart')}>Ngày bắt đầu: 20/10/2024</p>
-                                                <p className={cx('dateend')}>Ngày kết thúc: 19/10/2024</p>
-                                            </div>
-                                            
-
-                                        </div>
-                                        <button className={cx('btn-poi')} onClick={() => handleYNClick('Giảm 20%')}>
-                                        <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />1000</button>
-                                    </div>
+                                 
                                 </div>
                             </div>
                         )}
@@ -380,7 +343,7 @@ function Profile() {
                             </div>
                         )}
                             <div className={cx('mid')}>
-                                 <button className={cx('btn-traid-code')} onClick={() => handleSwichvouvher('left')}>Mã của tôi</button>
+                                 <button className={cx('btn-traid-code')} onClick={() => handleSwichvouvher('left')}>Đổi mã</button>
                                 <button className={cx('btn-my-code')} onClick={() => handleSwichvouvher('right')}>Mã của tôi</button>
                             </div>
                         </div>
