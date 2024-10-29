@@ -21,6 +21,7 @@ function Profile() {
     const [email, setEmail] = useState('')
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('userId'));
     const [allVouncher, setAllVouncher] = useState('')
+ 
     // Handle point redemption
     // const handleRedeem = () => {
     //     if (points >= 6000) {
@@ -121,7 +122,7 @@ function Profile() {
         setShowModal(false);
         setShowYNModal(false);
       };
-     
+
     return (
         <div className={cx('container', 'py-4')}>
             <div className={cx('wrap-profile', 'row justify-content-center')}>
@@ -333,6 +334,26 @@ function Profile() {
                         {activeTabVoucher === 'right' && (
                             <div className={cx('right')}>
                             <div className={cx('modal-voucher')}>
+                            <div className={cx('voucher')}>
+                                        <div className={cx('wrap-img')}>
+                                            <img 
+                                                className={cx('img-vou')} 
+                                                src={'https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'} 
+                                                alt={`Voucher ${'Giảm 20%'}`}
+                                            />
+                                        </div>
+                                        <div className={cx('vou-info')}>
+                                            <div>
+                                                <h4 className={cx('ten-ma')}>{ 'Giảm 20%'}</h4>
+                                                <p className={cx('mota')}>{ 'Mô tả voucher không có sẵn'}</p>
+                                            </div>
+                                            <div className='fs-5'>
+                                                <p className={cx('datestart')}>Ngày bắt đầu: {new Date ().toLocaleDateString() }</p>
+                                                <p className={cx('dateend')}>Ngày kết thúc: {new Date ().toLocaleDateString() }</p>
+                                            </div>
+                                        </div>
+                                     
+                                    </div>
                             </div>  
                             </div>
                         )}
