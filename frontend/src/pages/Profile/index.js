@@ -19,9 +19,12 @@ function Profile() {
     const [fullname,setFullname] = useState('');
     const [num, setNum] = useState('');
     const [email, setEmail] = useState('')
+    const [promotion, setPromotion] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('userId'));
     const [allVouncher, setAllVouncher] = useState('')
- 
+    const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('userToken');
     // Handle point redemption
     // const handleRedeem = () => {
     //     if (points >= 6000) {
@@ -34,8 +37,7 @@ function Profile() {
     useEffect(() => {
         
         const fetchUserData = async () => {
-            const userId = localStorage.getItem('userId');
-            const token = localStorage.getItem('userToken')
+            
             if (userId) {
                 try {
                     const response = await axios.get(`http://localhost:8080/v1/Users/getUserbyid`, {
@@ -51,16 +53,18 @@ function Profile() {
                     setNum(response.data.userFound.num);
                     setEmail(response.data.userFound.email);
                     setPoints(response.data.userFound.point);
+                    setPromotion(response.data.userFound.promotions_id);
+                    console.log("bb",response.data.userFound.promotions_id)
                     setIsLoggedIn(true);
                     const resvouncher = await axios.get(`http://localhost:8080/v1/getPoints`);
-                    setAllVouncher(resvouncher.data)
+                    setAllVouncher(resvouncher.data);
+                    
                     console.log(resvouncher.data)
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                 }
             }
         };
-       
        
     
         fetchUserData();
@@ -104,18 +108,29 @@ function Profile() {
 
     // Handle voucher redemption (dummy example)
     const handleYNClick = (voucher) => {
-        setModalContent(`Bạn có đồng ý đổi mã không`);
+        setModalContent(`Bạn có đồng ý  đổi mã ${voucher} không`);
         setShowYNModal(true);
+        
       };
     
-    const handleVoucherClick = (voucher) => {
-        if (points >= 1000) {
-            setPoints(points - 1000);
-          setModalContent(`Đổi mã ${voucher} thành công!`);
-        } else {
-          setModalContent(`Đổi mã ${voucher} thất bại. Bạn không đủ điểm.`);
+    const handleVoucherClick = async (pointId) => {
+        setSelectedVoucherId(pointId);
+
+        console.log(pointId);
+        const data = {
+            pointId:pointId,
+            userId: userId
         }
-        setShowModal(true);
+       try{
+        const res = await axios.post(`http://localhost:8080/v1/exchange`,data);
+            console.log(res.data);
+            setModalContent(`Bạn đẫ đổi mã ${res.data.point.title} thành công`);
+            setShowModal(true);
+
+       } catch(error)  {
+            throw(error)
+       }
+        
       };
     
       const closeModal = () => {
@@ -320,10 +335,13 @@ function Profile() {
                                         </div>
                                         <button 
                                             className={cx('btn-poi')} 
-                                            onClick={() => handleYNClick(item.title || 'Giảm 20%')}
+                                            onClick={() => {
+                                                handleYNClick(item.title || 'Giảm 20%');
+                                                setSelectedVoucherId(item._id);
+                                            }}
                                         >
                                             <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />
-                                            {item.points || 1000}
+                                            {item.points }
                                         </button>
                                     </div>
                                 ))}
@@ -334,28 +352,32 @@ function Profile() {
                         {activeTabVoucher === 'right' && (
                             <div className={cx('right')}>
                             <div className={cx('modal-voucher')}>
-                            <div className={cx('voucher')}>
+                            {promotion.map((item, index) => (
+                                <div key={index} className={cx('voucher')}>
                                         <div className={cx('wrap-img')}>
                                             <img 
                                                 className={cx('img-vou')} 
-                                                src={'https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'} 
-                                                alt={`Voucher ${'Giảm 20%'}`}
+                                                src={item.image || 'https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'} 
+                                                alt={`Voucher ${item.title || 'Giảm 20%'}`}
                                             />
                                         </div>
                                         <div className={cx('vou-info')}>
                                             <div>
-                                                <h4 className={cx('ten-ma')}>{ 'Giảm 20%'}</h4>
-                                                <p className={cx('mota')}>{ 'Mô tả voucher không có sẵn'}</p>
+                                                <h4 className={cx('ten-ma')}>{item.title || 'Giảm 20%'}</h4>
+                                                <p className={cx('mota')}>{item.description || 'Mô tả voucher không có sẵn'}</p>
                                             </div>
                                             <div className='fs-5'>
-                                                <p className={cx('datestart')}>Ngày bắt đầu: {new Date ().toLocaleDateString() }</p>
-                                                <p className={cx('dateend')}>Ngày kết thúc: {new Date ().toLocaleDateString() }</p>
+                                                <p className={cx('datestart')}>Ngày bắt đầu: {new Date (item.start_date).toLocaleDateString() }</p>
+                                                <p className={cx('dateend')}>Ngày kết thúc: {new Date (item.end_date).toLocaleDateString() }</p>
                                             </div>
                                         </div>
-                                     
-                                    </div>
+                                        
+                                </div>
+                                ))}
                             </div>  
+                            
                             </div>
+                            
                         )}
                             <div className={cx('mid')}>
                                  <button className={cx('btn-traid-code')} onClick={() => handleSwichvouvher('left')}>Đổi mã</button>
@@ -383,7 +405,7 @@ function Profile() {
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
                         <p>{modalContent}</p>
-                        <button className={cx('btn-confirm')} onClick={() => {closeModal();handleVoucherClick('da'); }}>
+                        <button className={cx('btn-confirm')} onClick={() => {closeModal();handleVoucherClick(selectedVoucherId); }}>
                             Đồng ý
                         </button>
                         <button className={cx('btn-cancel')} onClick={closeModal}>
