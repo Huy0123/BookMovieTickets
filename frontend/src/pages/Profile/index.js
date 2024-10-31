@@ -7,6 +7,7 @@ import { faUser ,faStar, faCartShopping, faArrowsRotate, faLock} from '@fortawes
 import axios
  from 'axios';
 
+
 const cx = classNames.bind(styles);
 
 function Profile() {
@@ -25,15 +26,9 @@ function Profile() {
     const [selectedVoucherId, setSelectedVoucherId] = useState(null);
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('userToken');
-    // Handle point redemption
-    // const handleRedeem = () => {
-    //     if (points >= 6000) {
-    //         setPoints(points - 6000);
-    //         alert('Bạn đã đổi 1000 điểm thành công!');
-    //     } else {
-    //         alert('Không đủ điểm để đổi!');
-    //     }
-    // };
+    const [resetModal, setResetModal] = useState(false); 
+
+  
     useEffect(() => {
         
         const fetchUserData = async () => {
@@ -112,7 +107,7 @@ function Profile() {
         setShowYNModal(true);
         
       };
-    
+     
     const handleVoucherClick = async (pointId) => {
         setSelectedVoucherId(pointId);
 
@@ -125,19 +120,25 @@ function Profile() {
         const res = await axios.post(`http://localhost:8080/v1/exchange`,data);
             console.log(res.data);
             setModalContent(`Bạn đẫ đổi mã ${res.data.point.title} thành công`);
-            setShowModal(true);
+            setPoints(res.data.remainingPoints);
+            console.log(res.data.remainingPoints)
 
+            setShowModal(true);
        } catch(error)  {
             throw(error)
        }
         
       };
-    
+  
       const closeModal = () => {
         setShowModal(false);
         setShowYNModal(false);
+        setResetModal(false);
       };
-
+      const handleModalReset = () => {
+        setResetModal(true);
+    };
+    
     return (
         <div className={cx('container', 'py-4')}>
             <div className={cx('wrap-profile', 'row justify-content-center')}>
@@ -153,7 +154,7 @@ function Profile() {
                                     <div
                                         className={cx('progress-bar')}
                                         role="progressbar"
-                                        style={{ width: `${(points / 100000) * 100}%` }}
+                                        style={{ width: `${(points / 10000000) * 100}%` }}
                                         aria-valuenow={points}
                                         aria-valuemin="0"
                                         aria-valuemax="10000"
@@ -187,8 +188,8 @@ function Profile() {
                             </div>
                         </div>
                         <div className={cx('reset-pass','row')}>
-                            <div className={cx('wrap-pass')}>
-                                    <button className= {cx('btn-reset-pass')}>
+                            <div className={cx('wrap-pass')} onClick={handleModalReset} >
+                                    <button className= {cx('btn-reset-pass')} >
                                     <FontAwesomeIcon className="fs-3 me-2" icon={faLock} />Đổi mật khẩu</button>
                             </div>
                         </div>
@@ -242,7 +243,7 @@ function Profile() {
                     <div className={cx('modal-info','modal-histor', 'border p-4')}>
                     <h3 className={cx('title-info')}>THÔNG TIN THANH TOÁN</h3>
 
-                        <div className={cx('histor-contain')}>
+                        <div className={cx('histor-contain','main-contain')}>
                             <div className='w-100 row'>
 
                           
@@ -353,7 +354,7 @@ function Profile() {
                             <div className={cx('right')}>
                             <div className={cx('modal-voucher')}>
                             {promotion.map((item, index) => (
-                                <div key={index} className={cx('voucher')}>
+                                <div key={index} className={cx('voucher','for-right')}>
                                         <div className={cx('wrap-img')}>
                                             <img 
                                                 className={cx('img-vou')} 
@@ -389,9 +390,67 @@ function Profile() {
                 )}
                 </div>
             </div>
+            {resetModal && (
+                <div className={cx('modal-wrapper')}>
+                    <div className={cx('modal-content')}>
+                    <div className={cx('wrap-pass')}>
+                      <h4 className={cx('title-pass')}>MẬT KHẨU CŨ</h4>
+                      <input 
+                        type="text" 
+                        id="fullname" 
+                        name="fullname" 
+                        value={''}
+                        onChange={(event) => setFullname(event.target.value)} 
+
+                       
+
+                        className={cx('fulname','from-pass')}     
+                      />
+                      </div>  
+                      <div className={cx('wrap-pass')}>
+                      <h4 className={cx('title-pass')}>MẬT KHẨU MỚI</h4>
+                      <input 
+                        type="text" 
+                        id="fullname" 
+                        name="fullname" 
+                        value={''}
+                        onChange={(event) => setFullname(event.target.value)} 
+
+                       
+
+                        className={cx('fulname','form-info')}     
+                      />
+                      </div>  
+                      <div className={cx('wrap-pass')}>
+                      <h4 className={cx('title-pass')}>NHẬP LẠI MẬT KHẨU MỚI</h4>
+                      <input 
+                        type="text" 
+                        id="fullname" 
+                        name="fullname" 
+                        value={''}
+                        onChange={(event) => setFullname(event.target.value)} 
+
+                       
+
+                        className={cx('fulname','form-pass')}     
+                      />
+                      </div>  
+                      
+                        <button className={cx('btn-confirm')} onClick={closeModal}>
+                            Đồng ý
+                        </button>
+                        <button className={cx('btn-cancel')} onClick={closeModal}>
+                            Hủy
+                        </button>
+                    </div>
+                </div>
+            )}
+         
+      
             {showModal && (
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
+                     
                         <p>{modalContent}</p>
                         <button className={cx('btn-cancel')} onClick={closeModal}>
                             Đóng
@@ -404,6 +463,7 @@ function Profile() {
             {showYN && (
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
+
                         <p>{modalContent}</p>
                         <button className={cx('btn-confirm')} onClick={() => {closeModal();handleVoucherClick(selectedVoucherId); }}>
                             Đồng ý
@@ -414,6 +474,7 @@ function Profile() {
                     </div>
                 </div>
             )}
+            
         </div>
     );
 }
