@@ -1,0 +1,61 @@
+
+.container{
+    background:#eaeaea;
+    padding: 50px 0;
+    .wrap{
+        background-color: #fff;
+        border-radius: 5px;
+        border: 1px solid #999;
+        .thank{
+            width: 100%;
+            display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 15px;
+          .img-tks{
+                width: 120px;
+                
+            }
+        }
+        .movie{   
+            color: #444;
+            margin-right: 20px;
+            background: #fff;
+            margin-top: 10px;
+           
+        
+            .in4{
+                margin: 10px 30px;
+
+                h1{
+                    text-align: center;
+                    padding-bottom: 20px;
+                }
+                h3{
+                    padding-bottom: 10px;
+                }
+                .food{
+                    display: flex;
+                    gap: 10px;
+                }
+                .wrap-btn{
+                    display: flex;
+                    justify-content: center;                    
+                    .btn-back{
+                        width: 160px;
+                        height: 40px;
+                        border-radius: 5px;
+                        background-color:#43e97b;
+                        &:hover{
+                            background-color: #20b759;
+                        }
+                    }
+                }
+                
+            }
+           
+        }
+        
+    }
+}
+

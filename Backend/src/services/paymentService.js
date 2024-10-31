@@ -1,4 +1,11 @@
 //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
+
+const OrdersModel = require('../models/OrdersModel.js')
+const PaymentModel = require('../models/PaymentModel.js')
+const SendEmailService = require('../services/SendEmailService.js')
+const SeatTimeModel = require('../models/SeatTime.js');
+const QRCode = require('qrcode'); 
+const UserModel = require('../models/userModel.js')
 const crypto = require('crypto');
 const axios = require('axios');
 //parameters
@@ -6,20 +13,18 @@ var accessKey = 'F8BBA842ECF85';
 var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 var orderInfo = 'pay with MoMo';
 var partnerCode = 'MOMO';
-var redirectUrl = 'http://localhost:3000';
-var ipnUrl = 'https://d2de-14-161-10-15.ngrok-free.app/v1/callback';
+var redirectUrl = 'http://localhost:3000/thanks';
+var ipnUrl = 'https://4072-14-161-10-15.ngrok-free.app/v1/Payment/callback';
 var requestType = "payWithMethod";
-
-
 var extraData ='';
 var orderGroupId ='';
 var autoCapture =true;
 var lang = 'vi';
-
+  
 
 class paymentService {
     paymentCreater=async(data)=>{
-        var orderId = partnerCode + new Date().getTime();
+        var orderId = data.orderId;
         var requestId = orderId;
         console.log(data)
         //before sign HMAC SHA256 with format
@@ -83,6 +88,34 @@ class paymentService {
         }
 
        
+    }
+    callback = async(data)=>{
+        try {
+            if(data.resultCode===0){
+                const Payment = await PaymentModel.create({
+                    order_id:data.orderId,
+                    payment_method:data.orderType,
+                    amount:data.amount,
+                    resultCode:data.resultCode,
+                    message:data.message
+                })
+                const order= await OrdersModel.findByIdAndUpdate(data.orderId,{status:true},{new:true})
+                const qrData = {           
+                    order_id:data.orderId.toString(),
+                };
+                console.log(qrData.order_id)
+                const qrCodeUrl = await QRCode.toDataURL(qrData.order_id);
+                const user = await UserModel.findById(order.user_id)
+                await SendEmailService.sendEmailWithQRCode(user, qrCodeUrl,data.orderId);
+                const seats_id = order.seats_id;
+                for (const seat_id of seats_id){
+                await SeatTimeModel.updateOne({seat_id:seat_id},{seat_status:"true"})
+            }
+                return {order,Payment,qrCodeUrl}
+            }
+        } catch (error) {
+            return error
+        }
     }
 
     status = async (data) => {

@@ -19,10 +19,13 @@ const createPayment = new Schema({
         type: Date,
         default: Date.now
     },
-    status: {
-        type: String,
-        enum: ['pending', 'completed', 'failed'], 
-        default: 'pending'
+    resultCode:{
+        type: Number,
+        required: true
+    },
+    message:{
+        type:String,
+        required: true
     }
 });
 

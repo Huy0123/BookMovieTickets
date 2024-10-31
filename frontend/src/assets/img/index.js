@@ -9,7 +9,8 @@ const images= {
     icongoogle: require('~/assets/img/gg3.jpg'),
     screen: require('~/assets/img/screen.png'),
     food: require('~/assets/img/food.png'),
-    prom: require('~/assets/img/pngegg.png')
+    prom: require('~/assets/img/pngegg.png'),
+    comple : require('~/assets/img/comple.png')
 
 }
 

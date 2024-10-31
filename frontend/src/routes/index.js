@@ -9,7 +9,7 @@ import ForgotPassword from '~/pages/Forgot';
 import ResetPassword from '~/pages/ResetPassword';
 import BookTicket from '~/pages/BookTicket';
 import Payment from '~/pages/Payment';
-import Test from '~/pages/Test';
+import Thanks from '~/pages/Thanks';
 // Không cần đăng nhập vẫn xem được
 const publicRoutes = [
     { path: '/', component:Home },
@@ -17,7 +17,7 @@ const publicRoutes = [
     { path: '/profile', component:Profile },
     { path: '/chooseCinema/:id', component:ChooseCinema},
     { path: '/bookTicket/:id', component:BookTicket},
-    { path: '/test/:id', component:Test},
+    { path: '/thanks', component:Thanks},
     { path: '/signUp', component:Signup, layout:null},
     { path: '/signIn', component:Signin, layout:null},
     { path: '/forgot', component:ForgotPassword, layout:null},

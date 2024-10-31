@@ -5,15 +5,15 @@ const userModel = require('../models/userModel.js');
 const SeatModel = require('../models/Seat.js');
 const ShowtimeModel = require('../models/Showtime.js');
 const PointModel = require('../models/Point.js');
-const SendEmailService = require('../services/SendEmailService.js')
+
 const SeatTimeModel = require('../models/SeatTime.js')
-const QRCode = require('qrcode'); 
+
 
 
 class bookingService {
     createBooking = async (data) => {
         try {
-            const { user_id, showtime_id, seats_id = [], FoodAndDrinks_id = [], payment_method,point_id} = data;
+            const { user_id, showtime_id, seats_id = [], FoodAndDrinks_id = [],point_id} = data;
             if (!user_id || !showtime_id || !seats_id) {
                 throw new Error('Missing required fields');
             }
@@ -25,12 +25,14 @@ class bookingService {
             for (const seat_id of seats_id){
                 let i = 0;
                 const seat = await SeatTimeModel.find({seat_id:seat_id}).populate('seat_id')
+               if(!seat){
+                return {message:"khoong co seat"}
+               }
+                console.log("seat",seat)
                
-                console.log(seat)
-               
-                // if(seat[i].seat_status){
-                //     return {message :`${seat[i].seat_id.seat_number} không tồn tại hoặc đã được đặt`}
-                // }
+                if(seat[i].seat_status){
+                    return {message :`${seat[i].seat_id.seat_number} không tồn tại hoặc đã được đặt`}
+                }
                 console.log("seat",seat[i].seat_id.price)
                 total_price_seat += seat[i].seat_id.price
                 i++
@@ -78,34 +80,17 @@ class bookingService {
                 total_price
             })
             const orders_infor = await order.save();
-            const order_id = orders_infor._id;
-           for (const seat_id of seats_id){
-                await SeatTimeModel.updateOne({seat_id:seat_id},{seat_status:"true"})
-            }
+            
+       
            
-          
-            if (payment_method) {
-                const payment = new PaymentModel({
-                    order_id:order_id,
-                    payment_method: payment_method,
-                    amount: total_price, 
-                    date: new Date()
-                });
-                await payment.save();
-            }
-
           const user = await userModel.findById(user_id)
           const point = (user.point)+((total_price*1)/1000)
           console.log("point",point)
           await userModel.updateOne({_id:user_id},{point:point})
-            const qrData = {           
-                order_id:order_id._id.toString(),
-            };
-            console.log(qrData.order_id)
-            const qrCodeUrl = await QRCode.toDataURL(qrData.order_id);
             
-            await SendEmailService.sendEmailWithQRCode(user, qrCodeUrl,order_id);
-            return { message:"Thanh toán thành công ",orders_infor,qrCodeUrl};
+            
+         
+            return { message:"Thanh toán thành công ",orders_infor};
         } catch (error) {
             console.error(error);
             throw new Error('Error creating booking: ' + error.message);

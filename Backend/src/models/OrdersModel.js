@@ -44,6 +44,12 @@ const createOrder = mongoose.Schema({
     total_price:{
         type : Number,
         required : true
+    },
+    status:{
+        type :Boolean,
+        default:false,
+        require:true
+        
     }
 })
 

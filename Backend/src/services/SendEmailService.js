@@ -85,7 +85,7 @@ class SendEmailService{
                 title:bookingInfo.showtime_id.movie_id.title,
                 room:bookingInfo.showtime_id.room_id.name,
                 orderdate:new Date(bookingInfo.order_date).toLocaleString(),                 
-                totalPrice: bookingInfo.total_price,              // Tổng giá trị
+                totalPrice: bookingInfo.total_price.toLocaleString(),              // Tổng giá trị
                 showtimeStart: new Date(bookingInfo.showtime_id.showtime_start).toLocaleString(),  // Thời gian chiếu
                 seats: bookingInfo.seats_id.map(seat => seat.seat_number).join(', '), // Danh sách số ghế
                 foodAndDrinks: foodAndDrinks,

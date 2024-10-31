@@ -20,8 +20,10 @@ function Payment(){
     const [promo,setPromo] = useState([]);
     const [selectMethodPay,setselectMethodPay]=useState(null);   
     const [pointid,setPointid]=useState('')
+    const [foodarr,setfoodarr]=useState([])
     const user_id = localStorage.getItem('userId')
     console.log("sss",order)
+    
     const options = [
         {
             value: 'momo',
@@ -81,8 +83,15 @@ function Payment(){
                    
                     setPromo(response.data.userFound.promotions_id);
                     console.log(response.data.userFound.promotions_id)
-
-                    
+                    let Foods=[]
+                    for(const food of order.foodId){
+                        const foodin4 = await axios.get(`http://localhost:8080/v1/Food/getFoodById/${food.foodid}`)
+                        console.log('foodin4',{name:foodin4.data.food.name,quantity:food.count})
+                        Foods.push({name:foodin4.data.food.name,quantity:food.count})
+                        
+                   }
+                   setfoodarr(Foods)
+                   
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                 }
@@ -106,33 +115,35 @@ function Payment(){
                 alert("Vui lòng chọn phương Thức thanh toán khi thanh toán.");
                 return;
             }
-            const total_price = { amount: order.totalPrice };
+            const Oder = {
+                "user_id":user_id,
+                "showtime_id":order.selectedShowtimeId,
+                "seats_id":order.seatid,     
+                FoodAndDrinks_id: order.foodId.map(foodItem => ({
+                    item_id: foodItem.foodid,
+                    quantity: foodItem.count
+                }))
+                
+            }
+            console.log(Oder)
+            const orderCreater=await axios.post('http://localhost:8080/v1/Booking',Oder)
+            console.log("orderCreater",orderCreater.data)
+            console.log("orderCreater",orderCreater.data.order_infor)
+   
             
-            console.log(total_price);
-            const resPay = await axios.post('http://localhost:8080/v1/Payment', total_price);
+            const data = { amount: order.totalPrice ,orderId:orderCreater.data.orders_infor._id};
+            console.log("data",data)
+    
+            const resPay = await axios.post('http://localhost:8080/v1/Payment', data);
             console.log("resPay.data",resPay.data)
             // Chuyển hướng đến URL thanh toán
-            // if (resPay.data && resPay.data.payUrl) {
-            //     window.location.href = resPay.data.payUrl; // mở URL trong tab hiện tại
-            // }
+            if (resPay.data && resPay.data.payUrl) {
+                window.location.href = resPay.data.payUrl; // mở URL trong tab hiện tại
+            }
             
             const status = await axios.post('http://localhost:8080/v1/Payment/status',{orderId:resPay.data.orderId})
 
 
-            const Oder = {
-                "user_id":user_id,
-                "showtime_id":order.selectedShowtimeId,
-                "seats_id":order.seatid,              
-                "payment_method":selectMethodPay
-                
-                
-            }
-               console.log(Oder)
-            
-            if(status.data.resultCode!==0){
-                const bbb=await axios.post('http://localhost:8080/v1/Booking',Oder)
-                console.log("ddd",bbb.data)
-            }
             
             
 
@@ -147,9 +158,22 @@ function Payment(){
                 <div className={cx('in4')}>
                     <h1>Thông Tin Phim</h1>
                     <h3>TÊN PHIM: <span>{order.title}</span></h3>
-                    <h3>ĐỊA CHỈ RẠP: {order.address}</h3>
-                    <h3>PHÒNG CHIẾU: {order.room}</h3>
+                    <h3>ĐỊA CHỈ RẠP: {order.nameCinema}</h3>
+                    <h3>PHÒNG CHIẾU: {order.roomid}</h3>
                     <h3>SỐ GHẾ: {order.selectedSeats.join(', ')}</h3>
+                    <div className={cx('food')}>
+                        <h3>Tên Món Ăn: </h3>
+                        <div>
+                            {foodarr.length>0?(foodarr.map((food,index) =>(
+                        <h3 key={index}><span>{food.quantity}</span>x <span>{food.name}</span></h3> 
+                    
+                        ))):(
+                            <h3>không</h3>
+                        )}</div>
+                         
+                    </div>
+                    
+                    
                     <h3>ĐỒ ĂN: {order.totalFoodCount ? `${order.totalFoodCount} món` : 'không'}</h3>
                 </div>
                 <div className={cx('promotion')}>
