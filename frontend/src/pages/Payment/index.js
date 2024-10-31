@@ -7,12 +7,12 @@ import { faEnvelope, faSackDollar, faUser } from '@fortawesome/free-solid-svg-ic
 import axios from 'axios';
 import Select from 'react-select';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 const cx = classNames.bind(styles);
 function Payment(){
     const location = useLocation();
     const navigate = useNavigate();
-    const order = location.state;
+    const order = location.state || {}; // Nếu state không xác định, mặc định là một object rỗng
     const [fullname,setFullname]=useState('');
     const [email,setEmail]=useState('');
     const [totalprice,settotalprice]=useState('')
@@ -21,7 +21,6 @@ function Payment(){
     const [selectMethodPay,setselectMethodPay]=useState(null);   
     const [pointid,setPointid]=useState('')
     const user_id = localStorage.getItem('userId')
-    console.log("sss",order)
     const options = [
         {
             value: 'momo',
@@ -60,7 +59,7 @@ function Payment(){
             setPointid(''); // Nếu không có lựa chọn, đặt lại pointid
         }
     };
-    
+
     useEffect(() => {
         const fetchUserData = async () => {
             const userId = localStorage.getItem('userId');
@@ -141,14 +140,16 @@ function Payment(){
             console.error('Error processing payment:', error);
         }
     };
+    console.log("sss",order)
+
     return (
        <div className={cx('container')}>
             <section className={cx('movie')}>
                 <div className={cx('in4')}>
                     <h1>Thông Tin Phim</h1>
                     <h3>TÊN PHIM: <span>{order.title}</span></h3>
-                    <h3>ĐỊA CHỈ RẠP: {order.address}</h3>
-                    <h3>PHÒNG CHIẾU: {order.room}</h3>
+                    <h3>ĐỊA CHỈ RẠP: {order.nameCinema}</h3>
+                    <h3>PHÒNG CHIẾU: {order.roomid}</h3>
                     <h3>SỐ GHẾ: {order.selectedSeats.join(', ')}</h3>
                     <h3>ĐỒ ĂN: {order.totalFoodCount ? `${order.totalFoodCount} món` : 'không'}</h3>
                 </div>
