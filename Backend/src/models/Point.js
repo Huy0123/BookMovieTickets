@@ -17,6 +17,10 @@ const createPoint = new mongoose.Schema({
         type:Number,
         required:true
     },
+    image:{
+        type: String,
+        required: true
+    },
     start_date:{
         type: Date,
         required: true

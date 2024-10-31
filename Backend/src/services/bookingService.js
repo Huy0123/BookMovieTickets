@@ -28,9 +28,9 @@ class bookingService {
                
                 console.log(seat)
                
-                if(seat[i].seat_status){
-                    return {message :`${seat[i].seat_id.seat_number} không tồn tại hoặc đã được đặt`}
-                }
+                // if(seat[i].seat_status){
+                //     return {message :`${seat[i].seat_id.seat_number} không tồn tại hoặc đã được đặt`}
+                // }
                 console.log("seat",seat[i].seat_id.price)
                 total_price_seat += seat[i].seat_id.price
                 i++

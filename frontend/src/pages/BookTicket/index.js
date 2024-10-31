@@ -14,8 +14,6 @@ function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const [getMovies,setMovies]=useState([])
     const [selectedSeats, setSelectedSeats] = useState([]);
-    const [regularTicketCount, setRegularTicketCount] = useState(0);
-    const [vipTicketCount, setVipTicketCount] = useState(0);
     const [FoodCount, setFoodCount] = useState([]);
     const [title,setTitle] = useState("")
     const [showOrderDetail, setShowOrderDetail] = useState(false);
@@ -32,7 +30,10 @@ function BookTicket() {
     const [selectedShowtime, setSelectedShowtime] = useState(''); // Thay đổi thành thời gian chiếu được chọn
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [trailerUrl, setTrailerUrl] = useState(''); // State để lưu link trailer
-
+    const [seatid,setSeatid]= useState([])
+    const [foodId, setFoodId] = useState([]); 
+    const [foodin4, setFoodin4] = useState([]);
+    
     const navigate = useNavigate();
     let lastDisplayedDate = '';
     const user_id = localStorage.getItem('user_id')
@@ -66,9 +67,9 @@ function BookTicket() {
                 const showtimeDetail = await Promise.all(showtimeData);
                 setShowTimeId(showtimeDetail);
                 console.log("Individual Showtimes with Seats:", showtimeDetail);
-                
+                setAddress(showtimeDetail.showtime.cinema_id.address);
+
                 if (showtimeDetail.length > 0) {
-                    setAddress(showtimeDetail[0].showtime.cinema_id.address);
                     setNameCinema(showtimeDetail[0].showtime.cinema_id.name);
                     setRoom(showtimeDetail[0].showtime.room_id.name);
                    
@@ -95,9 +96,9 @@ function BookTicket() {
     }, [movie_id]);
 
     const handleShowtimeClick = async (showtimeId) => {
-        setSelectedShowtimeId(showtimeId);
         const seatsRes = await axios.get(`http://localhost:8080/v1/getSeatTimeByShowtimeID/${showtimeId}`);
         setSeats(seatsRes.data);
+        setSelectedShowtimeId(showtimeId);
 
         // Lưu thời gian chiếu được chọn
         const selectedShowtimeData = showTimeId.find(showtime => showtime.showtime._id === showtimeId);
@@ -111,52 +112,90 @@ function BookTicket() {
     const handleBooking = () => {
         const orderDetails = {
             title: getMovies.title,
-            address,
+            nameCinema,
             room,
             selectedSeats,
             selectedShowtime,   
             totalFoodCount,
-            totalPrice
+            totalPrice,
+            selectedShowtimeId,
+            seatid,
+            foodId,
+            FoodCount
         };
         console.log(orderDetails);
         navigate('/payment', { state: orderDetails }); // 
     };
-    const handleSeatClick = (seat) => {
-        setSelectedSeats((prevSelectedSeats) =>
-            prevSelectedSeats.includes(seat)
+    const handleSeatClick = (seat, seatId) => {
+        setSelectedSeats((prevSelectedSeats) => {
+            const isSelected = prevSelectedSeats.includes(seat);
+            const updatedSeats = isSelected
                 ? prevSelectedSeats.filter((s) => s !== seat) // Bỏ chọn nếu đã chọn
-                : [...prevSelectedSeats, seat] // Thêm nếu chưa chọn
-        );
+                : [...prevSelectedSeats, seat]; // Thêm nếu chưa chọn
     
-        // Cập nhật showOrderDetail
-        if (selectedSeats.includes(seat)) {
-            // Nếu ghế đang được bỏ chọn, kiểm tra xem có ghế nào còn chọn không
-            if (selectedSeats.length === 1) {
-                setShowOrderDetail(false); // Nếu không còn ghế nào được chọn, ẩn order
-            }
-        } else {
-            // Nếu ghế mới được chọn
-            setShowOrderDetail(true); // Luôn hiển thị order khi có ghế được chọn
-        }
+            // Cập nhật showOrderDetail dựa trên updatedSeats
+            setShowOrderDetail(updatedSeats.length > 0); // Hiển thị order khi có ghế được chọn
+    
+            return updatedSeats; // Trả về danh sách ghế cập nhật
+        });
+    
+        // Cập nhật seatIds tương ứng
+        setSeatid((prevSeatIds) => {
+            const isSeatIdSelected = prevSeatIds.includes(seatId);
+            return isSeatIdSelected
+                ? prevSeatIds.filter((id) => id !== seatId) // Bỏ chọn nếu đã chọn
+                : [...prevSeatIds, seatId]; // Thêm nếu chưa chọn
+        });
     };
     
-
+    const in4Food = (foodId)=>{
+        setFoodin4(foodId)
+        console.log("llll",foodId)
+    }
    
-    const increaseFood = (index) => {
+    const increaseFood = (index, foodid) => {
         setFoodCount((prevCounts) => {
             const newCounts = [...prevCounts];
             newCounts[index] += 1; // Tăng số lượng cho món ăn cụ thể
-            return newCounts;
+    
+            // Cập nhật foodId
+            setFoodId((prevFoodIds) => {
+                // Kiểm tra xem foodId đã có trong mảng chưa
+                const existingFoodId = prevFoodIds.find(item => item.foodid === foodid);
+                if (!existingFoodId) {
+                    // Nếu foodId chưa có, thêm mới
+                    return [...prevFoodIds, { foodid, count: newCounts[index] }]; // Lưu số lượng
+                } else {
+                    // Nếu foodId đã có, cập nhật số lượng
+                    return prevFoodIds.map(item => 
+                        item.foodid === foodid ? { ...item, count: newCounts[index] } : item
+                    );
+                }
+            });
+    
+            return newCounts; // Trả về mảng số lượng cập nhật
         });
     };
+    
+    
+    
+    
+
+    
 
     
     const closeModal = () => setIsModalOpen(false);
-    const decreaseFood = (index) => {
+    const decreaseFood = (index,foodid) => {
         setFoodCount((prevCounts) => {
             const newCounts = [...prevCounts];
             if (newCounts[index] > 0) {
                 newCounts[index] -= 1; // Giảm số lượng cho món ăn cụ thể
+                setFoodId((prevFoodIds) => {
+                    if (newCounts[index] === 0) {
+                        return prevFoodIds.filter((id) => id !== foodid); // Bỏ foodId nếu số lượng bằng 0
+                    }
+                    return prevFoodIds; // Trả về danh sách không thay đổi nếu số lượng > 0
+                });
             }
             return newCounts;
         });
@@ -195,7 +234,6 @@ const totalSeatPrice = selectedSeats.reduce((total, seat) => {
 const totalPrice = totalSeatPrice + totalFoodPrice; // Tổng giá ghế và giá đồ ăn
 console.log(totalFoodPrice);
 
-console.log(totalFoodPrice)
         return (
         <div className={cx('container')}>
             <div className={cx('info-movie')}>
@@ -360,7 +398,7 @@ console.log(totalFoodPrice)
                                     <div className={cx('group-btn-seat')}>
                                         {availableSeatsInRow.map((seatInfo) => {
                                             const seatNumber = seatInfo.seat_number;
-
+                                            const seatId = seatInfo._id;
                                             return (
                                                 <button
                                                     key={seatNumber}
@@ -380,7 +418,7 @@ console.log(totalFoodPrice)
                                                     }}
                                                     onClick={() => {
                                                         if (!seatInfo.seat_status) {
-                                                            handleSeatClick(seatNumber);
+                                                            handleSeatClick(seatNumber,seatId);
                                                         }
                                                     }}
                                                     disabled={seatInfo.seat_status} // Disable button for occupied seats
@@ -445,11 +483,11 @@ console.log(totalFoodPrice)
                                         <div className={cx('des')}>Loại: {Element.category}</div>
                                         <div className={cx('price')}>Giá: {Element.price.toLocaleString()} VNĐ</div>
                                         <div className={cx('wrap-quantity')}>
-                                            <div className={cx('wrap-icon-food')} onClick={() => decreaseFood(index)}>
+                                            <div className={cx('wrap-icon-food')} onClick={() => {decreaseFood(index,Element._id)} }>
                                                 <FontAwesomeIcon className={cx('icon-minus')} icon={faMinus} />
                                             </div>
                                             <div className={cx('count')}>{FoodCount[index]}</div>
-                                            <div className={cx('wrap-icon-food')} onClick={() => increaseFood(index)}>
+                                            <div className={cx('wrap-icon-food')} onClick={() => increaseFood(index,Element._id)}>
                                                 <FontAwesomeIcon className={cx('icon-plus')} icon={faPlus} />
                                             </div>
                                         </div>
