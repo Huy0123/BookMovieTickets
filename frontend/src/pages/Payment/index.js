@@ -7,12 +7,12 @@ import { faEnvelope, faSackDollar, faUser } from '@fortawesome/free-solid-svg-ic
 import axios from 'axios';
 import Select from 'react-select';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 const cx = classNames.bind(styles);
 function Payment(){
     const location = useLocation();
     const navigate = useNavigate();
-    const order = location.state;
+    const order = location.state || {}; // Nếu state không xác định, mặc định là một object rỗng
     const [fullname,setFullname]=useState('');
     const [email,setEmail]=useState('');
     const [totalprice,settotalprice]=useState('')
@@ -62,7 +62,7 @@ function Payment(){
             setPointid(''); // Nếu không có lựa chọn, đặt lại pointid
         }
     };
-    
+
     useEffect(() => {
         const fetchUserData = async () => {
             const userId = localStorage.getItem('userId');
@@ -152,6 +152,8 @@ function Payment(){
             console.error('Error processing payment:', error);
         }
     };
+    console.log("sss",order)
+
     return (
        <div className={cx('container')}>
             <section className={cx('movie')}>

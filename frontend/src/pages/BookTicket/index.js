@@ -115,6 +115,8 @@ function BookTicket() {
         }
     };
     
+    
+    
     const handleBooking = () => {
         const orderDetails = {
             title: getMovies.title,
@@ -367,7 +369,7 @@ console.log(totalFoodPrice);
                                         <button 
                                             type='button' 
                                             className={cx('btn-time', { active: index === 0 })}
-onClick={() => handleShowtimeClick(show._id,show.cinema_id,show.room_id)}
+                                            onClick={() => handleShowtimeClick(show._id,show.cinema_id,show.room_id)}
                                         >
                                             {formattedHour}
                                         </button>

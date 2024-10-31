@@ -24,14 +24,17 @@ class SeatTimeService {
     }
 
     getSeatTimeByShowtimeID = async (id) => {
-        const showtime = await showtimes.findById(id).lean();
+    const showtime = await showtimes.findById(id).lean();
     if (!showtime) {
         throw new Error('Showtime not found');
     }
+
     // Lấy tất cả ghế trong phòng tương ứng với suất chiếu
     const seatsInRoom = await seats.find({ room_id: showtime.room_id }).populate('room_id').lean();
+
     // Lấy tất cả thời gian ghế cho suất chiếu
     const seatTimes = await seatTime.find({ showtime_id: id }).populate('seat_id').lean();
+
     // Tạo bản đồ cho thời gian ghế để dễ dàng tra cứu
     const seatMap = seatTimes.reduce((acc, seatTime) => {
         acc[seatTime.seat_id] = seatTime; // seat_id là khóa
