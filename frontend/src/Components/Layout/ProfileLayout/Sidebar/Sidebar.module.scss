@@ -1,0 +1,129 @@
+.tool-bar {
+    height: 600px;
+
+    .tool {
+      background-color: rgb(29, 30, 30);
+      height: 390px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+        color: #fff;
+      .point-bar-container {
+        width: 100%; /* Sửa lại để chiếm toàn bộ chiều ngang của container */
+        max-width: 400px; /* Giới hạn kích thước để không bị quá lớn */
+        text-align: center;
+       
+
+        .point-display {
+          font-size: 20px;
+          margin-bottom: 10px;
+        }
+
+        .progress {
+          width: 70%; 
+          height: 15px;
+          background-color: #f6b554;
+          border-radius: 10px;
+          border: 2px solid #54d9fa;
+          overflow: hidden;
+          margin: 10px auto;
+
+
+          .progress-bar {
+            height: 100%;
+            background-color: #54d9fa;
+            transition: width 0.5s ease;
+          }
+        }
+
+        .btn {
+          padding: 5px 20px;
+          background-color: #82b1d7;
+          width: 70%;
+          color: white;
+          border: none;
+          border-radius: 15px;
+          cursor: pointer;
+          font-size: 16px;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: #f6b554;
+          }
+        }
+      }
+
+      .nav-container {
+        width: 100%;
+
+        .nav {
+          gap: 5px;
+          height: 40px;
+          align-items: center;
+          padding-left: 50px;
+
+          &:hover {
+            background-color: rgb(186, 188, 187);
+          }
+          h5{
+            font-size: 18px;
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+
+    .reset-pass {
+        background-color: rgb(29, 30, 30);
+      
+      height: 200px;
+      .wrap-pass{   display: flex;
+        justify-content: center;
+        align-items: center;
+        .btn-reset-pass{
+        font-size: 24px;
+        padding: 30px;
+      }}
+     
+    }
+    .modal-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        .modal-content {
+          background-color: white;
+          padding: 20px;
+          border-radius: 10px;
+          text-align: center;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+          .wrap-pass{
+            margin: 20px;
+            
+            .title-pass{
+              text-align: start;
+            }
+            .from-pass{}
+          }
+          button{
+            width: 35%;
+            border-radius: 20px;
+            margin: 0 10px;
+            padding: 5px 10px;
+            &:hover{
+              background-color: #cfcfcf9e;
+            }
+          }
+        }
+        
+      }
+      
+  }

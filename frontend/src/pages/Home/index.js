@@ -3,8 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faPlay } from '@fortawesome/free-solid-svg-icons';
-import images from '~/assets/img';
+import { faChevronLeft, faChevronRight, faPlay } from '@fortawesome/free-solid-svg-icons'
 import TrailerModal from '../Trailer/TrailerModal';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -66,6 +65,33 @@ function Home() {
         navigate(`/bookticket/${movieId}`); 
     };
   
+    useEffect(() => {
+        const handleScroll = () => {
+            const rowers = document.querySelectorAll(`.${styles.rower}`);
+            rowers.forEach(rower => {
+                const rect = rower.getBoundingClientRect();
+                // Kiểm tra nếu phần tử đã vào khung hình (không nằm quá xa khung hình từ phía trên hoặc dưới)
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    rower.classList.add(styles['float-in']);
+                } else {
+                    rower.classList.remove(styles['float-in']); // Nếu ra khỏi khung hình thì gỡ bỏ hiệu ứng
+                }
+            });
+        };
+    
+        // Kích hoạt sự kiện scroll
+        window.addEventListener('scroll', handleScroll);
+    
+        // Kiểm tra lần đầu khi component mount
+        handleScroll();
+    
+        // Dọn dẹp sự kiện khi component unmount
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+    
+    
     return (
         <div className={cx('container')}>
             {/* Main Carousel */}
@@ -96,8 +122,10 @@ function Home() {
                                     <div className={cx('wrap-banner-con', 'col-6 d-flex flex-column justify-content-end gap-4')}>
                                         
                                         <h1 className={cx('title')} data-text={movie.title}>{movie.title}</h1>
+                                        <div className={cx('timeset')}>
                                         <h2 >Thời Gian Khởi Chiếu</h2>
                                         <p className={cx('datetime')}> {new Date(movie.release_date).toLocaleDateString()}</p>
+                                        </div>
                                         <div className={cx('wrap-decr')}>
                                             <p className={cx('decribetion')}>{movie.description}</p>
                                         </div>
@@ -126,7 +154,7 @@ function Home() {
             <div className={cx('box-shadow-movie')}>
             <div id="carouselCurrentlyShowing" className={cx('carousel', 'slide')}>
                 <h1 className={cx('showing-title', 'text-center', 'text-light')}>PHIM ĐANG CHIẾU</h1>
-                <div className="row">
+                <div className={cx('row','rower')}>
                     <div className={cx('col-1 d-flex justify-content-center align-items-center')}>
                         <button className={cx('carousel-control-prev')} type="button" data-bs-target="#carouselCurrentlyShowing" data-bs-slide="prev">
                             <FontAwesomeIcon className={cx('icon-pre')} icon={faChevronLeft} />
@@ -175,7 +203,7 @@ function Home() {
             {/* Upcoming Movies Carousel */}
             <div id="carouselUpcomingMovies" className={cx('carousel', 'slide')}>
                 <h1 className={cx('showing-title', 'text-center', 'text-light')}>PHIM SẮP CHIẾU</h1>
-                <div className="row">
+                <div className={cx('row','rower')}>
                     <div className={cx('col-1 d-flex justify-content-center align-items-center')}>
                         <button className={cx('carousel-control-prev')} type="button" data-bs-target="#carouselUpcomingMovies" data-bs-slide="prev">
                             <FontAwesomeIcon className={cx('icon-pre')} icon={faChevronLeft} />

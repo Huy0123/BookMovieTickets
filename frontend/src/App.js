@@ -2,6 +2,7 @@ import { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '~/routes';
 import { DefaultLayout } from '~/Components/Layout';
+import { Profilelayout} from '~/Components/Layout';
 
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
             {publicRoutes.map((route, index) => {
               const Page = route.component;
 
-              let Layout = DefaultLayout;
+              let Layout =   DefaultLayout;
 
               if (route.layout) {
                 Layout = route.layout;
