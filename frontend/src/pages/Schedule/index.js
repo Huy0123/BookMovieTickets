@@ -33,6 +33,7 @@ function Schedule() {
                 // Kết hợp và lấy ra các `showtime_start` và thông tin rạp từ dữ liệu trả về
                 const formattedShowtimes = showtimesData.flatMap(response => 
                     response.data.map(showtime => ({
+                        cinemaId: showtime.cinema_id._id,
                         cinemaName: showtime.cinema_id.name,
                         cinemaAddress: showtime.cinema_id.address,
                         showtimeStart: showtime.showtime_start,
@@ -162,7 +163,7 @@ function Schedule() {
 
                                                         acc[key].showtimeStarts.push({
                                                             time: formattedShowtime,
-                                                            showtimeId: showtime.showtimeId // Lưu showtimeId để điều hướng
+                                                            showtimeId: showtime.showtimeId, // Lưu showtimeId để điều hướng
                                                         });
                                                         return acc;
                                                     }, {})
@@ -175,11 +176,12 @@ function Schedule() {
                                                         </div>
                                                         <div className={cx('schedule', 'col-8')}>
                                                             <div className={cx('group')}>
-                                                                {showtimeStarts.map(({ time, showtimeId }, i) => (
+                                                                {showtimeStarts.map(({ time, showtimeId,cinemaId  }, i) => (
                                                                     <button 
                                                                         key={i} 
                                                                         className={cx('btn-schedule')}
-                                                                        onClick={() => navigate(`/bookTicket/${movie._id}`, { state: { showtimeId } })}                                                                        >
+                                                                        onClick={() => navigate(`/bookTicket/${movie._id}`, { state: { showtimeId, cinemaId } })} // Thêm cinemaId vào state
+                                                                        >
                                                                         {time}
                                                                     </button>
                                                                 ))}

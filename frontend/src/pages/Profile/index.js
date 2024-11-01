@@ -10,6 +10,8 @@ import axios
 
 const cx = classNames.bind(styles);
 
+
+
 function Profile() {
     const [points, setPoints] = useState(''); // Initial points
     const [activeTab, setActiveTab] = useState('info');
