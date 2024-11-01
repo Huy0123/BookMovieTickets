@@ -12,7 +12,6 @@ import ForgotPassword from '~/pages/Forgot';
 import ResetPassword from '~/pages/ResetPassword';
 import BookTicket from '~/pages/BookTicket';
 import Payment from '~/pages/Payment';
-import Test from '~/pages/Test';
 import ProfileLayout from '~/Components/Layout/ProfileLayout';
 import Thanks from '~/pages/Thanks';
 // Không cần đăng nhập vẫn xem được

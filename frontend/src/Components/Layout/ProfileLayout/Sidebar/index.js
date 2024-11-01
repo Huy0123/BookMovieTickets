@@ -17,6 +17,13 @@ function Sidebar(){
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('userToken');
     const [resetModal, setResetModal] = useState(false); 
+    const [currentpass, setCurrentpass] = useState('');
+    const [newpass, setNewpass] = useState('');
+    const [confirmpass, setConfirmpass] = useState('');
+    const [password,setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState("");  
+    const [successMessage, setSuccessMessage] = useState("");
+
     const navigate = useNavigate();
   
     useEffect(() => {
@@ -39,7 +46,7 @@ function Sidebar(){
                     setPromotion(response.data.userFound.promotions_id);
                     console.log("bb",response.data.userFound.promotions_id)
                     setIsLoggedIn(true);
-                
+                    setPassword(response.data.userFound.password)
                     
                 
                 } catch (error) {
@@ -52,8 +59,46 @@ function Sidebar(){
         fetchUserData();
     }, []);
   
-   
-     
+    const handleChange = async (event) => {
+        event.preventDefault();
+  
+    
+        // Password validation logic
+        if (newpass.length < 8) {
+            alert("Mật khẩu mới phải có ít nhất 8 ký tự.");
+            return;
+        }
+        if (newpass !== confirmpass) {
+            alert("Mật khẩu mới không khớp.");
+            return;
+        }
+    
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/v1/Users/updateUser/${userId}`,
+                { 
+                    newPassword: newpass 
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                }
+            );
+    
+            if (response.data.success) {  // Assuming success response from server
+                alert("Mật khẩu đã được cập nhật thành công.");
+                setResetModal(false);
+            } else {
+                alert("Mật khẩu hiện tại không đúng.");
+            }
+        } catch (error) {
+            alert("Đã xảy ra lỗi khi đổi mật khẩu.");
+            console.error('Error updating password:', error);
+        }
+    };
+    
   
       const closeModal = () => {
      
@@ -91,12 +136,12 @@ function Sidebar(){
                 <h5>THÔNG TIN CÁ NHÂN</h5>
             </div>
 
-            <div className={cx('SCORE', 'nav', 'd-flex')}    onClick={() => navigate('/history')}>
+            <div className={cx('SCORE', 'nav', 'd-flex')}    onClick={() => navigate('/voucher')}>
                 <FontAwesomeIcon className="fs-3 me-2" icon={faStar} />
                 <h5>ĐỔI ĐIỂM</h5>
             </div>
 
-            <div className={cx('histor', 'nav', 'd-flex')} onClick={() => navigate('/voucher')}>
+            <div className={cx('histor', 'nav', 'd-flex')} onClick={() => navigate('/history')}>
                 <FontAwesomeIcon className="fs-3 me-2" icon={faCartShopping} />
                 <h5>LỊCH SỬ GIAO DỊCH</h5>
             </div>
@@ -114,11 +159,10 @@ function Sidebar(){
                     <div className={cx('wrap-pass')}>
                       <h4 className={cx('title-pass')}>MẬT KHẨU CŨ</h4>
                       <input 
-                        type="text" 
-                        id="fullname" 
-                        name="fullname" 
-                        value={''}
-                        // onChange={(event) => setFullname(event.target.value)} 
+                        type="password" 
+                        name="currentpass" 
+                        value={currentpass}
+                        onChange={(event) => setCurrentpass(event.target.value)} 
 
                        
 
@@ -128,11 +172,10 @@ function Sidebar(){
                       <div className={cx('wrap-pass')}>
                       <h4 className={cx('title-pass')}>MẬT KHẨU MỚI</h4>
                       <input 
-                        type="text" 
-                        id="fullname" 
-                        name="fullname" 
-                        value={''}
-                        // onChange={(event) => setFullname(event.target.value)} 
+                        type="password" 
+                        name="newpass" 
+                        value={newpass}
+                        onChange={(event) => setNewpass(event.target.value)} 
 
                        
 
@@ -142,11 +185,10 @@ function Sidebar(){
                       <div className={cx('wrap-pass')}>
                       <h4 className={cx('title-pass')}>NHẬP LẠI MẬT KHẨU MỚI</h4>
                       <input 
-                        type="text" 
-                        id="fullname" 
-                        name="fullname" 
-                        value={''}
-                        // onChange={(event) => setFullname(event.target.value)} 
+                        type="password" 
+                        name="confirmpass" 
+                        value={confirmpass}
+                        onChange={(event) => setConfirmpass(event.target.value)} 
 
                        
 
@@ -154,7 +196,7 @@ function Sidebar(){
                       />
                       </div>  
                       
-                        <button className={cx('btn-confirm')} onClick={closeModal}>
+                        <button type='button' className={cx('btn-confirm')} onClick={handleChange}>
                             Đồng ý
                         </button>
                         <button className={cx('btn-cancel')} onClick={closeModal}>
