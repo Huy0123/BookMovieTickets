@@ -6,9 +6,10 @@ class paymentController  {
         return res.status(200).json(result)
     }   
     callback = async(req,res)=>{
-        console.log("callback:: ")
+        console.log("callback::")
         console.log(req.body) 
-        res.sendStatus(200);
+        const result=await paymentService.callback(req.body)
+        return res.status(200).json(result);
         
     }
     status = async (req,res)=>{

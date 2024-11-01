@@ -14,6 +14,7 @@ import BookTicket from '~/pages/BookTicket';
 import Payment from '~/pages/Payment';
 import Test from '~/pages/Test';
 import ProfileLayout from '~/Components/Layout/ProfileLayout';
+import Thanks from '~/pages/Thanks';
 // Không cần đăng nhập vẫn xem được
 const publicRoutes = [
     { path: '/', component:Home },
@@ -23,7 +24,7 @@ const publicRoutes = [
     { path: '/voucher', component:Voucher ,layout: ProfileLayout},
     { path: '/chooseCinema/:id', component:ChooseCinema},
     { path: '/bookTicket/:id', component:BookTicket},
-    { path: '/test/:id', component:Test},
+    { path: '/thanks', component:Thanks},
     { path: '/signUp', component:Signup, layout:null},
     { path: '/signIn', component:Signin, layout:null},
     { path: '/forgot', component:ForgotPassword, layout:null},
