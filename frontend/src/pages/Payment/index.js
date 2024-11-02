@@ -38,6 +38,19 @@ function Payment(){
                 </div>
             ),
         },
+        {
+            value: 'vnpay',
+            label: (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                        src = {images.vnpay}
+                        alt="Momo Icon"
+                        style={{ width: '20px', height: '20px', marginRight: '8px' }}
+                    />
+                    Thanh Toán Bằng Vnpay
+                </div>
+            ),
+        },
        
     ];
 
@@ -115,6 +128,7 @@ function Payment(){
                 alert("Vui lòng chọn phương Thức thanh toán khi thanh toán.");
                 return;
             }
+            
             const Oder = {
                 "user_id":user_id,
                 "showtime_id":order.selectedShowtimeId,
@@ -131,22 +145,23 @@ function Payment(){
             console.log("orderCreater",orderCreater.data.order_infor)
    
             
-            const data = { amount: order.totalPrice ,orderId:orderCreater.data.orders_infor._id};
-            console.log("data",data)
-    
-            const resPay = await axios.post('http://localhost:8080/v1/Payment', data);
-            console.log("resPay.data",resPay.data)
-            // Chuyển hướng đến URL thanh toán
-            if (resPay.data && resPay.data.payUrl) {
-                window.location.href = resPay.data.payUrl; // mở URL trong tab hiện tại
+                const data = { amount: order.totalPrice ,orderId:orderCreater.data.orders_infor._id};
+                console.log("data",data)
+            if(selectMethodPay==="momo"){
+                const resPay = await axios.post('http://localhost:8080/v1/Payment', data);
+                console.log("resPay.data",resPay.data)
+                // Chuyển hướng đến URL thanh toán
+                if (resPay.data && resPay.data.payUrl) {
+                    window.location.href = resPay.data.payUrl; // mở URL trong tab hiện tại
+                }
             }
-            
-            const status = await axios.post('http://localhost:8080/v1/Payment/status',{orderId:resPay.data.orderId})
-
-
-            
-            
-
+            if(selectMethodPay==="vnpay"){
+                const resPay = await axios.post('http://localhost:8080/v1/Payment/createrVnpay', data);
+                if (resPay.data && resPay.data.paymentUrl) {
+                    window.location.href = resPay.data.paymentUrl; // mở URL trong tab hiện tại
+                }
+            }
+           
             
         } catch (error) {
             console.error('Error processing payment:', error);

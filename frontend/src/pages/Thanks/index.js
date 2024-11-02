@@ -13,47 +13,34 @@ const cx = classNames.bind(styles);
 function Thanks() {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
-    // Lấy các giá trị của từng tham số
-    const partnerCode = params.get('partnerCode');
-    const orderId = params.get('orderId');
-    const requestId = params.get('requestId');
-    const amount = params.get('amount');
-    const orderInfo = params.get('orderInfo');
-    const orderType = params.get('orderType');
-    const transId = params.get('transId');
-    const resultCode = params.get('resultCode');
-    const message = params.get('message');
-    const payType = params.get('payType');
-    const responseTime = params.get('responseTime');
-    const extraData = params.get('extraData');
-    const signature = params.get('signature');
+    if(params.has('resultCode')){
+        var orderId = params.get('orderId');      
+        var resultCode = params.get('resultCode');
+    }else if(params.has('vnp_TransactionStatus')){
+        var vnp_TransactionStatus = params.get('vnp_TransactionStatus'); 
+        var orderId = params.get('vnp_TxnRef')
+       console.log("param",params)
+        // Lấy các giá trị của từng tham số
+    }
+
+
     const [nameMovie, setNameMovie] = useState('');
     const [address, setAddress] = useState('');
     const [room, setRoom] = useState('');
     const [seat, setSeat] = useState([]);
     const [namefood, setNamefood] = useState([]);
     const navigate = useNavigate();
+   
     useEffect(() => {
         // Log các tham số khi component mount
-        console.log({
-            partnerCode,
-            orderId,
-            requestId,
-            amount,
-            orderInfo,
-            orderType,
-            transId,
-            resultCode,
-            message,
-            payType,
-            responseTime,
-            extraData,
-            signature
-        });
+       
         const fetchbooking = async () => {
             try{
+                if(vnp_TransactionStatus){ const vnp = await axios.get(`http://localhost:8080/v1/Payment/vnpay-return/${params}`)}
+               
                 const res = await axios.get(`http://localhost:8080/v1/Booking/getBooking/${orderId}`);
                 console.log('res',res.data);
+                
                 setNameMovie(res.data.orders_infor.showtime_id.movie_id.title);
                 setAddress(res.data.orders_infor.cinema_id.address);
                 setRoom(res.data.orders_infor.showtime_id.room_id.name);
@@ -62,19 +49,23 @@ function Thanks() {
                setSeat(seat)
                 const food = res.data.orders_infor.FoodAndDrinks_id.map(item =>item);
                 setNamefood(food)
+                
                 console.log("f",food)
             }catch{
 
             }
         }
+      
         fetchbooking();
+     
     }, []); // Thêm một mảng rỗng để chỉ log một lần khi component mount
     const handleback=()=>{
 
        navigate('/');
     }
+    
     // Kiểm tra resultCode với kiểu dữ liệu chuỗi
-    if (resultCode === "0") {
+    if (resultCode === "0"||vnp_TransactionStatus==="00") {
         return (
             <div className={cx('container')}>
                 <div className='row'>
@@ -116,6 +107,7 @@ function Thanks() {
             </div>
         );
     }
-}
+}   
 
 export default Thanks;
+    

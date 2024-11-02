@@ -159,7 +159,7 @@ class paymentService {
             throw error; // Ném lỗi để xử lý ở nơi khác nếu cần
         }
     }
-
+ 
     createrVnpay = async(data)=>{
 
         let tmnCode = "V45O0WA3";
@@ -168,7 +168,7 @@ class paymentService {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         const vnpay = new VNPay({
-            tmnCode: tmnCode,
+            tmnCode: tmnCode, 
             secureSecret: secretKey,
             vnpayHost: 'https://sandbox.vnpayment.vn',
             testMode: true, // tùy chọn, ghi đè vnpayHost thành sandbox nếu là true
@@ -184,7 +184,7 @@ class paymentService {
             vnp_TxnRef: data.orderId,
             vnp_OrderInfo: 'Thanh toan don hang',
             vnp_OrderType: ProductCode.Other,
-            vnp_ReturnUrl: 'http://localhost:8080/v1/Payment/vnpay-return',    
+            vnp_ReturnUrl: 'http://localhost:3000/thanks',    
             vnp_Locale: VnpLocale.VN, // 'vn' hoặc 'en'
             vnp_CreateDate: dateFormat(new Date()), // tùy chọn, mặc định là hiện tại
             vnp_ExpireDate: dateFormat(tomorrow), // tùy chọn
@@ -203,9 +203,9 @@ class paymentService {
             secureSecret: secretKey,
             vnpayHost: 'https://sandbox.vnpayment.vn',
             testMode: true, 
-            hashAlgorithm: 'SHA512', // tùy chọn
+            hashAlgorithm: 'SHA512', // tùy chọn 
             enableLog: true, // optional
-            loggerFn: ignoreLogger, // optional
+            loggerFn: ignoreLogger, // optional  
         });
          try {
            
