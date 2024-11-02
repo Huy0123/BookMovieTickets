@@ -1,0 +1,7 @@
+{
+    "vnp_TmnCode": "V45O0WA3",
+    "vnp_HashSecret": "N13S9RBKLTZ49UWP8QLYN15BQXPZ56KW",
+    "vnp_Url": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html",
+    "vnp_ReturnUrl": "http://localhost:8080/v1/vnpay/callback"
+}
+  
