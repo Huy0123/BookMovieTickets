@@ -23,43 +23,48 @@ function Thanks() {
         // Lấy các giá trị của từng tham số
     }
 
-
+   
     const [nameMovie, setNameMovie] = useState('');
     const [address, setAddress] = useState('');
     const [room, setRoom] = useState('');
     const [seat, setSeat] = useState([]);
     const [namefood, setNamefood] = useState([]);
     const [movieid,setMovieid] = useState('')
+    const [hasFetchedTransactionStatus, setHasFetchedTransactionStatus] = useState(false);
+
     const navigate = useNavigate();
    
     useEffect(() => {
-        // Log các tham số khi component mount
-       
-        const fetchbooking = async () => {
-            try{
-                if(vnp_TransactionStatus){ const vnp = await axios.get(`http://localhost:8080/v1/Payment/vnpay-return/${params}`)}
-               
+        const fetchBooking = async () => {
+            try {
                 const res = await axios.get(`http://localhost:8080/v1/Booking/getBooking/${orderId}`);
-                console.log('res',res.data);
-                
+                // Cập nhật các trạng thái với dữ liệu nhận được
                 setNameMovie(res.data.orders_infor.showtime_id.movie_id.title);
                 setAddress(res.data.orders_infor.cinema_id.address);
                 setRoom(res.data.orders_infor.showtime_id.room_id.name);
-                setMovieid(res.data.orders_infor.showtime_id.movie_id)
-               const seat = res.data.orders_infor.seats_id.map(item=>item.seat_number);
-               setSeat(seat)
-                const food = res.data.orders_infor.FoodAndDrinks_id.map(item =>item);
-                setNamefood(food)
+                setMovieid(res.data.orders_infor.showtime_id.movie_id);
+                const seat = res.data.orders_infor.seats_id.map(item => item.seat_number);
+                setSeat(seat);
+                const food = res.data.orders_infor.FoodAndDrinks_id.map(item => item);
+                setNamefood(food);
+                const status =res.data.orders_infor.status
                 
-                console.log("f",food)
-            }catch{
-
+                // Kiểm tra trạng thái giao dịch chỉ nếu chưa gọi trước đó
+                if(!status){
+                    if (vnp_TransactionStatus && !hasFetchedTransactionStatus) {
+                        await axios.get(`http://localhost:8080/v1/Payment/vnpay-return/${params}`);
+                        setHasFetchedTransactionStatus(true); // Đánh dấu là đã gọi
+                    }
+                }
+                
+            } catch (error) {
+                console.error(error);
             }
-        }
-      
-        fetchbooking();
-     
-    }, []); // Thêm một mảng rỗng để chỉ log một lần khi component mount
+        };
+    
+        fetchBooking();
+    }, [vnp_TransactionStatus, hasFetchedTransactionStatus]); // Thêm hasFetchedTransactionStatus vào dependency
+     // Thêm một mảng rỗng để chỉ log một lần khi component mount
     const handleback=()=>{
 
        navigate('/history');

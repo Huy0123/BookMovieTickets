@@ -4,7 +4,12 @@ const Schema = mongoose.Schema;
 const createPayment = new Schema({
     order_id: {
         type: Schema.Types.ObjectId,
-        ref: 'Orders',  
+        ref: 'oders',  
+        required: true
+    },
+    user_id:{
+        type: Schema.Types.ObjectId,
+        ref: 'users',  
         required: true
     },
     payment_method: {

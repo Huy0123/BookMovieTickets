@@ -77,22 +77,22 @@ function Voucher() {
        try{
         const res = await axios.post(`http://localhost:8080/v1/exchange`,data);
             console.log(res.data);
-            if (points < pointvoun) {
-                setModalContent('Số điểm của bạn không đủ để đổi điểm');
-                return
-            }
+           
             if (res.status === 200) {
                 const pointTitle = res.data.point ? res.data.point.title : 'Voucher';
                 setModalContent(`Bạn đẫ đổi mã ${pointTitle} thành công`);
                 setPoints(res.data.remainingPoints);
                 console.log(res.data.remainingPoints);
                 setShowModal(true);
-
+                
             } else {
                 alert(res.data.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.');
             }
        } catch(error)  {
-            throw(error);
+        console.log("error",error)
+            if(error.response.data.message==="A"){
+                alert('Số điểm của bạn không đủ để đổi điểm');
+            }
        }
         
       };
