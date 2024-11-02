@@ -22,6 +22,7 @@ function Voucher() {
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('userId'));
     const [allVouncher, setAllVouncher] = useState('')
     const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+    const [pointvoun,setPointvoun]= useState('')
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('userToken');
    
@@ -67,7 +68,7 @@ function Voucher() {
      
     const handleVoucherClick = async (pointId) => {
         setSelectedVoucherId(pointId);
-
+        
         console.log(pointId);
         const data = {
             pointId:pointId,
@@ -76,9 +77,13 @@ function Voucher() {
        try{
         const res = await axios.post(`http://localhost:8080/v1/exchange`,data);
             console.log(res.data);
-            
+            if (points < pointvoun) {
+                setModalContent('Số điểm của bạn không đủ để đổi điểm');
+                return
+            }
             if (res.status === 200) {
-                setModalContent(`Bạn đẫ đổi mã ${res.data.point.title} thành công`);
+                const pointTitle = res.data.point ? res.data.point.title : 'Voucher';
+                setModalContent(`Bạn đẫ đổi mã ${pointTitle} thành công`);
                 setPoints(res.data.remainingPoints);
                 console.log(res.data.remainingPoints);
                 setShowModal(true);
@@ -137,11 +142,12 @@ function Voucher() {
                                                 <p className={cx('dateend')}>Ngày kết thúc: {new Date (item.end_date).toLocaleDateString() }</p>
                                             </div>
                                         </div>
-                                        <button 
-                                            className={cx('btn-poi')} 
+                                        <button
+className={cx('btn-poi')} 
                                             onClick={() => {
                                                 handleYNClick(item.title || 'Giảm 20%');
                                                 setSelectedVoucherId(item._id);
+                                                setPointvoun(item.points)
                                             }}
                                         >
                                             <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />
