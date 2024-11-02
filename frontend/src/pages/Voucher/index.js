@@ -76,21 +76,29 @@ function Voucher() {
        try{
         const res = await axios.post(`http://localhost:8080/v1/exchange`,data);
             console.log(res.data);
-            setModalContent(`Bạn đẫ đổi mã ${res.data.point.title} thành công`);
-            setPoints(res.data.remainingPoints);
-            console.log(res.data.remainingPoints)
+            
+            if (res.status === 200) {
+                setModalContent(`Bạn đẫ đổi mã ${res.data.point.title} thành công`);
+                setPoints(res.data.remainingPoints);
+                console.log(res.data.remainingPoints);
+                setShowModal(true);
 
-            setShowModal(true);
+            } else {
+                alert(res.data.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.');
+            }
        } catch(error)  {
-            throw(error)
+            throw(error);
        }
         
       };
   
       const closeModal = () => {
+        if (showModal===true){
+            window.location.reload();
+        }
         setShowModal(false);
         setShowYNModal(false);
-      
+        
       };
     
     
@@ -193,7 +201,7 @@ function Voucher() {
                     <div className={cx('modal-content')}>
                      
                         <p>{modalContent}</p>
-                        <button className={cx('btn-cancel')} onClick={closeModal}>
+                        <button className={cx('btn-cancel')} onClick={closeModal} >
                             Đóng
                         </button>
                     </div>

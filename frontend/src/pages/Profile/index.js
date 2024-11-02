@@ -62,7 +62,7 @@ function Profile() {
         event.preventDefault();
         const userId = localStorage.getItem('userId');
             const token = localStorage.getItem('userToken')
-            console.log(userId)
+            console.log(userId);
         try {
             
             const datasubmit= {
@@ -70,6 +70,7 @@ function Profile() {
                 num: num,
                 email: email,
             }
+            
             const response= await axios.put(`http://localhost:8080/v1/Users/updateUser/${userId}`, 
                 datasubmit,
                 {
@@ -82,8 +83,14 @@ function Profile() {
             
                 
             )
-            console.log(response.data)
-            alert('Cap nhat tahnh cong cong')
+            console.log(response.data);
+            if (!fullname || !num){
+                alert('Bạn cần nhập đầy đủ các trường');
+                return
+
+            }
+            alert('Cập nhật người dùng thành công');
+            window.location.reload();
         }catch(error){
             throw(error)
         }
@@ -129,8 +136,8 @@ function Profile() {
                         id="number" 
                         name="number" 
                         value={num}
-                        // value={fullname}
-                        className={cx('number','form-info')}     
+                        className={cx('number','form-info')} 
+                        onChange={(event) => setNum(event.target.value)} 
                       />
                       </div>
                       <div className={cx('wrap-info-user')}>

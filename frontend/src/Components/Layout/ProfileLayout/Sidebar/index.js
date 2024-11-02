@@ -21,9 +21,9 @@ function Sidebar(){
     const [newpass, setNewpass] = useState('');
     const [confirmpass, setConfirmpass] = useState('');
     const [password,setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState("");  
-    const [successMessage, setSuccessMessage] = useState("");
-
+   
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
     const navigate = useNavigate();
   
     useEffect(() => {
@@ -61,45 +61,56 @@ function Sidebar(){
   
     const handleChange = async (event) => {
         event.preventDefault();
-  
-    
-        // Password validation logic
-        if (newpass.length < 8) {
-            alert("Mật khẩu mới phải có ít nhất 8 ký tự.");
+        if (!currentpass || !newpass || !confirmpass) {
+            setError('Vui lòng nhập đầy đủ các trường');
+            setSuccess(null); 
             return;
         }
+        if(currentpass!==password){
+            setError('Mật khẩu cũ không đúng');
+            setSuccess(null); 
+            return;
+        }
+        // Ensure both passwords match
         if (newpass !== confirmpass) {
-            alert("Mật khẩu mới không khớp.");
+            setError('Mật khẩu nhập lại không đúng');
+            setSuccess(null); 
             return;
         }
     
         try {
-            const response = await axios.put(
-                `http://localhost:8080/v1/Users/updateUser/${userId}`,
-                { 
-                    newPassword: newpass 
-                },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    withCredentials: true,
-                }
-            );
-    
-            if (response.data.success) {  // Assuming success response from server
-                alert("Mật khẩu đã được cập nhật thành công.");
-                setResetModal(false);
+            console.log('Sending request to reset password:', {
+                token,
+                newpass,
+            });
+            const userData = {
+                token, 
+                newpassword: newpass,
+            }
+            const response = await axios.put('http://localhost:8080/v1/Users/reset-password',userData  );
+            
+            if (response.status === 200) {
+                alert('Mật khẩu đã được đổi thành công')
+                setResetModal(false) ;
+                setCurrentpass('');
+                setNewpass('');
+                setConfirmpass('');
             } else {
-                alert("Mật khẩu hiện tại không đúng.");
+                setError(response.data.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.');
             }
         } catch (error) {
-            alert("Đã xảy ra lỗi khi đổi mật khẩu.");
-            console.error('Error updating password:', error);
+            console.error('Error during password reset:', error);
+            if (error.response && error.response.data) {
+                setError(error.response.data.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.');
+            } else {
+                setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
+            }
         }
     };
     
-  
+     const updatePoints = (newPoints) => {
+        setPoints(newPoints);
+    };
       const closeModal = () => {
      
         setResetModal(false);
@@ -111,6 +122,7 @@ function Sidebar(){
     return (  
          <div className={cx('tool-bar')}>
     <div className={cx('tool', 'row')}>
+    
         <div className={cx('point-bar-container')}>
             <div className={cx('point-display')}>
                 <p>Điểm của bạn: {points} </p>
@@ -152,18 +164,20 @@ function Sidebar(){
                 <button className= {cx('btn-reset-pass')} >
                 <FontAwesomeIcon className="fs-3 me-2" icon={faLock} />Đổi mật khẩu</button>
         </div>
+      
     </div>
+    
     {resetModal && (
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
                     <div className={cx('wrap-pass')}>
+                    
                       <h4 className={cx('title-pass')}>MẬT KHẨU CŨ</h4>
                       <input 
                         type="password" 
                         name="currentpass" 
                         value={currentpass}
                         onChange={(event) => setCurrentpass(event.target.value)} 
-
                        
 
                         className={cx('fulname','from-pass')}     
@@ -195,7 +209,8 @@ function Sidebar(){
                         className={cx('fulname','form-pass')}     
                       />
                       </div>  
-                      
+                      {error && <p className={cx('error-message')}>{error}</p>}
+                    {success && <p className={cx('success-message')}>{success}</p>}
                         <button type='button' className={cx('btn-confirm')} onClick={handleChange}>
                             Đồng ý
                         </button>
