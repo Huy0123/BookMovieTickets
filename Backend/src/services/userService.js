@@ -359,8 +359,7 @@ resetpassword = async (token , newpassword)=>{
     await users.save()
     return { message: 'Mật khẩu đã được đổi thành công!' };
 }
+
 }
-
-
 
 module.exports = new userService

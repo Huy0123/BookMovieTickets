@@ -2,28 +2,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@100..900&display=swap');
 @keyframes moveUp {
     from {
-        transform: translateY(0); /* Vị trí ban đầu */
+        opacity: 0;
+        transform: translateY(100px); /* Vị trí ban đầu */
     }
     to {
-        transform: translateY(-10px); /* Di chuyển lên trên 10px */
+        opacity: 1;
+        transform: translateY(0px); /* Di chuyển lên trên 10px */
     }
 }
 @keyframes zoom-in-out {
     0% {
-      transform: scale(1);
+      transform: scale(1.1);
      
     }
   
   
     100% {
-      transform: scale(1.1);
+      transform: scale(1);
      
     }
 }
-
+@keyframes floatIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .float-in {
+    animation: moveUp 1s ease-out forwards;
+  }
 .container {
-    background-color: #000;
-
+    background-color: #6e6e6e;
+    
     .showing-title {
         margin-top: 180px;
     }
@@ -39,7 +53,7 @@
                 max-height: 620px;
               
                 object-fit: cover;
-                animation: zoom-in-out 7s forwards  ease-in-out;
+                animation: zoom-in-out 3s forwards  ease-in-out;
             }
             
             .overlay {
@@ -61,9 +75,7 @@
                     linear-gradient( to left, rgba(0, 0, 0,0), rgba(0, 0, 0, 0.69) 70%);
                     padding-left: 5%;
                     
-                .datetime{
-                    animation: moveUp 3s forwards ease-in-out;
-                }
+                
                 .title{
                     background-image: linear-gradient(to right, #ffffff, #c8c5c3a8); /* Màu gradient */
                     -webkit-background-clip: text; /* Cắt background theo chữ */
@@ -75,7 +87,8 @@
                     font-optical-sizing: auto;
                     letter-spacing: 4px;
                     font-style: normal;
-                    animation: moveUp 3s forwards ease-in-out;
+                    
+                    animation: floatIn 1.2s ease-out forwards;
                 }
                 .wrap-decr{
                     background-color: rgba(57, 56, 56, 0.527);
@@ -84,8 +97,11 @@
                    text-align: justify;
                     padding: 15px 30px;
                     border-radius: 10px;
-                    animation: moveUp 3s forwards ease-in-out;
-                
+                   
+                    animation: floatIn 1.2s ease-out forwards;
+                }
+                .timeset{
+                    animation: floatIn 1.2s ease-out forwards;
                 }
                 .wrap-btn-banner{
                     margin-bottom: 6%;
@@ -93,7 +109,8 @@
                     height: 10%;
                     display: flex;
                     gap: 30px;
-                    animation: moveUp 3s forwards ease-in-out;
+                  
+                    animation: floatIn 1.2s ease-out forwards;
                     .bookin{
                         width: 25%;
                         height: 70%;
@@ -131,7 +148,9 @@
             }
         }
     
-        
+    .rower{    
+        // background-color: #1c1c1c;
+        // animation: floatIn 1.2s ease-out forwards;
     .carousel-control-prev, .carousel-control-next {
         width: 40px;
         height: 40px;
@@ -156,7 +175,7 @@
             // background-color: #ffffff27;
             // background-image: linear-gradient(to right , rgba(105, 237, 251, 0.711),#000000,#000000,#000000,#000000, rgba(245, 89, 224, 0.612)); /* Màu gradient */
             border: 1px solid #313030;
-            background-color: #302f2f67;
+            background-color: #414040;
         }
         .showing-title{
             background-color: #000;
@@ -222,5 +241,5 @@
             }
         }
     }
-    
+}
 }

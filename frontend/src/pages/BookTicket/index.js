@@ -3,8 +3,8 @@ import styles from './BookTicket.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import images from '~/assets/img';
-import { useParams, useNavigate   } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useParams, useNavigate, useLocation   } from 'react-router-dom';
+import { useState, useEffect,useRef  } from 'react';
 import { faClock, faClosedCaptioning, faEarthAsia, faMinus, faPlus, faTag, faTv, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import TrailerModal from '../Trailer/TrailerModal';
@@ -12,6 +12,8 @@ import TrailerModal from '../Trailer/TrailerModal';
 const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const seatSelectionRef = useRef(null); // Create a ref for the seat selection area
+
     const [getMovies,setMovies]=useState([])
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [FoodCount, setFoodCount] = useState([]);
@@ -35,43 +37,74 @@ function BookTicket() {
     const [cinemaid, setCinemaid]= useState('');
     const [roomid,setRoomId] = useState('')
     const [price,setPrice] = useState('')
+    const [genre,setGenre]=useState('')
+    const [duration, setDuration] = useState('')
+    const [country, setCountry]=useState('');
+    const [subtitles,setSubtitles]=useState('');
+    const [limit,setLimit]=useState('');
+    const [director,setDirector]=useState('');
+    const [cast,setCast]=useState('');
+    const [releaseDate, setReleaseDate]=useState('');
+    const [description, setDescription]=useState('');
+    const [trailer,setTrailer] = useState('');
+    const [poster,setPoster]= useState('')
     const navigate = useNavigate();
     let lastDisplayedDate = '';
     const user_id = localStorage.getItem('user_id')
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
+    const location = useLocation();
+    const { showtimeId,cinemaId } = location.state || {}; // Lấy showtimeId từ state
+
+    console.log("showtimeId:", showtimeId);
     console.log(movie_id)
     const openModal = (link) => {
         setTrailerUrl(link);
         setIsModalOpen(true);
         console.log("link",link)
     };
+    const handleShowtimeClick = async (showtimeId, cinema_id, price) => {
+        try {
+            const seatsRes = await axios.get(`http://localhost:8080/v1/getSeatTimeByShowtimeID/${showtimeId}`);
+            setSeats(seatsRes.data.seatTimes);
+            setSelectedShowtimeId(showtimeId);
+            setCinemaid(cinema_id);
+            setPrice(price);
+
+            const selectedShowtimeData = seatsRes.data.showtime;
+            if (selectedShowtimeData) {
+                const formattedTime = new Date(selectedShowtimeData.showtime_start).toLocaleTimeString('vi-VN', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                });
+                setSelectedShowtime(formattedTime);
+            }
+        } catch (error) {
+            console.error("Error fetching seats data:", error);
+        }
+    };
+
     useEffect(() => {
         const getMovieByID = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/v1/getMovieByID/${movie_id}`);
+                const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieID/${movie_id}`);
                 setMovies(res.data);
-                console.log("Movie Details:", res.data);
-                
-                const showtimeall = await axios.get('http://localhost:8080/v1/getShowtimes');
-                setShowTimeAll(showtimeall.data);
-                
-                console.log("All Showtimes:", showtimeall.data);
-
-                const showtimeData = showtimeall.data.map(async (st) => {
-                const showtimeRes = await axios.get(`http://localhost:8080/v1/getShowtimeByID/${st._id}`);
-                    const seatsRes = await axios.get(`http://localhost:8080/v1/getSeatTimeByShowtimeID/${st._id}`);
-                   
-                    return { showtime: showtimeRes.data };
-                });
-
-                const showtimeDetail = await Promise.all(showtimeData);
-                setShowTimeId(showtimeDetail);
-                
-                
-              
+                const movie = res.data.map(item => item);
+                setTitle(movie[0].movie_id.title);
+                setGenre(movie[0].movie_id.genre);
+                setDuration(movie[0].movie_id.duration);
+                setCountry(movie[0].movie_id.country);
+                setSubtitles(movie[0].movie_id.subtitles);
+                setLimit(movie[0].movie_id.limit);
+                setDirector(movie[0].movie_id.director);
+                setCast(movie[0].movie_id.cast);
+                setReleaseDate(movie[0].movie_id.release_date);
+                setDescription(movie[0].movie_id.description);
+                setTrailer(movie[0].movie_id.trailer);
+                setPoster(movie[0].movie_id.poster);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error("Error fetching data:", error);
             }
         };
 
@@ -80,7 +113,6 @@ function BookTicket() {
                 const response = await axios.get('http://localhost:8080/v1/Food/getFood');
                 setFood(response.data.Food);
                 setFoodCount(Array(response.data.Food.length).fill(0));
-                console.log("Food:", response.data.Food);
             } catch (error) {
                 console.error("Error fetching food:", error);
             }
@@ -88,35 +120,21 @@ function BookTicket() {
 
         getFood();
         getMovieByID();
-        
     }, [movie_id]);
 
-    const handleShowtimeClick = async (showtimeId, cinema_id,price) => {
-        console.log("showtimeid", showtimeId);
-        const seatsRes = await axios.get(`http://localhost:8080/v1/getSeatTimeByShowtimeID/${showtimeId}`);
-        setSeats(seatsRes.data.seatTimes); // Đảm bảo gán đúng giá trị
-        setSelectedShowtimeId(showtimeId);
-        setCinemaid(cinema_id);
-        setNameCinema(cinema_id.name);
-        setPrice(price);
-        // Kiểm tra xem seats có dữ liệu không trước khi sử dụng
-        if (seatsRes.data.seatTimes && Array.isArray(seatsRes.data.seatTimes)) {
-            console.log("Seats data received:", seatsRes.data.seatTimes);
+    useEffect(() => {
+        if (showtimeId) {
+            handleShowtimeClick(showtimeId, cinemaId, price);
+            // Scroll to seat selection area when showtimeId exists
+            if (seatSelectionRef.current) {
+                seatSelectionRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
         } else {
-            console.error("No seats data received or it's not an array.");
+            // If no showtimeId, do not scroll or show seat selection
+            console.log("No showtimeId available.");
         }
-    
-        // Lưu thời gian chiếu được chọn
-        const selectedShowtimeData = showTimeId.find(showtime => showtime.showtime._id === showtimeId);
-        if (selectedShowtimeData) {
-            const showtimeUTC = new Date(selectedShowtimeData.showtime.showtime_start);
-            const formattedTime = showtimeUTC.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false });
-            setSelectedShowtime(formattedTime); // Lưu thời gian chiếu
-        }
-    };
-    
-    
-    
+    }, [showtimeId, cinemaId, price]);
+
     const handleBooking = () => {
         const orderDetails = {
             title: getMovies.title,
@@ -216,7 +234,7 @@ const isSelected = prevSelectedSeats.includes(seat);
     const totalFoodCount = FoodCount.reduce((total, count) => total + count, 0);
     
     const getShowTimesByDate = (date) => {
-        return showTimeAll.filter(show => {
+        return getMovies.filter(show => {
             const showtimeUTC = new Date(show.showtime_start);
 // showtimeUTC.setHours(showtimeUTC.getHours() + 7);
             const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
@@ -254,30 +272,30 @@ console.log(totalFoodPrice);
                     <div className='col-1'></div>
                     <div className={cx('content-movie','col-10')}>
                         <div className='row'>
-                            <img src={getMovies.poster} className={cx('d-block','col-4')} alt="" />
+                            <img src={poster} className={cx('d-block','col-4')} alt="" />
                             <div className={cx('col-8')}>
                                 <div className={cx('wrap-info','ms-5','mt-4','pt-1')}>
-                                    <h1 id="title"  className={cx('title')}>Tên phim: {getMovies.title}</h1>
+                                    <h1 id="title"  className={cx('title')}>Tên phim: {title}</h1>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faTag} />
-                                        <div className={cx('type')}>Thể loại: {getMovies.genre}</div>
+                                        <div className={cx('type')}>Thể loại: {genre}</div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faClock} />
-                                        <div className={cx('duration')}>Thời gian: {getMovies.duration} phút </div>
+                                        <div className={cx('duration')}>Thời gian: {duration} phút </div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faEarthAsia} />
-                                        <div className={cx('country')}>Quốc gia: {getMovies.country}</div>
+                                        <div className={cx('country')}>Quốc gia: {country}</div>
                                     </div>
                                     <div className='info-group d-flex'>
 <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faClosedCaptioning} />
-                                        <div className={cx('sub')}>Phụ đề: {getMovies.subtitles}</div>
+                                        <div className={cx('sub')}>Phụ đề: {subtitles}</div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faUserCheck} />
                                         <div className={cx('limit')}>
-                                            Nhãn phim: {getMovies.limit ? `${getMovies.limit}+` : ''}
+                                            Nhãn phim: {limit ? `${limit}+` : ''}
                                         </div>
 
                                     </div>
@@ -286,24 +304,24 @@ console.log(totalFoodPrice);
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
                                     <h1 className={cx('title')}> Mô Tả </h1>
                                     <div className='info-group '>
-                                        <div className={cx('director')}>Đạo diễn: {getMovies.voice_actors}</div>
+                                        <div className={cx('director')}>Đạo diễn: {director}</div>
                                     </div>
                                     <div className='info-group '>
-                                        <div className={cx('performer')}>Diễn viên:  {getMovies.cast}</div>
+                                        <div className={cx('performer')}>Diễn viên:  {cast}</div>
                                     </div>
                                     <div className='info-group'>
-                                        <div className={cx('premiere')}>Khởi chiếu:  { new Date(getMovies.release_date).toLocaleString()}</div>
+                                        <div className={cx('premiere')}>Khởi chiếu:  { new Date(releaseDate).toLocaleString()}</div>
                                     </div>
                                     
                                 </div>  
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
                                     <h1 className={cx('title')}>Nội Dung Phim</h1>
-                                    <div className={cx('description')}> {getMovies.description} </div>                                                                     
+                                    <div className={cx('description')}> {description} </div>                                                                     
                                 </div>
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
                                     <div className='info-group d-flex' >
                                         <FontAwesomeIcon className={cx('icon-trailer','pe-2','pt-1')} icon={faTv} />
-                                        <div className={cx('trailer')} style={{ textDecoration: 'underline',cursor:'pointer' }} onClick={() => openModal(getMovies.trailer)}>Xem Trailer</div>
+                                        <div className={cx('trailer')} style={{ textDecoration: 'underline',cursor:'pointer' }} onClick={() => openModal(trailer)}>Xem Trailer</div>
                                                      <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
                                     </div>                                                                     
                                 </div>                                       
@@ -322,7 +340,7 @@ console.log(totalFoodPrice);
             <h1 className={cx('show')}>Lịch chiếu</h1>
             <div className={cx('group-btn')}>
                 <div className={cx('date-show', 'gap-3')}>
-                    {showTimeAll.map((show, index) => {
+                    {getMovies.map((show, index) => {
                         const showtimeUTC = new Date(show.showtime_start);
                         const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
                             day: '2-digit',
@@ -388,97 +406,96 @@ console.log(totalFoodPrice);
 
           
             {/* ghe */}
-            
-            {selectedShowtimeId && (
-   <div className={cx('seat')}>
-   <div className={cx('wrap-seat')}>
-       <div className={cx('screen')}>
-           <img src={images.screen} className={cx('screen-img')} alt="Screen" />
-           <h2>MÀN HÌNH</h2>
-       </div>
-       <div className={cx('all-seat')}>
-           <div className='row'>
-               <div className='col-2'></div>
-               <div className='col-8'>
-                   {seatRows.map((rowName, rowIndex) => {
-                       const availableSeatsInRow = seats.filter(seat => 
-                           seat.seat_id && // Đảm bảo seat_id tồn tại
-                           seat.seat_id.seat_number.startsWith(rowName) // Lấy số ghế theo hàng
-                       );
+            <div ref={seatSelectionRef}>
+    {selectedShowtimeId && (
+        <div className={cx('seat')}>
+            <div className={cx('wrap-seat')}>
+                <div className={cx('screen')}>
+                    <img src={images.screen} className={cx('screen-img')} alt="Screen" />
+                    <h2>MÀN HÌNH</h2>
+                </div>
+                <div className={cx('all-seat')}>
+                    <div className="row">
+                        <div className="col-2"></div>
+                        <div className="col-8">
+                            {seatRows.map((rowName, rowIndex) => {
+                                const availableSeatsInRow = seats.filter(seat => 
+                                    seat.seat_id && 
+                                    seat.seat_id.seat_number.startsWith(rowName) 
+                                );
 
-                       return (
-                           <div key={rowIndex} className={cx('group-seat')}>
-                               <div className={cx('seat-name', 'me-4')}>{rowName}</div>
-                               <div className={cx('group-btn-seat')}>
-                                   {availableSeatsInRow.map((seatInfo) => {
-                                       const seatNumber = seatInfo.seat_id.seat_number; // Lấy số ghế từ seat_id
-                                       const seatId = seatInfo.seat_id._id; // Lấy ID của ghế
-                                        const seatPrice = seatInfo.seat_id.price;
-                                       return (
-                                           <button
-                                               key={seatNumber}
-                                               type="button"
-                                               className={cx('num-seat', {
-                                                   'vip-seat': seatInfo.seat_id.seat_type.toLowerCase() === 'vip',
-                                                   'selected-seat': selectedSeats.includes(seatNumber),
-                                                   'occupied': seatInfo.seat_status,
-                                               })}
-                                               style={{
-                                                   backgroundColor: selectedSeats.includes(seatNumber)
-                                                       ? '#F9E400'
-                                                       : seatInfo.seat_status
-                                                           ? '#f5004f'
-                                                           : '',
-                                                   color: seatInfo.seat_status ? '#000' : '',
-                                               }}
-                                               onClick={() => {
-                                                   if (!seatInfo.seat_status) {
-                                                       handleSeatClick(seatNumber, seatId, seatPrice);
-                                                   }
-                                               }}
-                                               disabled={seatInfo.seat_status}
-                                           >
-                                               {seatNumber}
-                                           </button>
-                                       );
-                                   })}
-                               </div>
-                           </div>
-                       );
-                   })}
-               </div>
-               <div className='col-2'></div>
+                                return (
+                                    <div key={rowIndex} className={cx('group-seat')}>
+                                        <div className={cx('seat-name', 'me-4')}>{rowName}</div>
+                                        <div className={cx('group-btn-seat')}>
+                                            {availableSeatsInRow.map(seatInfo => {
+                                                const seatNumber = seatInfo.seat_id.seat_number;
+                                                const seatId = seatInfo.seat_id._id;
+                                                const seatPrice = seatInfo.seat_id.price;
+
+                                                return (
+                                                    <button
+                                                        key={seatNumber}
+                                                        type="button"
+                                                        className={cx('num-seat', {
+                                                            'vip-seat': seatInfo.seat_id.seat_type.toLowerCase() === 'vip',
+                                                            'selected-seat': selectedSeats.includes(seatNumber),
+                                                            'occupied': seatInfo.seat_status,
+                                                        })}
+                                                        style={{
+                                                            backgroundColor: selectedSeats.includes(seatNumber) ? '#F9E400' : seatInfo.seat_status ? '#f5004f' : '',
+                                                            color: seatInfo.seat_status ? '#000' : '',
+                                                        }}
+                                                        onClick={() => {
+                                                            if (!seatInfo.seat_status) {
+                                                                handleSeatClick(seatNumber, seatId, seatPrice);
+                                                            }
+                                                        }}
+                                                        disabled={seatInfo.seat_status}
+                                                        aria-label={`Seat ${seatNumber} ${seatInfo.seat_status ? 'occupied' : 'available'}`}
+                                                    >
+                                                        {seatNumber}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <div className="col-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Seat type legend */}
+            <div className={cx('type-seat')}>
+                <div className="row">
+                    <div className="col-1"></div>
+                    <div className={cx('wrap-type', 'col-10')}>
+                        <div className={cx('status-seat')}>
+                            <div className={cx('btn-casual')} style={{ backgroundColor: '#d9d9d9' }}></div>
+                            <h3>Ghế thường</h3>
+                        </div>
+                        <div className={cx('status-seat')}>
+                            <div className={cx('btn-vip')} style={{ backgroundColor: '#FFAF00' }}></div>
+                            <h3>Ghế VIP</h3>
+                        </div>
+                        <div className={cx('status-seat')}>
+                            <div className={cx('btn-choose')} style={{ backgroundColor: '#F9E400' }}></div>
+                            <h3>Ghế chọn</h3>
+                        </div>
+                        <div className={cx('status-seat')}>
+                            <div className={cx('btn-placed')} style={{ backgroundColor: '#F5004F' }}></div>
+                            <h3>Ghế đã đặt</h3>
+                        </div>
+                    </div>
+                    <div className="col-1"></div>
                 </div>
             </div>
         </div>
-        
-        {/* Seat type legend */}
-        <div className={cx('type-seat')}>
-            <div className='row'>
-                <div className='col-1'></div>
-                <div className={cx('wrap-type', 'col-10')}>
-                    <div className={cx('status-seat')}>
-                        <div className={cx('btn-casual')} style={{ backgroundColor: '#d9d9d9' }}></div>
-                        <h3>Ghế thường</h3>
-                    </div>
-                    <div className={cx('status-seat')}>
-                        <div className={cx('btn-vip')} style={{ backgroundColor: '#FFAF00' }}></div>
-                        <h3>Ghế VIP</h3>
-                    </div>
-                    <div className={cx('status-seat')}>
-                        <div className={cx('btn-choose')} style={{ backgroundColor: '#F9E400' }}></div>
-                        <h3>Ghế chọn</h3>
-                    </div>
-                    <div className={cx('status-seat')}>
-                        <div className={cx('btn-placed')} style={{ backgroundColor: '#F5004F' }}></div>
-                        <h3>Ghế đã đặt</h3>
-                    </div>
-                </div>
-                <div className='col-1'></div>
-            </div>
-        </div>
-    </div>
-)}
+    )}
+</div>
 
             <div className={cx('food')}>
                 <h1>CHỌN BẮP NƯỚC</h1>

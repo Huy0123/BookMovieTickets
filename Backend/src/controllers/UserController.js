@@ -196,6 +196,7 @@ resetpassword = async (req,res)=>{
 }
 
 
+
     
 }
 module.exports = new UserController
