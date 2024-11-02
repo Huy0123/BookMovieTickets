@@ -32,6 +32,7 @@ function Thanks() {
     const [room, setRoom] = useState('');
     const [seat, setSeat] = useState([]);
     const [namefood, setNamefood] = useState([]);
+    const [movieid,setMovieid] = useState('')
     const navigate = useNavigate();
     useEffect(() => {
         // Log các tham số khi component mount
@@ -57,7 +58,7 @@ function Thanks() {
                 setNameMovie(res.data.orders_infor.showtime_id.movie_id.title);
                 setAddress(res.data.orders_infor.cinema_id.address);
                 setRoom(res.data.orders_infor.showtime_id.room_id.name);
-                
+                setMovieid(res.data.orders_infor.showtime_id.movie_id)
                const seat = res.data.orders_infor.seats_id.map(item=>item.seat_number);
                setSeat(seat)
                 const food = res.data.orders_infor.FoodAndDrinks_id.map(item =>item);
@@ -71,8 +72,12 @@ function Thanks() {
     }, []); // Thêm một mảng rỗng để chỉ log một lần khi component mount
     const handleback=()=>{
 
-       navigate('/');
+       navigate('/history');
     }
+    const handleback2=()=>{
+
+        navigate(`/bookticket/${movieid}`); 
+     }
     // Kiểm tra resultCode với kiểu dữ liệu chuỗi
     if (resultCode === "0") {
         return (
@@ -111,8 +116,24 @@ function Thanks() {
         );
     } else {
         return (
-            <div>
-                <h1>Cảm ơn bạn đã thanh toán!</h1>
+            <div className={cx('container')}>
+                <div className='row'>
+                    <div className='col-4'></div>
+                    <div className={cx('wrap','col-4')}>
+                    <div className={cx('thank')}>
+                        <img className={cx('img-tks')} src={images.fail} />
+                        <h1>Thanh Toán Thất Bại!</h1>
+                    </div>
+                    <div className={cx('movie')}>
+                        <div className={cx('in4')}>                          
+                            <div className={cx('wrap-btn')}>
+                            <button type='button' className={cx('btn-back2')} onClick={handleback2}>Quay lại</button>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div className='col-4'></div>
+                </div>
             </div>
         );
     }

@@ -49,7 +49,7 @@ class PointService {
                 point: point
             };
         } catch (error) {
-            throw error; // Rethrow the error to be handled in the controller
+            throw error; 
         }
     }
 }
