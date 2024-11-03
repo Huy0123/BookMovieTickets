@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import './style.module.scss';
 
 const ShowtimeList = () => {
     const navigate = useNavigate();
+    
     const [showtimes, setShowtimes] = useState([]);
     const [movies, setMovies] = useState({});
     const [cinemas, setCinemas] = useState({});
@@ -15,48 +16,46 @@ const ShowtimeList = () => {
     const [timeEnd, setTimeEnd] = useState('');
     const [selectedMovie, setSelectedMovie] = useState('');
     const [selectedRoom, setSelectedRoom] = useState('');
+    
     // Hàm để điều hướng đến trang chỉnh sửa
     const editShowtime = (showtime) => {
         navigate(`/edit-showtime/${showtime.id}`, { state: showtime });
     };
 
     // Hàm lấy thông tin bổ sung (phim, phòng, rạp)
-    const fetchAdditionalInfo = useCallback(async (showtimes) => {
-        if (movies && Object.keys(movies).length > 0 &&
-            cinemas && Object.keys(cinemas).length > 0 &&
-            rooms && Object.keys(rooms).length > 0) {
-            return;
-        }
-
+    const fetchAdditionalInfo = useCallback(async () => {
         try {
             const movieIds = [...new Set(showtimes.map(showtime => showtime.movie_id))];
             const cinemaIds = [...new Set(showtimes.map(showtime => showtime.cinema_id))];
             const roomIds = [...new Set(showtimes.map(showtime => showtime.room_id))];
-
+    
             // Lấy tên phim
             const moviePromises = movieIds.map(id => axios.get(`http://localhost:8080/v1/getMovieByID/${id}`));
             const movieResponses = await Promise.all(moviePromises);
             const movieData = movieResponses.reduce((acc, res) => ({ ...acc, [res.data._id]: res.data.title }), {});
             setMovies(movieData);
-
+    
             // Lấy tên rạp
             const cinemaPromises = cinemaIds.map(id => axios.get(`http://localhost:8080/v1/getCinemaByID/${id}`));
             const cinemaResponses = await Promise.all(cinemaPromises);
             const cinemaData = cinemaResponses.reduce((acc, res) => ({ ...acc, [res.data._id]: res.data.name }), {});
             setCinemas(cinemaData);
-
+    
             // Lấy tên phòng
             const roomPromises = roomIds.map(id => axios.get(`http://localhost:8080/v1/getRoomByID/${id}`));
             const roomResponses = await Promise.all(roomPromises);
             const roomData = roomResponses.reduce((acc, res) => ({ ...acc, [res.data._id]: res.data.name }), {});
             setRooms(roomData);
+    
         } catch (error) {
             console.log("Error fetching additional info:", error);
         }
-    }, [movies, cinemas, rooms]);
+    }, [showtimes]);
+    
 
     // Hàm lấy danh sách showtime từ API
     const fetchShowtimes = async () => {
+        
         try {
             const response = await axios.get(`http://localhost:8080/v1/getShowtimeByCinemaID/66fbf96791e08c377610139b`);
             setShowtimes(response.data);
@@ -87,6 +86,7 @@ const ShowtimeList = () => {
     useEffect(() => {
         fetchAdditionalInfo();
     }, [showtimes, fetchAdditionalInfo]);
+    
 
     const RoomsAvailable = useCallback(async () => {
         try {
@@ -138,9 +138,14 @@ const ShowtimeList = () => {
                 showtime_end: timeEnd,
                 room_id: selectedRoom,
             });
-            console.log(response);
             if (response.status === 201) {
+                setTimeStart('');
+                setTimeEnd('');
+                setSelectedMovie('');
+                setSelectedRoom('');
+                setRoomsAvailable([]);
                 fetchShowtimes();
+                
             }
         } catch (error) {
             console.log('Error creating showtime:', error);
@@ -180,7 +185,7 @@ const ShowtimeList = () => {
             </form>
             </div>
 
-            <div>
+            <div> 
                 <table className="table  table-hover">
                     <thead>
                         <tr className="text-center">
