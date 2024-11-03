@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const seatSelectionRef = useRef(null); // Create a ref for the seat selection area
-
+    const [hour,setHour] = useState('')
     const [getMovies,setMovies]=useState([])
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [FoodCount, setFoodCount] = useState([]);
@@ -71,13 +71,15 @@ function BookTicket() {
             setCinemaid(cinema_id);
             setPrice(price);
 
-            const selectedShowtimeData = seatsRes.data.showtime;
+            const selectedShowtimeData = seatsRes.data;
+            console.log("anhyem",selectedShowtimeData)
             if (selectedShowtimeData) {
                 const formattedTime = new Date(selectedShowtimeData.showtime_start).toLocaleTimeString('vi-VN', {
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: false,
                 });
+                console.log("l1232132132131 l",formattedTime);
                 setSelectedShowtime(formattedTime);
             }
         } catch (error) {
@@ -90,6 +92,7 @@ function BookTicket() {
             try {
                 const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieID/${movie_id}`);
                 setMovies(res.data);
+                console.log("jkjkj",res.data)
                 const movie = res.data.map(item => item);
                 setTitle(movie[0].movie_id.title);
                 setGenre(movie[0].movie_id.genre);
@@ -103,6 +106,9 @@ function BookTicket() {
                 setDescription(movie[0].movie_id.description);
                 setTrailer(movie[0].movie_id.trailer);
                 setPoster(movie[0].movie_id.poster);
+                setNameCinema(movie[0].cinema_id.name);
+                setRoomId(movie[0].room_id.name);
+
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -137,7 +143,7 @@ function BookTicket() {
 
     const handleBooking = () => {
         const orderDetails = {
-            title: getMovies.title,
+            title,
             nameCinema,
             roomid,
             selectedSeats,
@@ -342,6 +348,7 @@ console.log(totalFoodPrice);
                 <div className={cx('date-show', 'gap-3')}>
                     {getMovies.map((show, index) => {
                         const showtimeUTC = new Date(show.showtime_start);
+                        console.log("showtimeUTC",showtimeUTC)
                         const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
                             day: '2-digit',
                             month: '2-digit',
@@ -387,7 +394,10 @@ console.log(totalFoodPrice);
                                         <button 
                                             type='button' 
                                             className={cx('btn-time', { active: index === 0 })}
-                                            onClick={() => handleShowtimeClick(show._id,show.cinema_id,show.room_id)}
+                                            onClick={() => {
+                                                handleShowtimeClick(show._id, show.cinema_id, show.room_id);
+                                                setHour(formattedHour);
+                                            }}
                                         >
                                             {formattedHour}
                                         </button>
@@ -547,14 +557,14 @@ console.log(totalFoodPrice);
         
 
             <div className={cx('order-detail')}>
-                <h1 className={cx('title')}>Tên phim: {getMovies.title}</h1>
+                <h1 className={cx('title')}>Tên phim: {title}</h1>
                 <div className={cx('address-type', 'd-flex')}>
                     <div className={cx('address', 'me-5')}>Tên rạp: {nameCinema}</div>
                 </div>
                 <div className={cx('room-seat-time', 'd-flex')}>
                     <div className={cx('room', 'me-5')}>Phòng chiếu: {roomid}</div>
                     <div className={cx('number-seat', 'me-5')}>Số ghế: {selectedSeats.join(', ')}</div>
-<div className={cx('time')}>Thời gian chiếu: {selectedShowtime || 'Chưa chọn'}</div>
+<div className={cx('time')}>Thời gian chiếu: {hour || 'Chưa chọn'}</div>
                     </div>
                 <div className={cx('food-order')}>Đồ ăn: {totalFoodCount} món</div>
             </div>

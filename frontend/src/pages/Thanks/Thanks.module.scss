@@ -19,7 +19,6 @@
         }
         .movie{   
             color: #444;
-            margin-right: 20px;
             background: #fff;
             margin-top: 10px;
            
@@ -48,6 +47,15 @@
                         background-color:#43e97b;
                         &:hover{
                             background-color: #20b759;
+                        }
+                    }
+                    .btn-back2{
+                        width: 160px;
+                        height: 40px;
+                        border-radius: 5px;
+                        background-color:#fff;
+                        &:hover{
+                            background-color: #999;
                         }
                     }
                 }

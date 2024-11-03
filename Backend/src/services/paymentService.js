@@ -95,14 +95,16 @@ class paymentService {
     callback = async(data)=>{
         try {
             if(data.resultCode===0){
+                const order= await OrdersModel.findByIdAndUpdate(data.orderId,{status:true},{new:true})
                 const Payment = await PaymentModel.create({
                     order_id:data.orderId,
                     payment_method:data.orderType,
+                    user_id:order.user_id,
                     amount:data.amount,
                     resultCode:data.resultCode,
                     message:data.message
                 })
-                const order= await OrdersModel.findByIdAndUpdate(data.orderId,{status:true},{new:true})
+                
                 const qrData = {           
                     order_id:data.orderId.toString(),
                 };
@@ -159,7 +161,7 @@ class paymentService {
             throw error; // Ném lỗi để xử lý ở nơi khác nếu cần
         }
     }
-
+ 
     createrVnpay = async(data)=>{
 
         let tmnCode = "V45O0WA3";
@@ -168,7 +170,7 @@ class paymentService {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         const vnpay = new VNPay({
-            tmnCode: tmnCode,
+            tmnCode: tmnCode, 
             secureSecret: secretKey,
             vnpayHost: 'https://sandbox.vnpayment.vn',
             testMode: true, // tùy chọn, ghi đè vnpayHost thành sandbox nếu là true
@@ -184,7 +186,7 @@ class paymentService {
             vnp_TxnRef: data.orderId,
             vnp_OrderInfo: 'Thanh toan don hang',
             vnp_OrderType: ProductCode.Other,
-            vnp_ReturnUrl: 'http://localhost:8080/v1/Payment/vnpay-return',    
+            vnp_ReturnUrl: 'http://localhost:3000/thanks',    
             vnp_Locale: VnpLocale.VN, // 'vn' hoặc 'en'
             vnp_CreateDate: dateFormat(new Date()), // tùy chọn, mặc định là hiện tại
             vnp_ExpireDate: dateFormat(tomorrow), // tùy chọn
@@ -203,9 +205,9 @@ class paymentService {
             secureSecret: secretKey,
             vnpayHost: 'https://sandbox.vnpayment.vn',
             testMode: true, 
-            hashAlgorithm: 'SHA512', // tùy chọn
+            hashAlgorithm: 'SHA512', // tùy chọn 
             enableLog: true, // optional
-            loggerFn: ignoreLogger, // optional
+            loggerFn: ignoreLogger, // optional  
         });
          try {
            
@@ -221,15 +223,17 @@ class paymentService {
             const vnp_TransactionStatus = verify.vnp_TransactionStatus;
             const isVerified = verify.isVerified;
             const isSuccess = verify.isSuccess;
+            const order= await OrdersModel.findByIdAndUpdate(verify.vnp_TxnRef,{status:true},{new:true})
             if(vnp_ResponseCode==="00"&&vnp_TransactionStatus==="00"&&isVerified &&isSuccess){
                 const Payment = await PaymentModel.create({
                     order_id:verify.vnp_TxnRef,
+                    user_id:order.user_id,
                     payment_method:"VNPay",
                     amount:verify.vnp_Amount,
                     resultCode:vnp_ResponseCode,
                     message:verify.message
                 })
-                const order= await OrdersModel.findByIdAndUpdate(verify.vnp_TxnRef,{status:true},{new:true})
+              
                 const qrData = {           
                     order_id:verify.vnp_TxnRef.toString(),
                 };
@@ -249,6 +253,27 @@ class paymentService {
             
          } catch (error) {
             // return {message:'Dữ liệu không hợp lệ'}
+            throw error
+        }
+    }
+
+
+
+    getPayment = async()=>{
+        try {
+            const res = await PaymentModel.find().populate('order_id')
+            return {res}
+        } catch (error) {
+            throw error
+        }
+        
+    }
+
+    getPaymentById = async(data)=>{
+        try {
+            const res = await PaymentModel.find()
+            return {res}
+        } catch (error) {
             throw error
         }
     }
