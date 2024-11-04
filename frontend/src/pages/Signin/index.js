@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { GoogleLogin } from '@react-oauth/google';
+import { useAuth } from '~/contexts/AuthContext';
 import axios from 'axios';
 
 const cx = classNames.bind(styles);
@@ -17,7 +18,7 @@ function SignIn() {
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");  // State to hold error message
-
+    const { login } = useAuth();
     const togglePasswordVisibility = () => {
         setIsShowPassword(!isShowPassword);
     };
@@ -42,7 +43,7 @@ function SignIn() {
             if (token) {
                 localStorage.setItem('userToken', token);
                 localStorage.setItem('userId', userId);
-    
+                 login();
                 // Get the previous page from localStorage
                 const previousPage = localStorage.getItem('previousPage') || '/';
                 navigate(previousPage);  // Redirect to the previous page
@@ -79,6 +80,8 @@ function SignIn() {
             if (token) {
                 localStorage.setItem('userToken', token);
                 localStorage.setItem('userId', userId);
+                login();
+
                 const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
                 navigate(previousPage);  // Redirect to the previous page
             }

@@ -1,0 +1,189 @@
+.container{
+    width: 100%;
+    background-color: #ffffff;
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    h2{
+        width: 80%;
+        font-size: 1.8em;
+       padding-bottom: 5px;
+        // margin: 10px 127px auto;
+        border-bottom: 3px solid rgb(0, 0, 0);
+    }
+   
+    .table-con{
+        height: 600px; /* Chiều cao tối đa cho bảng */
+        /* Thanh cuộn dọc khi nội dung vượt quá chiều cao */
+        width: 80%; /* Đặt chiều rộng nếu cần */
+        overflow-y: auto;
+        margin-top: 50px ;
+        background-color: #5761645e;
+        .finding{
+        .filter{
+            width: 170px;
+          
+            position: absolute;
+            top: 10%;
+            left: 25%;
+            display: flex;
+            select{
+            
+                width: 70%;
+                border: none;
+                height: 25px;
+                &:focus {
+                    outline: none; // Loại bỏ outline
+                    border: none; // Loại bỏ border
+                    box-shadow: none; // Loại bỏ bóng
+                  }
+              
+            }
+        
+            &:hover select{
+                 /* Hiển thị lại khi hover */
+                
+                 pointer-events: auto;
+            }
+         
+        }
+        .search{
+            width: 200px;
+          
+            position: absolute;
+            top: 10%;
+            left: 35%;
+            display: flex;
+            input{
+                width: 100%;
+                border: none;
+                height: 25px;
+                &:focus {
+                    outline: none; // Loại bỏ outline
+                    border-bottom:2px solid #5761645e ; // Loại bỏ border
+                    box-shadow: none; // Loại bỏ bóng
+                  }
+            }
+        }
+    }
+    table{
+        width: 100%;
+        margin: auto;
+     
+      
+        border-collapse: collapse;
+       thead{
+        top: 0;
+        background-color: rgba(138, 138, 129, 0.678);
+        position: sticky;
+        z-index: 1;
+        th{padding:5px 10px ;
+               text-align: center;
+        }
+       }
+       tbody{
+        tr{
+            td{
+                padding:4px 10px ;
+                text-align: center;
+                // background-color: rgba(232, 215, 166, 0.595);
+                button{
+                    padding:2px 10px;
+                    border: none;
+                    border-radius: 5px;
+                    background-color: rgba(205, 38, 38, 0);
+                    &:hover{
+                        background-color: rgba(244, 27, 27, 0.696);
+                        color:#eceaeadb;
+                    }
+                }
+            }
+            &:hover{
+                background-color: rgba(228, 216, 204, 0.692);
+              
+            }
+        }
+     
+     
+       }
+    }
+    }  .modal {
+        display: none; /* Ẩn modal theo mặc định */
+        position: fixed; /* Đặt modal cố định */
+        z-index: 1000; /* Đặt trên cùng */
+        left: 0;
+        top: 0;
+        width: 100%; /* Toàn bộ chiều rộng */
+        height: 100%; /* Toàn bộ chiều cao */
+        overflow: auto; /* Cuộn nếu cần */
+        background-color: rgb(0, 0, 0); /* Màu nền đen */
+        background-color: rgba(0, 0, 0, 0.4); /* Màu nền với độ trong suốt */
+        align-items: center; /* Căn giữa theo chiều dọc */
+        justify-content: center; /* Căn giữa theo chiều ngang */
+        display: flex; /* Sử dụng flex để căn giữa */
+    }
+
+    .modal-content {
+        background-color: #fefefe; /* Màu nền của modal */
+        margin: auto; /* Đặt ở giữa */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 40%; /* Chiều rộng modal */
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between; /* Đặt khoảng cách giữa các phần tử */
+            border-bottom: 1px solid #888;
+            padding-bottom: 10px;
+
+            h4 {
+                margin: 0; /* Bỏ margin cho tiêu đề */
+            }
+
+            button {
+                border: none; /* Bỏ viền cho nút đóng */
+                background: none; /* Bỏ nền cho nút đóng */
+                font-size: 20px; /* Kích thước chữ cho nút đóng */
+                cursor: pointer; /* Con trỏ khi di chuột qua */
+            }
+        }
+
+        .modal-body {
+            margin: 20px 0; /* Khoảng cách trên và dưới */
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between; /* Đặt khoảng cách giữa các nút */
+            border-top: 1px solid #888;
+            padding-top: 10px;
+
+            button {
+                padding: 5px 10px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+
+                &:first-child {
+                    background-color: rgba(205, 38, 38, 0.733);
+                    color: white;
+
+                    &:hover {
+                        background-color: rgba(230, 136, 136, 0.774);
+                    }
+                }
+
+                &:last-child {
+                    background-color: rgba(11, 154, 72, 0.733);
+                    color: white;
+
+                    &:hover {
+                        background-color: rgba(58, 199, 118, 0.774);
+                    }
+                }
+            }
+        }
+    }
+}

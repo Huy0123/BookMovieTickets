@@ -51,6 +51,19 @@ function Payment(){
                 </div>
             ),
         },
+        {
+            value: 'zalopay',
+            label: (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                        src = {images.zalopay}
+                        alt="Momo Icon"
+                        style={{ width: '20px', height: '20px', marginRight: '8px' }}
+                    />
+                    Thanh Toán Bằng Zalopay
+                </div>
+            ),
+        },
        
     ];
 
@@ -155,17 +168,24 @@ function Payment(){
                     window.location.href = resPay.data.payUrl; // mở URL trong tab hiện tại
                 }
             }
-            if(selectMethodPay==="vnpay"){
+            else if(selectMethodPay==="vnpay"){
                 const resPay = await axios.post('http://localhost:8080/v1/Payment/createrVnpay', data);
                 if (resPay.data && resPay.data.paymentUrl) {
                     window.location.href = resPay.data.paymentUrl; // mở URL trong tab hiện tại
+                }
+            }
+            else if(selectMethodPay==="zalopay"){
+                const resPay = await axios.post('http://localhost:8080/v1/Payment/createrZalopay', data);
+                console.log("data",resPay.data.data2)
+                if (resPay.data && resPay.data.data2.order_url) {
+                    window.location.href = resPay.data.data2.order_url; // mở URL trong tab hiện tại
                 }
             }
            
             
         } catch (error) {
             console.error('Error processing payment:', error);
-        }
+        } 
     };
     console.log("sss",order)
 

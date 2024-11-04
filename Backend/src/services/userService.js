@@ -33,7 +33,7 @@ class userService{
             let result = await user.create({
                 fullname: data.fullname,
                 username: data.username,
-                email: data.email,
+                email: data.email, 
                 num: data.num,
                 password: hashPassword,
                 role: data.role,

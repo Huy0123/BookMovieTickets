@@ -1,40 +1,63 @@
-import { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { publicRoutes } from '~/routes';
+import { publicRoutes, privateRoutes } from '~/routes';
 import { DefaultLayout } from '~/Components/Layout';
-import { Profilelayout} from '~/Components/Layout';
-
+import PrivateRoute from '~/Components/PrivateRoute'; // Nhập đúng
 
 function App() {
-  
-
   return (
     <Router>
       <div className="App">
         <Routes>
-            {publicRoutes.map((route, index) => {
-              const Page = route.component;
+          {/* Xử lý các route công khai */}
+          {publicRoutes.map((route, index) => {
+            const Page = route.component;
+            let Layout = DefaultLayout;
 
-              let Layout =   DefaultLayout;
+            if (route.layout) {
+              Layout = route.layout;
+            } else if (route.layout === null) {
+              Layout = Fragment;
+            }
 
-              if (route.layout) {
-                Layout = route.layout;
-              } else if (route.layout === null) {
-                Layout = Fragment;
-              }
+            return (
+              <Route 
+                key={index} 
+                path={route.path} 
+                element={
+                  <Layout>
+                    <Page />
+                  </Layout>
+                } 
+              />
+            );
+          })}
 
-              return (
-                <Route 
-                  key={index} 
-                  path={route.path} 
-                  element={
+          {/* Xử lý các route riêng tư */}
+          {privateRoutes.map((route, index) => {
+            const Page = route.component;
+            let Layout = DefaultLayout;
+
+            if (route.layout) {
+              Layout = route.layout;
+            } else if (route.layout === null) {
+              Layout = Fragment;
+            }
+
+            return (
+              <Route 
+                key={index} 
+                path={route.path} 
+                element={
+                  <PrivateRoute>
                     <Layout>
                       <Page />
                     </Layout>
-                  } 
-                />
-              );
-            })}
+                  </PrivateRoute>
+                } 
+              />
+            );
+          })}
         </Routes>
       </div>
     </Router>

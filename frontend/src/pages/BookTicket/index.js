@@ -64,6 +64,7 @@ function BookTicket() {
         console.log("link",link)
     };
     const handleShowtimeClick = async (showtimeId, cinema_id, price) => {
+        console.log("showtimeIdshowtimeId",showtimeId)
         try {
             const seatsRes = await axios.get(`http://localhost:8080/v1/getSeatTimeByShowtimeID/${showtimeId}`);
             setSeats(seatsRes.data.seatTimes);
