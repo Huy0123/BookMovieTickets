@@ -24,16 +24,27 @@ class CinemaService {
     }
 
     getCinemas = async () => {
-        return cinema.find();
+        return cinema.find().populate('user_id');
     }
 
     getCinemaByID = async (id) => {
-        return cinema.findById(id);
+        return cinema.findById(id).populate('user_id');
     }
 
-    updateCinema = async (id, cinemaData) => {
-        await cinema.findByIdAndUpdate(id, cinemaData);
-        return cinema.findById(id);
+    updateCinema = async (id,data) => {
+       const Cinema=  await cinema.findByIdAndUpdate(id,{
+        name:data.name,
+        address:data.address
+       },{new:true});
+       console.log(Cinema.user_id)
+       const user = await UserModel.findByIdAndUpdate(Cinema.user_id,{
+        fullname:data.name,
+        email:data.email,
+        num:data.num
+  
+       },{new:true})
+
+        return {user,Cinema}
     }
 
     deleteCinema = async (id) => {

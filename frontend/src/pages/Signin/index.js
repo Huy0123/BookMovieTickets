@@ -79,7 +79,9 @@ function SignIn() {
             const token = response.data.accesstoken;
             if (token) {
                 localStorage.setItem('userToken', token);
-                localStorage.setItem('userId', userId);git 
+                localStorage.setItem('userId', userId);
+                login();
+
                 const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
                 navigate(previousPage);  // Redirect to the previous page
             }

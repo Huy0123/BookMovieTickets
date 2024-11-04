@@ -5,10 +5,18 @@ const AuthContext = createContext();
 
 // Tạo provider cho context
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Thay đổi giá trị này tùy theo xác thực
 
-    const login = () => setIsAuthenticated(true);
-    const logout = () => setIsAuthenticated(false);
+    const login = () => {
+        setIsAuthenticated(true);
+        console.log("User logged in");
+    };
+    
+    const logout = () => {
+        setIsAuthenticated(false);
+        console.log("User logged out");
+    };
+    
 
     return (
         <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
