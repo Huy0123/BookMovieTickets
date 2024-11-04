@@ -4,12 +4,15 @@ import styles from './CinemaList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-
+import EditCinema from '../EditCinema';
 
 const cx = classNames.bind(styles);
 function CinemaList() {
     const [addCinema,setAddCinema] = useState(false);
-   
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
 
     const handleAddCinem =() =>{
@@ -43,7 +46,7 @@ function CinemaList() {
               <td>gayvc@gmail.com</td>
              
               <td>
-              <button>chỉnh sửa</button>
+              <button onClick={openModal}>chỉnh sửa</button> <EditCinema isOpen={isModalOpen} onClose={closeModal} />
                 <button>xóa</button>
               </td>
             </tr>
@@ -55,6 +58,7 @@ function CinemaList() {
       {addCinema &&(
         <div className={cx('modal-container')}>
             <div className={cx('modal-content')}>
+            <h3 className={cx('tyle')}>Chỉnh sửa rạp </h3>
             <div className={cx('content')}>
                       <h4 className={cx('title')}>Tên rạp</h4>
                       <input 
