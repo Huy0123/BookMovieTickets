@@ -1,0 +1,51 @@
+.navbar{
+    background-color: rgb(29, 30, 31);
+    padding: 15px;
+    height: 720px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    h1{
+        margin: 10px;
+        font-size: 2em;
+        color: rgb(254, 254, 254); 
+         border-bottom: 2px solid rgb(254, 254, 254);}
+      
+    .bar{
+        margin-top: 20px;
+        .nav{  
+            display: flex;
+            align-items: center;
+           
+            color: aliceblue;
+            cursor: pointer;
+            font-size: 0.9em;
+            gap: 5px;
+            margin: 0 auto;
+            padding: 15px 10px;
+            h3{
+                margin-bottom: 0px;
+                font-size: 1em;
+                
+            }
+            &:hover{
+                background-color: rgba(153, 153, 153, 0.493);
+            }
+        }
+        
+    }
+    .logout{
+        top: 90%;
+        right: 10%;
+        left: 10%;
+        border-radius:20px ;
+        position: absolute;
+        padding: 8px 20px;
+        box-shadow: 1px 1px 8px rgba(218, 217, 217, 0.742); 
+        &:hover{
+            border: 0px;
+            background-color: rgba(153, 153, 153, 0.493);
+           
+        }
+    }
+}
