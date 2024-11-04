@@ -9,4 +9,5 @@ function PrivateRoute({ children }) {
     return isAuthenticated ? children : <Navigate to="/signIn" />;
 }
 
+
 export default PrivateRoute;
