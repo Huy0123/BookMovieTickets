@@ -30,7 +30,7 @@ const publicRoutes = [
     { path: '/forgot', component:ForgotPassword, layout:null},
     { path: '/reset-password/:token', component: ResetPassword, layout: null }, 
     { path: '/payment', component:Payment},
-    { path: '/moderator/*', component:Moderator},
+    { path: '/moderator/*', component:Moderator, layout: null },
     // { path: '/CinemaManeger', component:CinemaManeger},
 ]
 //Ngược lại

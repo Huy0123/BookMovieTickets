@@ -7,7 +7,7 @@ import TrailerModal from '../Trailer/TrailerModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faClock, faClosedCaptioning, faEarthAsia, faTag, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -19,14 +19,14 @@ function ChooseCinema() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [trailerUrl, setTrailerUrl] = useState(''); // State for trailer link
     const cinema_id = useParams().id; // Get cinema ID from URL params
-
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchMoviesByCinemaId = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/v1/getMovies?cinemaId=${cinema_id}`);
+                const res = await axios.get(`http://localhost:8080/v1/getMovies`);
                 setAllMovies(res.data);
                 setVisibleMovies(res.data.slice(0, 5)); // Display first 5 movies
-                console.log(res.data);
+                console.log("mv",res.data);
             } catch (error) {
                 console.error('Error fetching movies:', error);
             }
@@ -51,16 +51,17 @@ function ChooseCinema() {
         }
     };
 
-    const handleSelectMovie = (movie) => {
-        setSelectedMovie(movie); // Update selected movie
+    const handleSelectMovie = (movieId) => {
+        setSelectedMovie(movieId); // Update selected movie
 
-        // Smooth scroll to the content section
-        setTimeout(() => {
-            const wrapContent = document.getElementById('wrap-content');
-            if (wrapContent) {
-                wrapContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 0);
+        // // Smooth scroll to the content section
+        // setTimeout(() => {
+        //     const wrapContent = document.getElementById('wrap-content');
+        //     if (wrapContent) {
+        //         wrapContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        //     }
+        // }, 0);
+        navigate(`/bookticket/${movieId}`); 
     };
 
     const openModal = (link) => {
@@ -75,13 +76,13 @@ function ChooseCinema() {
             <div className={cx('wrap-card')}>
                 {visibleMovies.map((movie) => (
                     <div 
-                        key={movie.id} 
+                        key={movie._id} 
                         className={cx('the')} 
-                        onClick={() => handleSelectMovie(movie)} // Handle movie selection
+                        // Handle movie selection
                     >
-                        <img src={movie.poster} alt={movie.title} className={cx('movie-image')} />
+                        <img src={movie.poster} alt={movie.title} className={cx('movie-image')} onClick={() => handleSelectMovie(movie._id)} />
                         <div className={cx('content-movie')}>
-                            <h3 className={cx('movie-title')}>{movie.title}</h3>
+                            <h3 className={cx('movie-title')} onClick={() => handleSelectMovie(movie._id)} >{movie.title}</h3>
                             <button 
                                 onClick={() => openModal(movie.trailerLink)} 
                                 className={cx('trailer-link')}
