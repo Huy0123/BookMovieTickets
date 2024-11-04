@@ -1,9 +1,26 @@
 const cinema = require('../models/Cinema');
-
-
+const UserModel = require('../models/userModel')
+const saltRounds =10
+const bcrypt =require('bcrypt')
 class CinemaService {
-    createCinema = async (cinemaData) => {
-        return await cinema.create(cinemaData);
+    createCinema = async (data) => {
+        const hashPassword = await bcrypt.hash(data.password, saltRounds);
+        const userCinema = await UserModel.create({
+            fullname: data.nameCinema,
+            username: data.username,
+            email: data.email,
+            num: data.num,
+            password: hashPassword,
+            role:"Cinema"         
+        })
+
+        const Cinema = await cinema.create({
+            name:data.nameCinema,
+            address:data.address,
+            user_id:userCinema._id
+
+        })
+       return {userCinema,Cinema} 
     }
 
     getCinemas = async () => {

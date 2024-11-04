@@ -80,8 +80,7 @@ class bookingService {
                 total_price
             })
             const orders_infor = await order.save();
-            
-       
+           
            
          
          

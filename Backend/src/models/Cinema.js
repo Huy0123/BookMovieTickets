@@ -7,6 +7,11 @@ const createCinema = new mongoose.Schema({
         type: String,
         required: true
     },
+    user_id:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
+    },
     address:{
         type: String,
         required: true
