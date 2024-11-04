@@ -96,7 +96,7 @@ class bookingService {
             throw new Error('Error creating booking: ' + error.message);
         }
     }
-
+  
 
     
 

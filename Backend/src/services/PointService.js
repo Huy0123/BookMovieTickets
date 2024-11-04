@@ -34,7 +34,9 @@ class PointService {
             }
 
             if (user.point < point.points) {
-                throw new Error('Not enough points to exchange');
+                const error = new Error('Không đủ điểm');
+                error.code = 'INSUFFICIENT_POINTS'; // Bạn có thể đặt mã lỗi tùy chỉnh
+                throw error;
             }
 
             user.point -= point.points;
@@ -49,7 +51,7 @@ class PointService {
                 point: point
             };
         } catch (error) {
-            throw error; // Rethrow the error to be handled in the controller
+            throw error; 
         }
     }
 }

@@ -10,7 +10,11 @@ const images= {
     screen: require('~/assets/img/screen.png'),
     food: require('~/assets/img/food.png'),
     prom: require('~/assets/img/pngegg.png'),
-    comple : require('~/assets/img/comple.png')
+    comple : require('~/assets/img/comple.png'),
+    vnpay : require('~/assets/img/vnpay.png'),
+    zalopay : require('~/assets/img/zalopay.webp'),
+    fail : require('~/assets/img/6659895.png')
+
 
 }
 

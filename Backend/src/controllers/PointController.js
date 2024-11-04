@@ -48,7 +48,10 @@ class PointController{
             const result = await pointService.exchangePoints(userId, pointId);
             res.status(200).json(result);
         } catch (error) {
-            throw error
+          
+            if(error.code = 'INSUFFICIENT_POINTS'){
+                return res.status(404).json({message:"A"})
+            }
         }
     }
 }

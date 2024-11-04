@@ -13,8 +13,8 @@ function History() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/v1/Booking/getUserBooking/${userId}`);
-                const orderData = res.data.order_infor;
+                const res = await axios.get(`http://localhost:8080/v1/Payment/getPaymentById/${userId}`);
+                const orderData = res.data.res;
                 console.log(orderData)
                 setOrder(orderData);
             } catch (error) {
@@ -33,11 +33,8 @@ function History() {
                         <div className={cx('histor-contain', 'main-contain')}>
                             <div className='w-100 row'>
                                 <div className={cx('col-1', 'rower')}>Stt</div>
-                                <div className={cx('col-2', 'rower')}>Tên phim</div>
                                 <div className={cx('col-2', 'rower')}>Ngày đặt</div>
-                                <div className={cx('col-1', 'rower')}>Phòng</div>
-                                <div className={cx('col-1', 'rower')}>Số ghế</div>
-                                <div className={cx('col-1', 'rower')}>Bắp nước</div>
+                                <div className={cx('col-1', 'rower')}>Phương thức</div>
                                 <div className={cx('col-2', 'rower')}>Giá tiền</div>
                                 <div className={cx('col-2', 'rower')}>Trạng thái</div>
                             </div>
@@ -47,13 +44,10 @@ function History() {
                             {order.map((item, index) => (
                                 <div key={item._id} className='w-100 row'>
                                     <div className={cx('col-1', 'rower')}>{index + 1}</div>
-                                    <div className={cx('col-2', 'rower')}>{item.showtime_id.movie_id.title}</div>
-                                    <div className={cx('col-2', 'rower')}>{new Date(item.order_date).toLocaleDateString()}</div>
-                                    <div className={cx('col-1', 'rower')}>{item.showtime_id.room_id.name}</div>
-                                    <div className={cx('col-1', 'rower')}>{item.seats_id.join(', ')}</div>
-                                    <div className={cx('col-1', 'rower')}>{item.FoodAndDrinks_id ? 'Bắp nước' : 'Không'}</div>
-                                    <div className={cx('col-2', 'rower')}>{item.total_price.toLocaleString()} VND</div>
-                                    <div className={cx('col-2', 'rower')}>{item.status ? 'Đã thanh toán' : 'Chưa thanh toán'}</div>
+                                    <div className={cx('col-2', 'rower')}>{new Date(item.payment_date).toLocaleDateString()}</div>
+                                    <div className={cx('col-1', 'rower')}>{item.payment_method}</div>
+                                    <div className={cx('col-2', 'rower')}>{item.amount.toLocaleString()} VND</div>
+                                    <div className={cx('col-2', 'rower')}>{item.resultCode===0 ? 'Đã thanh toán' : 'Chưa thanh toán'}</div>
                                 </div>
                             ))}
                         </div>

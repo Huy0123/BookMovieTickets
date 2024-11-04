@@ -13,68 +13,69 @@ const cx = classNames.bind(styles);
 function Thanks() {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
-    // Lấy các giá trị của từng tham số
-    const partnerCode = params.get('partnerCode');
-    const orderId = params.get('orderId');
-    const requestId = params.get('requestId');
-    const amount = params.get('amount');
-    const orderInfo = params.get('orderInfo');
-    const orderType = params.get('orderType');
-    const transId = params.get('transId');
-    const resultCode = params.get('resultCode');
-    const message = params.get('message');
-    const payType = params.get('payType');
-    const responseTime = params.get('responseTime');
-    const extraData = params.get('extraData');
-    const signature = params.get('signature');
+    if(params.has('resultCode')){
+        var orderId = params.get('orderId');      
+        var resultCode = params.get('resultCode');
+    }else if(params.has('vnp_TransactionStatus')){
+        var vnp_TransactionStatus = params.get('vnp_TransactionStatus'); 
+        var orderId = params.get('vnp_TxnRef')
+       console.log("param",params)
+        // Lấy các giá trị của từng tham số
+    }
+
+   
     const [nameMovie, setNameMovie] = useState('');
     const [address, setAddress] = useState('');
     const [room, setRoom] = useState('');
     const [seat, setSeat] = useState([]);
     const [namefood, setNamefood] = useState([]);
+    const [movieid,setMovieid] = useState('')
+    const [hasFetchedTransactionStatus, setHasFetchedTransactionStatus] = useState(false);
+
     const navigate = useNavigate();
+   
     useEffect(() => {
-        // Log các tham số khi component mount
-        console.log({
-            partnerCode,
-            orderId,
-            requestId,
-            amount,
-            orderInfo,
-            orderType,
-            transId,
-            resultCode,
-            message,
-            payType,
-            responseTime,
-            extraData,
-            signature
-        });
-        const fetchbooking = async () => {
-            try{
+        const fetchBooking = async () => {
+            try {
                 const res = await axios.get(`http://localhost:8080/v1/Booking/getBooking/${orderId}`);
-                console.log('res',res.data);
+                // Cập nhật các trạng thái với dữ liệu nhận được
                 setNameMovie(res.data.orders_infor.showtime_id.movie_id.title);
                 setAddress(res.data.orders_infor.cinema_id.address);
                 setRoom(res.data.orders_infor.showtime_id.room_id.name);
+                setMovieid(res.data.orders_infor.showtime_id.movie_id);
+                const seat = res.data.orders_infor.seats_id.map(item => item.seat_number);
+                setSeat(seat);
+                const food = res.data.orders_infor.FoodAndDrinks_id.map(item => item);
+                setNamefood(food);
+                const status =res.data.orders_infor.status
                 
-               const seat = res.data.orders_infor.seats_id.map(item=>item.seat_number);
-               setSeat(seat)
-                const food = res.data.orders_infor.FoodAndDrinks_id.map(item =>item);
-                setNamefood(food)
-                console.log("f",food)
-            }catch{
-
+                // Kiểm tra trạng thái giao dịch chỉ nếu chưa gọi trước đó
+                if(!status){
+                    if (vnp_TransactionStatus && !hasFetchedTransactionStatus) {
+                        await axios.get(`http://localhost:8080/v1/Payment/vnpay-return/${params}`);
+                        setHasFetchedTransactionStatus(true); // Đánh dấu là đã gọi
+                    }
+                }
+                
+            } catch (error) {
+                console.error(error);
             }
-        }
-        fetchbooking();
-    }, []); // Thêm một mảng rỗng để chỉ log một lần khi component mount
+        };
+    
+        fetchBooking();
+    }, [vnp_TransactionStatus, hasFetchedTransactionStatus]); // Thêm hasFetchedTransactionStatus vào dependency
+     // Thêm một mảng rỗng để chỉ log một lần khi component mount
     const handleback=()=>{
 
-       navigate('/');
+       navigate('/history');
     }
+    
+    const handleback2=()=>{
+
+        navigate('/'); 
+     }
     // Kiểm tra resultCode với kiểu dữ liệu chuỗi
-    if (resultCode === "0") {
+    if (resultCode === "0"||vnp_TransactionStatus==="00") {
         return (
             <div className={cx('container')}>
                 <div className='row'>
@@ -111,11 +112,28 @@ function Thanks() {
         );
     } else {
         return (
-            <div>
-                <h1>Cảm ơn bạn đã thanh toán!</h1>
+            <div className={cx('container')}>
+                <div className='row'>
+                    <div className='col-4'></div>
+                    <div className={cx('wrap','col-4')}>
+                    <div className={cx('thank')}>
+                        <img className={cx('img-tks')} src={images.fail} />
+                        <h1>Thanh Toán Thất Bại!</h1>
+                    </div>
+                    <div className={cx('movie')}>
+                        <div className={cx('in4')}>                          
+                            <div className={cx('wrap-btn')}>
+                            <button type='button' className={cx('btn-back2')} onClick={handleback2}>Quay lại</button>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div className='col-4'></div>
+                </div>
             </div>
         );
     }
-}
+}   
 
 export default Thanks;
+    
