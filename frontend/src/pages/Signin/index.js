@@ -44,7 +44,7 @@ function SignIn() {
                 localStorage.setItem('userId', userId);
     
                 // Get the previous page from localStorage
-                const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
+                const previousPage = localStorage.getItem('previousPage') || '/';
                 navigate(previousPage);  // Redirect to the previous page
             } else {
                 setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.');

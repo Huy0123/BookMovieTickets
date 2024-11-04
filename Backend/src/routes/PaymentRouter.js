@@ -9,5 +9,5 @@ router.get('/vnpay-return/:query',PaymentController.returnVnpay)
 router.post('/callback',PaymentController.callback)
 router.post('/status',PaymentController.status)
 router.post('/',PaymentController.payment)
-
+router.get('/getPaymentByCinemaId/:id',PaymentController.getPaymentByCinemaId)
 module.exports = router;
