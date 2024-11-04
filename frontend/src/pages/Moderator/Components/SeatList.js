@@ -58,6 +58,9 @@ const SeatList = () => {
                 room_id: selectedRoom,
             });
             if (response.status === 201) {
+                setSeatNumber('');
+                setSeatType('');
+                setAmount('');
                 fetchSeats();
             }
         } catch (error) {

@@ -7,7 +7,9 @@ const SeatTimeModel = require('../models/SeatTime.js');
 const QRCode = require('qrcode'); 
 const UserModel = require('../models/userModel.js')
 const crypto = require('crypto');
+const CryptoJS = require('crypto-js');
 const axios = require('axios');
+const moment = require('moment');
 const { ProductCode, VnpLocale,VNPay,ignoreLogger,dateFormat} = require('vnpay')
 const querystring = require('querystring');
 //parameters
@@ -258,6 +260,44 @@ class paymentService {
     }
 
 
+
+    createrZalopay = async (data)=>{
+       const app_id = "2553"
+        const key1= "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL"
+        const key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz"
+        const endpoint="https://sb-openapi.zalopay.vn/v2/create"
+
+        const embed_data = {};
+
+        const orderin4 = await OrdersModel.findById(data.orderId)
+        const items = [{}];
+        const transID = data.orderId;
+        const order = {
+            app_id: app_id,
+            app_trans_id: `${moment().format('YYMMDD')}_${transID}`, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
+            app_user: orderin4.user_id,
+            app_time: Date.now(), // miliseconds
+            item: JSON.stringify(items),
+            embed_data: JSON.stringify(embed_data),
+            amount: data.amount,
+            description: `Payment for the order #${transID}`,
+            bank_code: "zalopayapp",
+        };
+        const data1 = app_id + "|" + order.app_trans_id + "|" + order.app_user + "|" + order.amount + "|" + order.app_time + "|" + order.embed_data + "|" + order.item;
+        order.mac = CryptoJS.HmacSHA256(data1,key1).toString()
+        
+        try {
+            const result = await axios.post(endpoint,null,{params: order})
+            console.log(result.data);
+            const data = result.data
+            return {data}
+        } catch (error) {
+            throw error
+        }
+
+        
+
+    }
 
     getPayment = async()=>{
         try {

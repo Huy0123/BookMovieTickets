@@ -14,7 +14,6 @@ import BookTicket from '~/pages/BookTicket';
 import Payment from '~/pages/Payment';
 import ProfileLayout from '~/Components/Layout/ProfileLayout';
 import Thanks from '~/pages/Thanks';
-import Moderator from '~/pages/Moderator';
 // Không cần đăng nhập vẫn xem được
 const publicRoutes = [
     { path: '/', component:Home },
@@ -30,7 +29,6 @@ const publicRoutes = [
     { path: '/forgot', component:ForgotPassword, layout:null},
     { path: '/reset-password/:token', component: ResetPassword, layout: null }, 
     { path: '/payment', component:Payment},
-    { path: '/moderator/*', component:Moderator, layout: null },
     // { path: '/CinemaManeger', component:CinemaManeger},
 ]
 //Ngược lại

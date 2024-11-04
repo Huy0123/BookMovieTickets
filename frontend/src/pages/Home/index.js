@@ -61,7 +61,7 @@ function Home() {
     const closeModal = () => setIsModalOpen(false);
     const [trailerUrl, setTrailerUrl] = useState(''); // State để lưu link trailer
     const handleBooking = (movieId) => {
-        console.log(movieId)
+        console.log("modđ",movieId)
         navigate(`/bookticket/${movieId}`); 
     };
   

@@ -22,7 +22,7 @@ class paymentController  {
 
     createrVnpay = async (req,res)=>{
         const data = req.body
-        const result=await paymentService.createrVnpay(data,req)
+        const result=await paymentService.createrVnpay(data)
         return res.status(201).json(result)
     }
     returnVnpay= async(req,res)=>{
@@ -30,6 +30,11 @@ class paymentController  {
         return res.status(200).json(result)
     }
 
+    createrZalopay = async (req,res)=>{
+        const data = req.body
+        const result=await paymentService.createrZalopay(data)
+        return res.status(201).json(result)
+    }
 
 
     getPayment = async (req,res)=>{
