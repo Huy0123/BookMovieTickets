@@ -130,7 +130,7 @@
         justify-content: center;
         position: fixed;
         z-index: 1;
-        padding-top: 100px;
+      
         left: 0;
         top: 0;
         width: 100%;
@@ -141,17 +141,31 @@
             background-color: #fefefe;
             padding: 45px 60px;
             border-radius: 8px;
-            width: 400px;
+            width: 800px;
+            max-height: 600px;
             position: relative;
-           gap: 10px;
-          
+            gap: 10px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             .tyle{
                 text-align: center;
             }
-            .form-info{
-                width: 100%;
+            .content{
+                display: flex;
+                padding: 0 10px ;
+                .title{
+                    text-align: start;
+                }
+                .form-info{
+                    width: 100%;
+                }
+               .poster-1{
+                width: 300px;
+               }
+               .poster-2{
+                width: 200px;
+               }
             }
             .btn-con{
                 display: flex;
@@ -180,4 +194,42 @@
             }
           }
     }
+    .image-modal {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        z-index: 2;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .image-modal-content {
+        position: relative;
+   
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+    
+    .large-image {
+        max-width: 90vw; /* 90% chiều rộng của cửa sổ trình duyệt */
+        max-height: 90vh; /* 90% chiều cao của cửa sổ trình duyệt */
+        width: auto;      /* Đảm bảo tỉ lệ ảnh không thay đổi */
+        height: auto;
+        object-fit: contain; /* Giữ tỉ lệ ảnh, tránh bị cắt */
+      
+    }
+    
+    .close-image {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        color: white;
+        font-size: 30px;
+        cursor: pointer;
+    }
+    
 }

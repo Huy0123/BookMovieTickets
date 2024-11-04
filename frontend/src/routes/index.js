@@ -15,9 +15,6 @@ import Payment from '~/pages/Payment';
 import ProfileLayout from '~/Components/Layout/ProfileLayout';
 import Thanks from '~/pages/Thanks';
 import AdminLayout from '~/Components/Layout/AdminLayout';
-import AddMovie from '~/Admin/EditMember';
-import EditCinema from '~/Admin/EditCinema';
-import EditMovie from '~/Admin/EditMovie';
 import MemberList from '~/Admin/MemberList';
 import CinemaList from '~/Admin/CinemaList';
 import MovieList from '~/Admin/MovieList';
@@ -36,9 +33,7 @@ const publicRoutes = [
     { path: '/forgot', component:ForgotPassword, layout:null},
     { path: '/reset-password/:token', component: ResetPassword, layout: null }, 
     { path: '/payment', component:Payment},
-    { path: '/admin/addMovie', componment:AddMovie , layout: AdminLayout }, 
-    { path: '/admin/editCinema', component:EditCinema , layout: AdminLayout }, 
-    { path: '/admin/editMovie', component:EditMovie , layout: AdminLayout },
+
     { path: '/admin/cinemalist', component:CinemaList , layout: AdminLayout }, 
     { path: '/admin/movielist', component:MovieList , layout: AdminLayout }, 
     { path: '/admin/memberlist', component:MemberList , layout: AdminLayout }, 
