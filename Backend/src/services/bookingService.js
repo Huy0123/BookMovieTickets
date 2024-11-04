@@ -83,12 +83,7 @@ class bookingService {
             
        
            
-          const user = await userModel.findById(user_id)
-          const point = (user.point)+((total_price*1)/1000)
-          console.log("point",point)
-          await userModel.updateOne({_id:user_id},{point:point})
-            
-            
+         
          
             return { message:"Thanh toán thành công ",orders_infor};
         } catch (error) {

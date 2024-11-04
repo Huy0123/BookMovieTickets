@@ -35,6 +35,12 @@ class paymentController  {
         const result=await paymentService.createrZalopay(data)
         return res.status(201).json(result)
     }
+    callbackZalopay= async(req,res)=>{
+        const result = await paymentService.callbackZalopay(req.body)
+        return res.status(200).json(result)
+    }
+
+
 
 
     getPayment = async (req,res)=>{
@@ -45,5 +51,6 @@ class paymentController  {
         const result = await paymentService.getPaymentById(req.params.id)
         return res.status(200).json(result)
     }
+    
 }
 module.exports = new paymentController
