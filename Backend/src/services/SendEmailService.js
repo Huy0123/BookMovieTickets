@@ -78,7 +78,7 @@ class SendEmailService{
                 item_id: item.item_id,       // Thông tin món ăn/đồ uống
                 quantity: item.quantity      // Số lượng
             }));
-            const data = {
+            const data = { 
                 fullname: fullname,
                 cinemaName: bookingInfo.cinema_id.name,           // Tên rạp chiếu
                 orderId: bookingInfo._id,    

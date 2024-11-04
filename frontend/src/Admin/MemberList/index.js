@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Sử dụng useNavigate từ react-router-dom
+
 import classNames from 'classnames/bind';
 import styles from './MemberList.module.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {  faFilter, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Sử dụng useNavigate từ react-router-dom
 import axios from 'axios';
 
 const cx = classNames.bind(styles);
@@ -12,7 +16,11 @@ function MemberList() {
     const [getUsers, setGetUsers] = useState([]);
     const [showModal, setShowModal] = useState(false); // State để điều khiển modal
     const [userIdToDelete, setUserIdToDelete] = useState(null); // State để lưu ID người dùng cần xóa
-
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedOption, setSelectedOption] = useState("");
+    const handleSearchChange = (event) => {
+      setSearchTerm(event.target.value);
+    };
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -62,6 +70,26 @@ function MemberList() {
         <div className={cx('container')}>
             <h2>Danh sách thành viên</h2>   
             <div className={cx('table-con')}>
+                    <div className={cx('finding')}>
+                <div className={cx('search')}>
+                  <FontAwesomeIcon  className="fs-3 me-2" icon={faSearch} />
+                  <input 
+                    type="text" 
+                    placeholder="Tìm kiếm..." 
+                    value={searchTerm} 
+                    onChange={handleSearchChange} 
+                  />
+                </div>
+              <div className={cx('filter')} ><FontAwesomeIcon className="fs-3 " icon={faFilter} /> 
+              <select id="options" value={selectedOption} >
+                <option value="">--Chọn mục--</option>
+                <option value="option1">Email</option>
+                <option value="option2">Số điện thoại</option>
+                <option value="option3">role</option>
+                <option value="option4">Tài Khoản</option>
+              </select>
+              </div>
+              </div>
                 <table striped bordered hover>
                     <thead>
                         <tr>
@@ -85,6 +113,7 @@ function MemberList() {
                                     <td>{item.email}</td>
                                     <td>{item.role}</td>
                                     <td>
+                                      
                                         <button className={cx('btn-del')} type='button' onClick={() => openModal(item._id)}>Xóa</button>
                                     </td>
                                 </tr>

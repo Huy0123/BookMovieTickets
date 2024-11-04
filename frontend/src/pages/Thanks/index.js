@@ -21,6 +21,10 @@ function Thanks() {
         var orderId = params.get('vnp_TxnRef')
        console.log("param",params)
         // Lấy các giá trị của từng tham số
+    }else if(params.has('appid')){
+        var status = params.get('status'); 
+        const app_trans_id = params.get('apptransid')
+        var orderId =app_trans_id.split('_')[1];
     }
 
    
@@ -75,7 +79,7 @@ function Thanks() {
         navigate('/'); 
      }
     // Kiểm tra resultCode với kiểu dữ liệu chuỗi
-    if (resultCode === "0"||vnp_TransactionStatus==="00") {
+    if (resultCode === "0"||vnp_TransactionStatus==="00"||status==="1") {
         return (
             <div className={cx('container')}>
                 <div className='row'>
