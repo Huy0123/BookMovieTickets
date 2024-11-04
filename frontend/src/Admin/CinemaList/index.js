@@ -3,16 +3,21 @@ import classNames from 'classnames/bind';
 import styles from './CinemaList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faPlus, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditCinema from '../EditCinema';
 
 const cx = classNames.bind(styles);
 function CinemaList() {
+  const [showModal, setShowModal] = useState(false);
     const [addCinema,setAddCinema] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedOption, setSelectedOption] = useState("");
+    const handleSearchChange = (event) => {
+      setSearchTerm(event.target.value);
+    };
+  const openModalEdit = () => setIsModalOpen(true);
+  const closeModalEdit = () => setIsModalOpen(false);
 
 
     const handleAddCinem =() =>{
@@ -29,6 +34,26 @@ function CinemaList() {
         </div>
         <h2>Danh sách Rạp</h2>   
         <div className={cx('table-con')} >
+        <div className={cx('finding')}>
+                <div className={cx('search')}>
+                  <FontAwesomeIcon  className="fs-3 me-2" icon={faSearch} />
+                  <input 
+                    type="text" 
+                    placeholder="Tìm kiếm..." 
+                    value={searchTerm} 
+                    onChange={handleSearchChange} 
+                  />
+                </div>
+              <div className={cx('filter')} ><FontAwesomeIcon className="fs-3 " icon={faFilter} /> 
+              <select id="options" value={selectedOption} >
+                <option value="">--Chọn mục--</option>
+                <option value="option1">Email</option>
+                <option value="option2">Số điện thoại</option>
+                <option value="option3">role</option>
+                <option value="option4">Tài Khoản</option>
+              </select>
+              </div>
+              </div>
         <table striped bordered hover>
         <thead>
           <tr>
@@ -46,7 +71,7 @@ function CinemaList() {
               <td>gayvc@gmail.com</td>
              
               <td>
-              <button onClick={openModal}>chỉnh sửa</button> <EditCinema isOpen={isModalOpen} onClose={closeModal} />
+              <button onClick={openModalEdit}>chỉnh sửa</button> <EditCinema isOpen={isModalOpen} onClose={closeModalEdit} />
                 <button>xóa</button>
               </td>
             </tr>
@@ -92,6 +117,23 @@ function CinemaList() {
             </div>
         </div>
       )}
+      {showModal && (
+                <div className={cx('modal')}>
+                    <div className={cx('modal-content')}>
+                        <div className={cx('modal-header')}>
+                            <h4>Xác nhận xóa</h4>
+                            <button type="button" >×</button>
+                        </div>
+                        <div className={cx('modal-body')}>
+                            Bạn có chắc chắn muốn xóa người dùng này?
+                        </div>
+                        <div className={cx('modal-footer')}>
+                            <button type="button" >Hủy</button>
+                            <button type="button" >Xóa</button>
+                        </div>
+                    </div>
+                </div>
+            )}
     </div>
 );
 }

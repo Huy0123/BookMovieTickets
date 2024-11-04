@@ -15,7 +15,7 @@ import Payment from '~/pages/Payment';
 import ProfileLayout from '~/Components/Layout/ProfileLayout';
 import Thanks from '~/pages/Thanks';
 import AdminLayout from '~/Components/Layout/AdminLayout';
-import AddMovie from '~/Admin/AddMovie';
+import AddMovie from '~/Admin/EditMember';
 import EditCinema from '~/Admin/EditCinema';
 import EditMovie from '~/Admin/EditMovie';
 import MemberList from '~/Admin/MemberList';

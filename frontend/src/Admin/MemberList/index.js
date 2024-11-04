@@ -113,7 +113,7 @@ function MemberList() {
                                     <td>{item.email}</td>
                                     <td>{item.role}</td>
                                     <td>
-                                         <button>Chỉnh sửa</button>
+                                      
                                         <button className={cx('btn-del')} type='button' onClick={() => openModal(item._id)}>Xóa</button>
                                     </td>
                                 </tr>
