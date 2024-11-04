@@ -27,9 +27,7 @@ import Moderator from '~/pages/Moderator';
 const publicRoutes = [
     { path: '/', component:Home },
     { path: '/schedule', component:Schedule },
-    { path: '/profile', component:Profile ,layout: ProfileLayout},
-    { path: '/history', component:History ,layout: ProfileLayout},
-    { path: '/voucher', component:Voucher ,layout: ProfileLayout},
+   
     { path: '/chooseCinema/:id', component:ChooseCinema},
     { path: '/bookTicket/:id', component:BookTicket},
     { path: '/thanks', component:Thanks},
@@ -51,7 +49,9 @@ const publicRoutes = [
 ]
 //Ngược lại
 const privateRoutes = [
-    
+    { path: '/profile', component:Profile ,layout: ProfileLayout},
+    { path: '/history', component:History ,layout: ProfileLayout},
+    { path: '/voucher', component:Voucher ,layout: ProfileLayout},
 ]
 
 export {publicRoutes, privateRoutes}
