@@ -12,13 +12,14 @@ const axios = require('axios');
 const moment = require('moment');
 const { ProductCode, VnpLocale,VNPay,ignoreLogger,dateFormat} = require('vnpay')
 const querystring = require('querystring');
+
 //parameters
 var accessKey = 'F8BBA842ECF85';
 var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 var orderInfo = 'pay with MoMo';
 var partnerCode = 'MOMO';
 var redirectUrl = 'http://localhost:3000/thanks';
-const ngrok = 'https://73ea-14-161-10-15.ngrok-free.app'
+const ngrok = 'https://17be-14-161-10-15.ngrok-free.app'
 var ipnUrl = `${ngrok}/v1/Payment/callback`;
 var requestType = "payWithMethod";
 var extraData ='';
@@ -266,11 +267,11 @@ class paymentService {
         const key1= "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL"
         const key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz"
         const endpoint="https://sb-openapi.zalopay.vn/v2/create"
-
-        const embed_data = {};
-
+       const redirecturl = "http://localhost:3000/thanks"
+        const embed_data = {redirecturl};
+        const order_id = data.orderId
         const orderin4 = await OrdersModel.findById(data.orderId)
-        const items = [{}];
+        const items = [{order_id}];
         const transID = data.orderId;
         const order = {
             app_id: app_id,
@@ -281,7 +282,8 @@ class paymentService {
             embed_data: JSON.stringify(embed_data),
             amount: data.amount,
             description: `Payment for the order #${transID}`,
-            bank_code: "zalopayapp",
+            bank_code: "",
+            callback_url:`${ngrok}/v1/Payment/callbackZalopay`
         };
         const data1 = app_id + "|" + order.app_trans_id + "|" + order.app_user + "|" + order.amount + "|" + order.app_time + "|" + order.embed_data + "|" + order.item;
         order.mac = CryptoJS.HmacSHA256(data1,key1).toString()
@@ -289,8 +291,8 @@ class paymentService {
         try {
             const result = await axios.post(endpoint,null,{params: order})
             console.log(result.data);
-            const data = result.data
-            return {data}
+            const data2 = result.data
+            return {data2}
         } catch (error) {
             throw error
         }
@@ -298,6 +300,72 @@ class paymentService {
         
 
     }
+    callbackZalopay = async(data)=>{
+          const key2= "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
+          let result = {};
+     try {
+        let dataStr = data.data;
+        let reqMac = data.mac;
+        let mac = CryptoJS.HmacSHA256(dataStr, key2).toString();
+        console.log("mac =", mac);
+        if (reqMac !== mac) {
+            // callback không hợp lệ
+            result.return_code = -1;
+            result.return_message = "mac not equal";
+          }
+          else {
+            // thanh toán thành công
+            // merchant cập nhật trạng thái cho đơn hàng
+            let dataJson = JSON.parse(dataStr, key2);
+            console.log("update order's status = success where app_trans_id =", dataJson["app_trans_id"]);
+      
+            result.return_code = 1;
+            result.return_message = "success";
+          }
+     } catch (ex) {
+        result.return_code = 0; // ZaloPay server sẽ callback lại (tối đa 3 lần)
+        result.return_message = ex.message;
+     } 
+
+     const parsedData= JSON.parse(data.data);
+     const item = JSON.parse(parsedData.item)
+     console.log("hhhh",result,parsedData,item)
+     if(result.return_code===1){
+        const orderId =item[0].order_id
+        console.log("hagsgsf",item[0].order_id)
+      
+        const order= await OrdersModel.findByIdAndUpdate(orderId,{status:true},{new:true})
+        const Payment = await PaymentModel.create({
+            order_id:orderId,
+            payment_method:"Zalopay",  
+            user_id:parsedData.app_user,
+            amount:parsedData.amount,
+            resultCode:0,
+            message:result.return_message
+        })
+        
+        const qrData = {           
+            order_id:orderId.toString(),
+        };
+        console.log(qrData.order_id)
+        const qrCodeUrl = await QRCode.toDataURL(qrData.order_id);
+        const user = await UserModel.findById(order.user_id)
+        await SendEmailService.sendEmailWithQRCode(user, qrCodeUrl,orderId);
+        const seats_id = order.seats_id;
+        for (const seat_id of seats_id){
+        await SeatTimeModel.updateOne({seat_id:seat_id},{seat_status:"true"})
+     }
+        const point = Math.ceil((user.point)+((parsedData.amount*1)/1000))
+        console.log("point",point)
+         await UserModel.updateOne({_id:order.user_id},{point:point})
+       
+       
+     
+     return {result,Payment,qrCodeUrl}  
+    }
+}
+
+
 
     getPayment = async()=>{
         try {

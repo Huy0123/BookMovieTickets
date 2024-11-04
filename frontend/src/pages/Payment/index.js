@@ -176,16 +176,16 @@ function Payment(){
             }
             else if(selectMethodPay==="zalopay"){
                 const resPay = await axios.post('http://localhost:8080/v1/Payment/createrZalopay', data);
-                console.log("data",resPay.data.data)
-                if (resPay.data && resPay.data.data.order_url) {
-                    window.location.href = resPay.data.data.order_url; // mở URL trong tab hiện tại
+                console.log("data",resPay.data.data2)
+                if (resPay.data && resPay.data.data2.order_url) {
+                    window.location.href = resPay.data.data2.order_url; // mở URL trong tab hiện tại
                 }
             }
            
             
         } catch (error) {
             console.error('Error processing payment:', error);
-        }
+        } 
     };
     console.log("sss",order)
 
