@@ -48,7 +48,10 @@ class CinemaService {
     }
 
     deleteCinema = async (id) => {
-        await cinema.findByIdAndDelete(id);
+       const deleteCinema = await cinema.findByIdAndDelete(id,{new:true});
+       await UserModel.findByIdAndDelete({_id:deleteCinema.user_id},{new:true})
+       console.log("xóa thành công")
+       return {message:"xóa thành công"}
     }
 
     getCinemasByMovieID = async (id) => {

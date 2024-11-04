@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const rooms = require('./Room');
 const showtimes = require('./Showtime');
+const userModel = require('./userModel')
 const { createShowtime } = require('../services/ShowtimeService');
 const createCinema = new mongoose.Schema({
     name:{
@@ -26,6 +27,7 @@ createCinema.pre('remove', async function(next){
     try{
         await rooms.deleteMany({cinema_id: this._id});
         await showtimes.deleteMany({cinema_id: this._id});
+        await userModel.deleteMany({_id: this.user_id});
         next();
     } catch (error){
         next(error);

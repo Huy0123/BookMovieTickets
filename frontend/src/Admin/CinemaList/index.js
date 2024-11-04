@@ -26,6 +26,10 @@ function CinemaList() {
     setSelectedCinemaId(cinemaId); // Set the selected cinema ID
     setIsModalOpen(true);
   };
+  const openModalDelete = (cinemaId) => {
+    setSelectedCinemaId(cinemaId);
+    setShowModal(true)
+  }
 
   
 
@@ -110,7 +114,7 @@ function CinemaList() {
                       onClose={closeModalEdit}
                       cinemaId={selectedCinemaId} // Pass selected cinema ID
                     />
-                    <button>xóa</button>
+                    <button onClick={() => openModalDelete(item._id)}>xóa</button>
                   </td>
                 </tr>
               );
@@ -151,7 +155,7 @@ function CinemaList() {
               <button type="button">×</button>
             </div>
             <div className={cx('modal-body')}>
-              Bạn có chắc chắn muốn xóa người dùng này?
+              Bạn có chắc chắn muốn xóa rạp này?
             </div>
             <div className={cx('modal-footer')}>
               <button type="button">Hủy</button>
