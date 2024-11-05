@@ -121,6 +121,18 @@ class paymentService {
                 const point = Math.ceil((user.point)+((data.amount*1)/1000))
                 console.log("point",point)
                 await UserModel.updateOne({_id:order.user_id},{point:point})
+                            
+                    if (user) {
+                    
+                        const pointId = order.point_id; 
+                        // Bước 2: Tìm chỉ mục của promotion_id cần xóa
+                        const index = user.promotions_id.indexOf(pointId);
+                        if (index !== -1) {
+                            // Bước 3: Xóa chỉ một occurrence
+                            user.promotions_id.splice(index, 1); // Xóa occurrence tại chỉ mục
+                            await user.save(); // Lưu thay đổi vào cơ sở dữ liệu
+                        }
+                    }
             }
                 return {order,Payment,qrCodeUrl}
             }
@@ -254,6 +266,19 @@ class paymentService {
             const point = Math.ceil((user.point)+((verify.vnp_Amount*1)/1000))
             console.log("point",point)
              await UserModel.updateOne({_id:order.user_id},{point:point})
+
+                
+         if (user) {
+          
+            const pointId = order.point_id; 
+            // Bước 2: Tìm chỉ mục của promotion_id cần xóa
+            const index = user.promotions_id.indexOf(pointId);
+            if (index !== -1) {
+                // Bước 3: Xóa chỉ một occurrence
+                user.promotions_id.splice(index, 1); // Xóa occurrence tại chỉ mục
+                await user.save(); // Lưu thay đổi vào cơ sở dữ liệu
+            }
+        }
                 return {order,Payment,qrCodeUrl}
             }
             else{
@@ -368,6 +393,7 @@ class paymentService {
              { _id: order.user_id },                 
              { $pull: { promotions_id: order.point_id } } 
          );
+
          if (user) {
           
             const pointId = order.point_id; 
