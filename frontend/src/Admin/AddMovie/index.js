@@ -1,13 +1,13 @@
 import React from "react";
 import classNames from 'classnames/bind';
-import styles from './EditMovie.module.scss';
+import styles from './AddMovie.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faXmark } from '@fortawesome/free-solid-svg-icons';
 
 
 const cx = classNames.bind(styles);
-const EditMovie = ({ isOpen, onClose }) => {
+const AddMovie = ({ isOpen, onClose }) => {
 
 
   
@@ -17,7 +17,7 @@ const EditMovie = ({ isOpen, onClose }) => {
   return (
     <div className={cx('modal-container')}>
             <div className={cx('modal-content')}>
-    <h3 className={cx('tyle')}>Chỉnh sửa phim</h3>
+    <h3 className={cx('tyle')}>Thêm phim</h3>
     <div className="row">
     <div className="col d-flex flex-column gap-2">
     <div className={cx('content')}>
@@ -164,4 +164,4 @@ const EditMovie = ({ isOpen, onClose }) => {
   );
 };
 
-export default EditMovie;
+export default AddMovie;

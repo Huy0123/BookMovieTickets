@@ -386,6 +386,16 @@ class paymentService {
         }
     }
 
+    getPaymentByCinemaId = async(data)=>{
+        try{
+            const orders = await OrdersModel.find({cinema_id:data})
+            const orderIds = orders.map(order=>order._id)
+            const payment = await PaymentModel.find({order_id:{$in:orderIds}})
+            return {payment}
+        } catch (error) {
+            throw error
+        }
+    }
 }
 
 module.exports = new paymentService
