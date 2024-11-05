@@ -31,6 +31,12 @@ class CinemaService {
         return cinema.findById(id).populate('user_id');
     }
 
+<<<<<<< HEAD
+    updateCinema = async (id, cinemaData) => {
+        await cinema.findByIdAndUpdate(id, cinemaData);
+        return cinema.findById(id);
+    } 
+=======
     updateCinema = async (id,data) => {
        const Cinema=  await cinema.findByIdAndUpdate(id,{
         name:data.name,
@@ -46,6 +52,7 @@ class CinemaService {
 
         return {user,Cinema}
     }
+>>>>>>> 3144f375f40296140a1810533c6589168b1c8405
 
     deleteCinema = async (id) => {
        const deleteCinema = await cinema.findByIdAndDelete(id,{new:true});
@@ -58,7 +65,7 @@ class CinemaService {
         return cinema.find({ movies: id });
     }
 
-    getCinemasByCity = async (city) => {
+    getCinemasByCity = async (city) => { 
         return cinema.find({ address: { $regex: city, $options: 'i' } });
     }
 

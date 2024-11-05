@@ -1,32 +1,41 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Tạo context
 const AuthContext = createContext();
 
-// Tạo provider cho context
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // Thay đổi giá trị này tùy theo xác thực
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(true); // Thêm trạng thái loading
 
-    const login = () => {
+    useEffect(() => {
+        const checkAuthentication = () => {
+            const token = localStorage.getItem('userToken');
+            if (token) {
+                setIsAuthenticated(true);
+            } else {
+                setIsAuthenticated(false);
+            }
+            setLoading(false); // Đánh dấu việc kiểm tra hoàn tất
+        };
+
+        checkAuthentication();
+    }, []);
+
+    const login = (token) => {
         setIsAuthenticated(true);
-        console.log("User logged in");
+        localStorage.setItem('userToken', token);
     };
-    
+
     const logout = () => {
         setIsAuthenticated(false);
-        console.log("User logged out");
+        localStorage.removeItem('userToken');
     };
-    
 
+    // Trả về loading để biết trạng thái
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-// Xuất khẩu AuthContext
-export { AuthContext };
-
-// Hook để sử dụng context
 export const useAuth = () => useContext(AuthContext);
