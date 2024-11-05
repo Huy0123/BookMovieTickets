@@ -34,12 +34,10 @@ const publicRoutes = [
     { path: '/reset-password/:token', component: ResetPassword, layout: null }, 
     { path: '/payment', component:Payment},
 
-    { path: '/admin/cinemalist', component:CinemaList , layout: AdminLayout }, 
-    { path: '/admin/movielist', component:MovieList , layout: AdminLayout }, 
-    { path: '/admin/memberlist', component:MemberList , layout: AdminLayout }, 
+    
    
 
-    { path: '/moderator/*', component:Moderator},
+    
     // { path: '/CinemaManeger', component:CinemaManeger},
 ]
 //Ngược lại
@@ -47,6 +45,10 @@ const privateRoutes = [
     { path: '/profile', component:Profile ,layout: ProfileLayout},
     { path: '/history', component:History ,layout: ProfileLayout},
     { path: '/voucher', component:Voucher ,layout: ProfileLayout},
+    { path: '/admin/cinemalist', component:CinemaList , layout: AdminLayout }, 
+    { path: '/admin/movielist', component:MovieList , layout: AdminLayout }, 
+    { path: '/admin/memberlist', component:MemberList , layout: AdminLayout }, 
+    { path: '/moderator/*', component:Moderator},
 ]
 
 export {publicRoutes, privateRoutes}

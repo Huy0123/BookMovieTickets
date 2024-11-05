@@ -4,6 +4,16 @@ const saltRounds =10
 const bcrypt =require('bcrypt')
 class CinemaService {
     createCinema = async (data) => {
+        const findusername = await UserModel.findOne({username: data.username})
+        if(findusername){
+            return { EC: 1, EM: "Tên người dùng đã được sử dụng!" }
+        }
+        const findemail = await UserModel.findOne({email: data.email})
+        if (findemail){
+            return { EC: 2, EM: "Email đã được sử dụng!" }
+
+        }
+
         const hashPassword = await bcrypt.hash(data.password, saltRounds);
         const userCinema = await UserModel.create({
             fullname: data.nameCinema,
@@ -20,6 +30,7 @@ class CinemaService {
             user_id:userCinema._id
 
         })
+        
        return {userCinema,Cinema} 
     }
 
@@ -31,12 +42,6 @@ class CinemaService {
         return cinema.findById(id).populate('user_id');
     }
 
-<<<<<<< HEAD
-    updateCinema = async (id, cinemaData) => {
-        await cinema.findByIdAndUpdate(id, cinemaData);
-        return cinema.findById(id);
-    } 
-=======
     updateCinema = async (id,data) => {
        const Cinema=  await cinema.findByIdAndUpdate(id,{
         name:data.name,
@@ -52,7 +57,6 @@ class CinemaService {
 
         return {user,Cinema}
     }
->>>>>>> 3144f375f40296140a1810533c6589168b1c8405
 
     deleteCinema = async (id) => {
        const deleteCinema = await cinema.findByIdAndDelete(id,{new:true});
