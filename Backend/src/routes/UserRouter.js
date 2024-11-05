@@ -10,7 +10,7 @@ router.post('/login',UserController.login)
 router.post('/logout',UserController.logout)
 router.post('/forgotpassword',SendEmailController.SendEmailforgotpassword)
 router.put('/reset-password',UserController.resetpassword)
-router.get('/getUsers',autUser,UserController.getUsers)
+router.get('/getUsers',autAdmin,UserController.getUsers)
 router.get('/getUserByID/:id',autAdmin, UserController.getUserByID) //query
 router.get('/getUserbyid',autUser,UserController.getUserbyid)//user
 router.post('/refresh_token',autUser,UserController.refreshToken);

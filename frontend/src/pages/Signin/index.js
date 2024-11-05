@@ -36,15 +36,21 @@ function SignIn() {
             );
             const token = response.data.accesstoken; // Giả sử token nhận được từ API
             const userId= response.data.user.userId; 
-            console.log("v",response.data.user.userId)
+            console.log("v",response.data)
             if (token) {
                 localStorage.setItem('userToken', token); // Lưu token vào localStorage
                 localStorage.setItem('userId', userId);
                 login(token); // Gọi hàm login từ AuthContext
-                
-                // Chuyển hướng đến trang trước đó hoặc trang chủ
-                const previousPage = localStorage.getItem('previousPage') || '/';
+                if(response.data.user.role==="User"){
+                    const previousPage = localStorage.getItem('previousPage') || '/';
                 navigate(previousPage);
+                }
+                else if(response.data.user.role==="Cinema"){
+                    navigate('/moderator/*');
+                }
+                else{
+                    navigate('/admin/memberlist');
+                }
             } else {
                 setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.');
             }

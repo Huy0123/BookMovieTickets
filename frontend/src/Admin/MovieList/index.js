@@ -1,4 +1,4 @@
-import React,{ useState }  from 'react';
+import React,{ useEffect, useState }  from 'react';
 import classNames from 'classnames/bind';
 import styles from './MovieList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faPlus, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditMovie from '../EditMovie';
 import AddMovie from '../AddMovie';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 function MovieList() {
@@ -18,8 +19,23 @@ function MovieList() {
     const [isImageOpen, setImageOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState('');
 
+    const [getmovies,setGetmovies] = useState([]);
 
+    useEffect (()=> {
+        const fetchMovie = async() => {
+            try{
+                const res = await axios.get('http://localhost:8080/v1/getMovies');
+            console.log(res.data);
+            setGetmovies(res.data)
+            }catch(error){
+                throw error
+            }
+            
+        }
+        fetchMovie();
+    }, [])
 
+    
     const handleSearchChange = (event) => {
       setSearchTerm(event.target.value);
     };
@@ -28,8 +44,14 @@ function MovieList() {
   const closeModalAdd = () => setIsAddModalOpen(false);
   const openModalEdit = () => setIsModalOpen(true);
   const closeModalEdit = () => setIsModalOpen(false);
-    const handleAddCinem =() =>{
-        setMoreinfo(true)
+    const handleAddCinem =async(id) =>{
+        setMoreinfo(true);
+        try{
+            const res = await axios.get(`http://localhost:8080/v1/getMovieByID/{}`)
+        }
+        catch{
+
+        }
     }
     const handleCloseModal =() =>{
         setMoreinfo(false)
@@ -84,24 +106,24 @@ function MovieList() {
           </tr>
         </thead>
         <tbody>
-       
-            <tr >
-              <td>01</td>
-              <td>bo may bi gay</td>
-       
-              <td>gay porn</td>
-              <td>2phut</td>
-              
-              <td>lòng tiếng</td>
-              <td>phim cho trẻ em</td>
-              <td>20/20/2020</td>
+        {getmovies.map((item, index) => {
+            return(
+            <tr key={index}>
+              <td>{index+1}</td>
+              <td>{item.title}</td>
+              <td>{item.genre}</td>
+              <td>{item.duration}</td>
+              <td>{item.subtitles}</td>
+              <td>{item.limit ? `${item.limit}+` : ''}</td>
+              <td>{new Date(item.release_date).toLocaleDateString()}</td>
               <td>
-              <button  onClick={handleAddCinem}> Chi tiết</button>
-              <button onClick={openModalEdit}>chỉnh sửa</button> <EditMovie isOpen={isModalOpen} onClose={closeModalEdit} />
+              <button  onClick={()=>handleAddCinem(item._id)}> Chi tiết</button>
+              <button onClick={openModalEdit}>Sửa</button> <EditMovie isOpen={isModalOpen} onClose={closeModalEdit} />
                 <button>xóa</button>
               </td>
             </tr>
-          
+        )
+    })}
         
         </tbody>
       </table>

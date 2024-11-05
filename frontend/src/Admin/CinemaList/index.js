@@ -17,7 +17,14 @@ function CinemaList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const [Cinemas, setSinemas] = useState([]);
-    
+  const [cinemaIdToDelete,setCinemaIdToDelete] = useState(null);
+  const [nameCinema, setNameCinema] = useState('');
+  const [username, setUsername] = useState('');
+  const [num, setNum] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [password, setPassword] = useState('');
+  const [cfpassword,setCfpassword]= useState('');
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -26,11 +33,11 @@ function CinemaList() {
     setSelectedCinemaId(cinemaId); // Set the selected cinema ID
     setIsModalOpen(true);
   };
-  const openModalDelete = (cinemaId) => {
-    setSelectedCinemaId(cinemaId);
-    setShowModal(true)
+  const openModalDelete =  (cinemaId) => {
+    setCinemaIdToDelete(cinemaId);
+    setShowModal(true);
+    
   }
-
   
 
   const handleAddCinem = () => {
@@ -50,11 +57,64 @@ function CinemaList() {
     };
     get();
   }, []);
+  const handleDelete = async () =>{
+    try{
+      if(cinemaIdToDelete){
+        setShowModal(false);
+        const res = await axios.delete(`http://localhost:8080/v1/deleteCinema/${cinemaIdToDelete}`);
+        window.location.reload(); 
+        alert('Bạn đã xóa rạp thành công!!');
+        
+      }
+    }catch(error){
+      throw(error)
+    }
+  }
+
+  const handleCreate = async () =>{
+    const data = {
+      nameCinema: nameCinema,
+      username: username,
+      num:num,
+      email:email,
+      address:address,
+      password,password
+    }
+    if (password!==cfpassword){
+      alert('Mật khẩu nhập lại chưa khớp!!');
+      return
+    }
+    try{
+      const res = await axios.post(`http://localhost:8080/v1/createCinema`,data);
+      if (res.data.EC ===1){
+        alert(`${res.data.EM}`);
+        return
+      }
+      else if(res.data.EC===2){
+        alert(`${res.data.EM}`);
+        return
+      }
+      else{
+        setAddCinema(false);
+      console.log('data',res.data);
+      alert('Bạn đã tạo rạp thành công');
+      window.location.reload();
+    }
+      
+    }catch(error){
+      console.log(error);
+
+    }
+  }
   const closeModalEdit = () => {
     setIsModalOpen(false);
     setSelectedCinemaId(null); // Reset the selected cinema ID
     
   };
+  const closeModal = () => {
+    setShowModal(false); // Đóng modal
+    setCinemaIdToDelete(null); // Reset ID
+};
   return (
     <div className={cx('container')}>
       <div className={cx('top')}>
@@ -88,7 +148,7 @@ function CinemaList() {
         <table striped bordered hover>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>STT</th>
               <th>Tên Rạp</th>
               <th>Tên Tài Khoản</th>
               <th>Số Điện Thoại</th>
@@ -108,13 +168,13 @@ function CinemaList() {
                   <td>{item.user_id?.email || "no"}</td>
                   <td>{item.address || "no"}</td>
                   <td>
-                    <button onClick={() => openModalEdit(item._id)}>chỉnh sửa</button>
+                    <button onClick={() => openModalEdit(item._id)}>Sửa</button>
                     <EditCinema
                       isOpen={isModalOpen}
                       onClose={closeModalEdit}
                       cinemaId={selectedCinemaId} // Pass selected cinema ID
                     />
-                    <button onClick={() => openModalDelete(item._id)}>xóa</button>
+                    <button onClick={() => openModalDelete(item._id)}>Xóa</button>
                   </td>
                 </tr>
               );
@@ -126,17 +186,37 @@ function CinemaList() {
       {addCinema && (
         <div className={cx('modal-container')}>
           <div className={cx('modal-content')}>
-            <h3 className={cx('tyle')}>Chỉnh sửa rạp </h3>
+            <h3 className={cx('tyle')}>Thêm rạp</h3>
             <div className={cx('content')}>
               <h4 className={cx('title')}>Tên rạp</h4>
-              <input type="text" name="cinemaname" className={cx('cinema-name', 'form-info')} />
+              <input type="text" name="cinemaname" className={cx('cinema-name', 'form-info')} value={nameCinema} onChange={(event)=>setNameCinema(event.target.value)}/>
             </div>
             <div className={cx('content')}>
               <h4 className={cx('title')}>Địa chỉ</h4>
-              <input type="text" name="address" className={cx('address', 'form-info')} />
+              <input type="text" name="address" className={cx('address', 'form-info')} value={address} onChange={(event)=>setAddress(event.target.value)}/>
+            </div>
+            <div className={cx('content')}>
+              <h4 className={cx('title')}>Tên tài khoản</h4>
+              <input type="text" name="address" className={cx('address', 'form-info')} value={username} onChange={(event)=>setUsername(event.target.value)}/>
+            </div>
+            <div className={cx('content')}>
+              <h4 className={cx('title')}>Email</h4>
+              <input type="email" name="address" className={cx('address', 'form-info')} value={email} onChange={(event)=>setEmail(event.target.value)}/>
+            </div>
+            <div className={cx('content')}>
+              <h4 className={cx('title')}>Số điện thoại</h4>
+              <input type="text" name="address" className={cx('address', 'form-info')} value={num} onChange={(event)=>setNum(event.target.value)}/>
+            </div>
+            <div className={cx('content')}>
+              <h4 className={cx('title')}>Mật khẩu</h4>
+              <input type="password" name="address" className={cx('address', 'form-info')} value={password} onChange={(event)=>setPassword(event.target.value)}/>
+            </div>
+            <div className={cx('content')}>
+              <h4 className={cx('title')}>Nhập lại mật khẩu</h4>
+              <input type="password" name="address" className={cx('address', 'form-info')} value={cfpassword} onChange={(event)=>setCfpassword(event.target.value)}/>
             </div>
             <div className={cx('btn-con')}>
-              <button type="button" className={cx('btn-confirm')}>
+              <button type="button" className={cx('btn-confirm')} onClick={()=>handleCreate()}>
                 Xác nhận
               </button>
             </div>
@@ -158,8 +238,8 @@ function CinemaList() {
               Bạn có chắc chắn muốn xóa rạp này?
             </div>
             <div className={cx('modal-footer')}>
-              <button type="button">Hủy</button>
-              <button type="button">Xóa</button>
+              <button type="button"  onClick={closeModal}>Hủy</button>
+              <button type="button" onClick={handleDelete}>Xóa</button>
             </div>
           </div>
         </div>
