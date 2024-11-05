@@ -19,7 +19,7 @@ var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 var orderInfo = 'pay with MoMo';
 var partnerCode = 'MOMO';
 var redirectUrl = 'http://localhost:3000/thanks';
-const ngrok = 'https://17be-14-161-10-15.ngrok-free.app'
+const ngrok = 'https://4ebb-14-161-10-15.ngrok-free.app'
 var ipnUrl = `${ngrok}/v1/Payment/callback`;
 var requestType = "payWithMethod";
 var extraData ='';
@@ -363,10 +363,23 @@ class paymentService {
      }
         const point = Math.ceil((user.point)+((parsedData.amount*1)/1000))
         console.log("point",point)
-         await UserModel.updateOne({_id:order.user_id},{point:point})
-       
-       
-     
+         await UserModel.updateOne({_id:order.user_id},{point:point})         
+         await UserModel.updateOne(
+             { _id: order.user_id },                 
+             { $pull: { promotions_id: order.point_id } } 
+         );
+         if (user) {
+          
+            const pointId = order.point_id; 
+            // Bước 2: Tìm chỉ mục của promotion_id cần xóa
+            const index = user.promotions_id.indexOf(pointId);
+            if (index !== -1) {
+                // Bước 3: Xóa chỉ một occurrence
+                user.promotions_id.splice(index, 1); // Xóa occurrence tại chỉ mục
+                await user.save(); // Lưu thay đổi vào cơ sở dữ liệu
+            }
+        }
+
      return {result,Payment,qrCodeUrl}  
     }
 }

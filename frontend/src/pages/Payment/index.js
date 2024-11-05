@@ -15,7 +15,7 @@ function Payment(){
     const order = location.state || {}; // Nếu state không xác định, mặc định là một object rỗng
     const [fullname,setFullname]=useState('');
     const [email,setEmail]=useState('');
-    const [totalprice,settotalprice]=useState('')
+    const [totalprice,settotalprice]=useState(order.totalPrice)
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [promo,setPromo] = useState([]);
     const [selectMethodPay,setselectMethodPay]=useState(null);   
@@ -67,27 +67,20 @@ function Payment(){
        
     ];
 
-    const optionMGG = promo.map((item) => ({
-        value: item._id ,
-        label: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                    src={item.image} // Thay bằng URL ảnh mã giảm giá nếu có
-                    alt="Icon"
-                    style={{ width: '20px', height: '20px', marginRight: '8px' }}
-                />
-                {item.title} ({item.description})
-            </div>
-        ),
-    }));
-    const handlePromoChange = (selectedOption) => {
+    
+    const handlePromoChange = async (selectedOption) => {
         if (selectedOption) {
-            setPointid(selectedOption.value); // Cập nhật pointid từ giá trị đã chọn
-            console.log("Selected Point ID:", selectedOption.value); // In ra ID để kiểm tra
+            setPointid(selectedOption.value);
+            const promotion = await axios.get(`http://localhost:8080/v1/getPointByID/${selectedOption.value}`)
+                    console.log("promotion",promotion.data.discount) 
+                    settotalprice(order.totalPrice-(order.totalPrice*promotion.data.discount)) // Cập nhật pointid từ giá trị đã chọn
+            console.log("Selected Point ID:", selectedOption.value); 
         } else {
             setPointid(''); // Nếu không có lựa chọn, đặt lại pointid
+          
         }
     };
+    
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -116,6 +109,12 @@ function Payment(){
                         Foods.push({name:foodin4.data.food.name,quantity:food.count})
                         
                    }
+                   console.log("pointid",pointid)
+                //    if(pointid!=''){
+                    
+                //    }
+                  
+                   
                    setfoodarr(Foods)
                    
                 } catch (error) {
@@ -134,6 +133,43 @@ function Payment(){
         setselectMethodPay(data.value)
         console.log(data.value)
     }
+    const optionMGG = promo.reduce((acc, item) => {
+        const existingItem = acc.find((i) => i.value === item._id);
+        
+        if (existingItem) {
+            // Nếu đã tồn tại, tăng số đếm
+            existingItem.count += 1;
+            existingItem.label = (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                        src={item.image} // Thay bằng URL ảnh mã giảm giá nếu có
+                        alt="Icon"
+                        style={{ width: '20px', height: '20px', marginRight: '8px' }}
+                    />
+                    {item.title} ({item.description}) x{existingItem.count}
+                </div>
+            );
+        } else {
+            // Nếu chưa tồn tại, thêm mới vào acc với số đếm là 1
+            acc.push({
+                value: item._id,
+                count: 1,
+                label: (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <img
+                            src={item.image}
+                            alt="Icon"
+                            style={{ width: '20px', height: '20px', marginRight: '8px' }}
+                        />
+                        {item.title} ({item.description})
+                    </div>
+                ),
+            });
+        }
+    
+        return acc;
+    }, []);
+    
     const handlepay = async (event) => {
         event.preventDefault();
         try {
@@ -142,6 +178,7 @@ function Payment(){
                 return;
             }
             
+            
             const Oder = {
                 "user_id":user_id,
                 "showtime_id":order.selectedShowtimeId,
@@ -149,8 +186,8 @@ function Payment(){
                 FoodAndDrinks_id: order.foodId.map(foodItem => ({
                     item_id: foodItem.foodid,
                     quantity: foodItem.count
-                }))
-                
+                })),  
+                "point_id" :pointid,        
             }
             console.log(Oder)
             const orderCreater=await axios.post('http://localhost:8080/v1/Booking',Oder)
@@ -158,7 +195,7 @@ function Payment(){
             console.log("orderCreater",orderCreater.data.order_infor)
    
             
-                const data = { amount: order.totalPrice ,orderId:orderCreater.data.orders_infor._id};
+                const data = { amount: totalprice ,orderId:orderCreater.data.orders_infor._id};
                 console.log("data",data)
             if(selectMethodPay==="momo"){
                 const resPay = await axios.post('http://localhost:8080/v1/Payment', data);
@@ -231,7 +268,7 @@ function Payment(){
                     <h3><FontAwesomeIcon className={cx('icon-email')} icon={faEnvelope}/>  <span>{email}</span></h3>
                 </div>
                 <div>
-                    <h3><FontAwesomeIcon className={cx('icon-total')} icon={faSackDollar}/> Tổng Tiền: <span>{order.totalPrice.toLocaleString()}</span> VNĐ</h3>
+                    <h3><FontAwesomeIcon className={cx('icon-total')} icon={faSackDollar}/> Tổng Tiền: <span>{totalprice.toLocaleString()}</span> VNĐ</h3>
                 </div>  
                 <button className='btn-pay' type='button' onClick={handlepay}>Thanh Toán</button>
             </section>
