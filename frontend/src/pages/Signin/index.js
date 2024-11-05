@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './SignIn.module.scss';
 import images from '~/assets/img';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -17,36 +17,34 @@ function SignIn() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");  // State to hold error message
+    const [errorMessage, setErrorMessage] = useState(""); // State to hold error message
     const { login } = useAuth();
+   
     const togglePasswordVisibility = () => {
         setIsShowPassword(!isShowPassword);
     };
 
     const handleSignIn = async (event) => {
-        event.preventDefault(); 
-        console.log('signin', username, password);
+        event.preventDefault();
         setErrorMessage("");  
         const userData = { username, password };
         try {
             const response = await axios.post(
                 'http://localhost:8080/v1/Users/login', 
                 userData, 
-                {
-                    withCredentials: true,  
-                }
+                { withCredentials: true }
             );
-            console.log(response.data);
-            const token = response.data.accesstoken;
-            const userId = response.data.user.userId;
-            console.log(userId);
+            const token = response.data.accesstoken; // Giả sử token nhận được từ API
+            const userId= response.data.user.userId; 
+            console.log("v",response.data.user.userId)
             if (token) {
-                localStorage.setItem('userToken', token);
+                localStorage.setItem('userToken', token); // Lưu token vào localStorage
                 localStorage.setItem('userId', userId);
-                 login();
-                // Get the previous page from localStorage
-                const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
-                navigate(previousPage);  // Redirect to the previous page
+                login(token); // Gọi hàm login từ AuthContext
+                
+                // Chuyển hướng đến trang trước đó hoặc trang chủ
+                const previousPage = localStorage.getItem('previousPage') || '/';
+                navigate(previousPage);
             } else {
                 setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.');
             }
@@ -55,6 +53,7 @@ function SignIn() {
             console.error('Error during sign-in:', error);
         }
     };
+    
     
 
     const handlerNavigateSignup = () => {
@@ -75,17 +74,19 @@ function SignIn() {
                 { googleToken },
                 { withCredentials: true }
             );
-            const userId = response.data.user.userId
             const token = response.data.accesstoken;
+            const userId = response.data.user.userId;
+
             if (token) {
+                login(token);
                 localStorage.setItem('userToken', token);
                 localStorage.setItem('userId', userId);
-                login();
 
-                const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
-                navigate(previousPage);  // Redirect to the previous page
+                const previousPage = localStorage.getItem('previousPage') || '/';
+                navigate(previousPage);
             }
         } catch (error) {
+            setErrorMessage('Lỗi khi đăng nhập bằng Google.');
             console.error('Error during Google sign-in:', error);
         }
     };
@@ -157,6 +158,7 @@ function SignIn() {
                             onFailure={(error) => console.error('Google Sign-In failed:', error)}
                             scope="email profile"
                             prompt="select_account"
+                            onError={() => setErrorMessage('Đăng nhập Google thất bại. Vui lòng thử lại.')}
                         />
                     </form>
                 </div>

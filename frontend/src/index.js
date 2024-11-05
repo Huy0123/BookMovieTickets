@@ -13,15 +13,15 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 const clientId = process.env.REACT_APP_GG_CLIENT_ID; // Lấy clientId từ biến môi trường
 
 root.render(
-  <React.StrictMode>
+  <AuthProvider> {/* Bao bọc App bằng AuthProvider */}
     <GoogleOAuthProvider clientId={clientId}> {/* Bao bọc bằng GoogleOAuthProvider */}
-      <AuthProvider> {/* Bao bọc App bằng AuthProvider */}
+    
         <GlobalStyles>
           <App />
         </GlobalStyles>
-      </AuthProvider>
     </GoogleOAuthProvider>
-  </React.StrictMode>
+    </AuthProvider>
+
 );
 
 // Nếu bạn muốn bắt đầu đo hiệu suất trong ứng dụng của mình, hãy truyền một hàm

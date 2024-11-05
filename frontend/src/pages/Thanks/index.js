@@ -71,8 +71,7 @@ function Thanks() {
      // Thêm một mảng rỗng để chỉ log một lần khi component mount
     const handleback=()=>{
 
-       navigate('/history');
-    }
+        navigate('/history')  }
     
     const handleback2=()=>{
 

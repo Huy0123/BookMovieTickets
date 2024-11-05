@@ -17,7 +17,7 @@ class CinemaService {
     updateCinema = async (id, cinemaData) => {
         await cinema.findByIdAndUpdate(id, cinemaData);
         return cinema.findById(id);
-    }
+    } 
 
     deleteCinema = async (id) => {
         await cinema.findByIdAndDelete(id);
@@ -27,7 +27,7 @@ class CinemaService {
         return cinema.find({ movies: id });
     }
 
-    getCinemasByCity = async (city) => {
+    getCinemasByCity = async (city) => { 
         return cinema.find({ address: { $regex: city, $options: 'i' } });
     }
 

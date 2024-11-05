@@ -1,13 +1,13 @@
-import { useContext } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '~/contexts/AuthContext'; // Đảm bảo đường dẫn này đúng
+import { useAuth } from '~/contexts/AuthContext';
 
-function PrivateRoute({ children }) {
-    const { isAuthenticated } = useContext(AuthContext);
-    console.log("isAuthenticated:", isAuthenticated); // Thêm log ở đây
+const PrivateRoute = ({ children }) => {
+    const { isAuthenticated, loading } = useAuth();
 
-    return isAuthenticated ? children : <Navigate to="/signIn" />;
-}
+    if (loading) return null; // Hoặc một component loading nếu bạn muốn
 
+    return isAuthenticated ? children : <Navigate to="/signin" />;
+};
 
 export default PrivateRoute;

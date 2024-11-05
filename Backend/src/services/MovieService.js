@@ -31,11 +31,11 @@ class MovieService {
         
         const createMovie = await movie.create({
             ...movieData.body,
-            poster1: poster1Url,
+            poster1: poster1Url, 
             poster2: poster2Url,
             trailer: trailerUrl
         });
-        return createMovie;
+        return createMovie; 
     }
 
     getMovies = async () => {

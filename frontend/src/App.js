@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes, privateRoutes } from '~/routes';
 import { DefaultLayout } from '~/Components/Layout';
 import PrivateRoute from '~/Components/PrivateRoute'; // Nhập đúng
+import { useAuth } from '~/contexts/AuthContext';
 
 function App() {
   return (
