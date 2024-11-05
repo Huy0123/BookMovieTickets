@@ -18,7 +18,8 @@ import AdminLayout from '~/Components/Layout/AdminLayout';
 import MemberList from '~/Admin/MemberList';
 import CinemaList from '~/Admin/CinemaList';
 import MovieList from '~/Admin/MovieList';
-
+import FnDList from '~/Admin/FnDList';
+import VoucherList from '~/Admin/VoucherList';
 import Moderator from '~/pages/Moderator';
 // Không cần đăng nhập vẫn xem được
 const publicRoutes = [
@@ -33,11 +34,11 @@ const publicRoutes = [
     { path: '/forgot', component:ForgotPassword, layout:null},
     { path: '/reset-password/:token', component: ResetPassword, layout: null }, 
     { path: '/payment', component:Payment},
-
+    { path: '/admin/FnDlist', component:FnDList , layout: AdminLayout }, 
     { path: '/admin/cinemalist', component:CinemaList , layout: AdminLayout }, 
     { path: '/admin/movielist', component:MovieList , layout: AdminLayout }, 
     { path: '/admin/memberlist', component:MemberList , layout: AdminLayout }, 
-   
+    { path: '/admin/voucherlist', component:VoucherList , layout: AdminLayout }, 
 
     { path: '/moderator/*', component:Moderator},
     // { path: '/CinemaManeger', component:CinemaManeger},

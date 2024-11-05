@@ -113,6 +113,9 @@
                         color:#eceaeadb;
                     }
                 }
+                .img-food{
+                    width: 20px;
+                }
             }
             &:hover{
                 background-color: rgba(228, 216, 204, 0.692);
@@ -139,20 +142,18 @@
         background-color: rgba(0, 0, 0, 0.5);
         .modal-content {
             background-color: #fefefe;
-            padding: 45px 60px;
+            padding: 45px 100px;
             border-radius: 8px;
             width: 800px;
-            max-height: 600px;
             position: relative;
-            gap: 10px;
-            overflow-y: auto;
+           gap: 10px;
+          
             display: flex;
             flex-direction: column;
             .tyle{
                 text-align: center;
             }
             .content{
-                display: flex;
                 padding: 0 10px ;
                 .title{
                     text-align: start;
@@ -160,33 +161,31 @@
                 .form-info{
                     width: 100%;
                 }
-               .poster-1{
-                width: 300px;
-               }
-               .poster-2{
-                width: 200px;
-               }
-            }
-            .btn-con{
-                display: flex;
-                margin-top: 30px;
-                justify-content: center;
-                .btn-confirm{
-                    width: 40%;
-                    border-radius: 10px;
-                  
-                    top: 80%;
-                    left: 30%;
-                    &:hover{
-                        background-color: rgba(78, 80, 78, 0.311);
-                    }
+                textarea{
+                    height: 100px;
+                    resize: none;
                 }
             }
+            .btn-con{
+            display: flex;
+            margin-top: 30px;
+            justify-content: center;
+            .btn-confirm{
+                width: 40%;
+                border-radius: 5px;
+                border: 1px solid #000000;
+                top: 80%;
+                left: 30%;
+                &:hover{
+                    background-color: rgba(78, 80, 78, 0.311);
+                }
+            }
+        }
            
             .close-modal{
-                top: 10%;
+                top: 3%;
                 position: absolute;
-                right: 5%;
+                right: 3%;
                 &:hover{
                     cursor: pointer;
                     color: #cf0f0f;
@@ -229,10 +228,4 @@
             }
         }
     }
-
-    
-   
-    
-   
-    
 }
