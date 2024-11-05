@@ -73,7 +73,14 @@ class CinemaController {
         }
     }
 
-
+    getCinemaIdByUserId = async (req, res) => {
+        try {
+            const cinemas = await cinemaService.getCinemaIdByUserId(req.params.id);
+            return res.status(200).json(cinemas);
+        } catch (error) {
+            res.status(400).send(error.message);
+        }
+    }
 
 
 

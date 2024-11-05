@@ -65,6 +65,12 @@ class CinemaService {
     getCinemasByMovieIDAndCity = async (id, city) => {
         return cinema.find({ movies: id,  address: { $regex: city, $options: 'i' } });
     }
+    getCinemaIdByUserId = async (id) => {
+        const Cinema = await cinema.find({user_id:id}).populate('user_id')
+        console.log(Cinema)
+        return Cinema? {Cinema} :{message:"Không có rạp này"}
+        
+    }
 }
 
 module.exports = new CinemaService;
