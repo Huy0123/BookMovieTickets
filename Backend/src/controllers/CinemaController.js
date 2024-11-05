@@ -39,10 +39,10 @@ class CinemaController {
 
     deleteCinema = async (req, res) => {
         try {
-            await cinemaService.deleteCinema(req.params.id);
-            res.status(204).json({ message: 'Cinema deleted successfully' });
+            const result = await cinemaService.deleteCinema(req.params.id);
+            return res.status(200).json(result);
         } catch (error) {
-            res.status(400).send(error.message);
+            return res.status(400).send(error.message);
         }
     }
 
@@ -73,7 +73,14 @@ class CinemaController {
         }
     }
 
-
+    getCinemaIdByUserId = async (req, res) => {
+        try {
+            const cinemas = await cinemaService.getCinemaIdByUserId(req.params.id);
+            return res.status(200).json(cinemas);
+        } catch (error) {
+            res.status(400).send(error.message);
+        }
+    }
 
 
 

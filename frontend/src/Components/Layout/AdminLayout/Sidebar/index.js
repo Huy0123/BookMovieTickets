@@ -10,10 +10,27 @@ import axios from 'axios';
 const cx = classNames.bind(styles);
 function Sidebar(){
     const [points, setPoints] = useState(''); // Initial points
-  
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     const navigate = useNavigate();
-  
-   
+
+   const handleLogout= async(event) =>{
+    event.preventDefault();
+    console.log("qươuehqwuihgưhg")
+    try {
+        await axios.post(
+        'http://localhost:8080/v1/Users/logout',
+            {},  // Đảm bảo body không trống
+            { withCredentials: true } // Đảm bảo gửi cookie cùng request
+        );
+        setIsLoggedIn(false);
+        
+            navigate('/'); 
+        localStorage.clear();
+    } catch (error) {
+        console.error('Error during logout:', error);
+    }
+   }
     
     return (  
   <div className={cx('navbar')}>
@@ -25,7 +42,7 @@ function Sidebar(){
             <div className={cx('nav')} onClick={() => navigate('/admin/voucherList')}> <FontAwesomeIcon className="fs-3 me-2" icon={faTicket} /> <h3>Danh sách mã giảm gía</h3></div>
             <div className={cx('nav')} onClick={() => navigate('/admin/FnDList')}> <FontAwesomeIcon className="fs-3 me-2" icon={faBurger} /> <h3>Danh sách đồ ăn</h3></div>
      </div>
-     <button className={cx('logout')}>Đăng xuất</button>
+     <button type='button' className={cx('logout')} onClick={handleLogout}>Đăng xuất</button>
   </div>
 
 )
