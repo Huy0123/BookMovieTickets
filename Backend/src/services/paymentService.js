@@ -176,7 +176,7 @@ class paymentService {
             return result.data; // Trả về dữ liệu của phản hồi
         } catch (error) {
             console.error('Error querying MoMo API:', error.response?.data || error.message);
-            throw error; // Ném lỗi để xử lý ở nơi khác nếu cần
+            return error; // Ném lỗi để xử lý ở nơi khác nếu cần
         }
     }
  
@@ -287,7 +287,7 @@ class paymentService {
             
          } catch (error) {
             // return {message:'Dữ liệu không hợp lệ'}
-            throw error
+            return error
         }
     }
 
@@ -325,7 +325,7 @@ class paymentService {
             const data2 = result.data
             return {data2}
         } catch (error) {
-            throw error
+            return error
         }
 
         

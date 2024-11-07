@@ -26,7 +26,7 @@ class FoodService {
 
             return {Food}
         } catch (error) {
-            throw error
+            return error
         }
     }
 

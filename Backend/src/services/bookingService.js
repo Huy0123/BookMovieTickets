@@ -77,7 +77,7 @@ class bookingService {
             return { message:"Thanh toán thành công ",orders_infor};
         } catch (error) {
             console.error(error);
-            throw new Error('Error creating booking: ' + error.message);
+            return new Error('Error creating booking: ' + error.message);
         }
     }
   
@@ -108,7 +108,7 @@ class bookingService {
            return {order_infor}
            
         } catch (error) {
-            throw error
+            return error
         }
        
 
@@ -139,7 +139,7 @@ class bookingService {
            return {order_infor}
            
         } catch (error) {
-            throw error
+            return error
         }
     }
 
@@ -166,7 +166,7 @@ class bookingService {
                 })
            return {orders_infor}
         } catch (error) {
-            throw error
+            return error
         }
 
     }
