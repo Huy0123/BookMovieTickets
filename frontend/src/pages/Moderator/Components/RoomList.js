@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const RoomList = () => {
-    const navigate = useNavigate();
+    
     const [rooms, setRooms] = useState([]);
     const [cinemas, setCinemas] = useState({});
     const [room, setRoom] = useState('');

@@ -18,6 +18,7 @@ function MovieList() {
     const [selectedOption, setSelectedOption] = useState("");
     const [isImageOpen, setImageOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState('');
+    const [movieId, setMovieId] = useState('');
 
     const [getmovies,setGetmovies] = useState([]);
 
@@ -25,7 +26,6 @@ function MovieList() {
         const fetchMovie = async() => {
             try{
                 const res = await axios.get('http://localhost:8080/v1/getMovies');
-            console.log(res.data);
             setGetmovies(res.data)
             }catch(error){
                 throw error
@@ -42,8 +42,12 @@ function MovieList() {
 
   const openModalAdd = () => setIsAddModalOpen(true);
   const closeModalAdd = () => setIsAddModalOpen(false);
-  const openModalEdit = () => setIsModalOpen(true);
-  const closeModalEdit = () => setIsModalOpen(false);
+  const openModalEdit = (id) => {setIsModalOpen(true);
+    setMovieId(id);
+    };
+  const closeModalEdit = () => {setIsModalOpen(false);
+    setMovieId('');
+    };
     const handleAddCinem =async(id) =>{
         setMoreinfo(true);
         try{
@@ -118,7 +122,7 @@ function MovieList() {
               <td>{new Date(item.release_date).toLocaleDateString()}</td>
               <td>
               <button  onClick={()=>handleAddCinem(item._id)}> Chi tiết</button>
-              <button onClick={openModalEdit}>Sửa</button> <EditMovie isOpen={isModalOpen} onClose={closeModalEdit} />
+            <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditMovie isOpen={isModalOpen} movieId={movieId} onClose={closeModalEdit} />
                 <button>xóa</button>
               </td>
             </tr>

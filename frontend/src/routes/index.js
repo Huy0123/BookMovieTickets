@@ -21,6 +21,7 @@ import MovieList from '~/Admin/MovieList';
 import FnDList from '~/Admin/FnDList';
 import VoucherList from '~/Admin/VoucherList';
 import Moderator from '~/pages/Moderator';
+import DashBoard from '~/Admin/DashBoard';
 // Không cần đăng nhập vẫn xem được
 const publicRoutes = [
     { path: '/', component:Home },
@@ -52,6 +53,7 @@ const privateRoutes = [
     { path: '/moderator/*', component:Moderator},
     { path: '/admin/voucherlist', component:VoucherList , layout: AdminLayout }, 
     { path: '/admin/FnDlist', component:FnDList , layout: AdminLayout }, 
+    { path: '/admin/dashboard', component:DashBoard , layout: AdminLayout },
 ]
 
 export {publicRoutes, privateRoutes}

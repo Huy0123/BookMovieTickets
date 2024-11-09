@@ -1,166 +1,178 @@
-import React, { useState, useEffect, useCallback} from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+
 import axios from "axios";
 import './style.module.scss';
 
 const ShowtimeList = () => {
-    const navigate = useNavigate();
-    
     const [showtimes, setShowtimes] = useState([]);
-    const [movies, setMovies] = useState({});
-    const [cinemas, setCinemas] = useState({});
-    const [rooms, setRooms] = useState({});
     const [roomsAvailable, setRoomsAvailable] = useState([]);
     const [allMovies, setAllMovies] = useState([]);
-    const [timeStart, setTimeStart] = useState('');
-    const [timeEnd, setTimeEnd] = useState('');
-    const [selectedMovie, setSelectedMovie] = useState('');
-    const [selectedRoom, setSelectedRoom] = useState('');
-    
-    // Hàm để điều hướng đến trang chỉnh sửa
-    const editShowtime = (showtime) => {
-        navigate(`/edit-showtime/${showtime.id}`, { state: showtime });
-    };
+    const [showtime, setShowtime] = useState({
+        movie_id: "",
+        room_id: "",
+        showtime_start: "",
+        showtime_end: "",
+    });
+    const [cinema_id, setCinema_id] = useState('66fbf96791e08c377610139b');
+    // const [updateShowtime, setUpdateShowtime] = useState({
+    //     movie_id: "",
+    //     room_id: "",
+    //     showtime_start
 
-    // Hàm lấy thông tin bổ sung (phim, phòng, rạp)
-    const fetchAdditionalInfo = useCallback(async () => {
-        try {
-            const movieIds = [...new Set(showtimes.map(showtime => showtime.movie_id))];
-            const cinemaIds = [...new Set(showtimes.map(showtime => showtime.cinema_id))];
-            const roomIds = [...new Set(showtimes.map(showtime => showtime.room_id))];
-    
-            // Lấy tên phim
-            const moviePromises = movieIds.map(id => axios.get(`http://localhost:8080/v1/getMovieByID/${id}`));
-            const movieResponses = await Promise.all(moviePromises);
-            const movieData = movieResponses.reduce((acc, res) => ({ ...acc, [res.data._id]: res.data.title }), {});
-            setMovies(movieData);
-    
-            // Lấy tên rạp
-            const cinemaPromises = cinemaIds.map(id => axios.get(`http://localhost:8080/v1/getCinemaByID/${id}`));
-            const cinemaResponses = await Promise.all(cinemaPromises);
-            const cinemaData = cinemaResponses.reduce((acc, res) => ({ ...acc, [res.data._id]: res.data.name }), {});
-            setCinemas(cinemaData);
-    
-            // Lấy tên phòng
-            const roomPromises = roomIds.map(id => axios.get(`http://localhost:8080/v1/getRoomByID/${id}`));
-            const roomResponses = await Promise.all(roomPromises);
-            const roomData = roomResponses.reduce((acc, res) => ({ ...acc, [res.data._id]: res.data.name }), {});
-            setRooms(roomData);
-    
-        } catch (error) {
-            console.log("Error fetching additional info:", error);
-        }
-    }, [showtimes]);
-    
 
-    // Hàm lấy danh sách showtime từ API
-    const fetchShowtimes = async () => {
+// Hàm lấy id của rạp chiếu phim
+// const fetchCinemas = async () => {
+//     try {
+//     } catch (error) {}
+// };
+
+// // Hàm lấy danh sách showtime từ API
+const fetchShowtimes = useCallback(async () => {
+
+    try {
+        const response = await axios.get(`http://localhost:8080/v1/getShowtimeByCinemaID/${cinema_id}`);
+        setShowtimes(response.data);
         
-        try {
-            const response = await axios.get(`http://localhost:8080/v1/getShowtimeByCinemaID/66fbf96791e08c377610139b`);
-            setShowtimes(response.data);
-            await fetchAdditionalInfo(response.data);
-        } catch (error) {
-            console.log("Error fetching showtimes:", error);
-        }
-    };
+    } catch (error) {
+        console.log("Error fetching showtimes:", error);
+    }
+}, [cinema_id]);
 
-    const fetchMovies = async () => {
-        try {
-            const response = await axios.get(`http://localhost:8080/v1/getMovies`);
+const fetchMovies = useCallback(async () => {
+    try {
+        const response = await axios.get(`http://localhost:8080/v1/getMovies`);
 
-            const movieData = response.data.reduce((acc, res) => ({ ...acc, [res._id]: res.title }), {});
-            setAllMovies(movieData);
-        } catch (error) {
-            console.log("Error fetching movies:", error);
-        }
-    };
+        const movieData = response.data.reduce((acc, res) => ({ ...acc, [res._id]: res.title }), {});
+        setAllMovies(movieData);
+    } catch (error) {
+        console.log("Error fetching movies:", error);
+    }
+}, []);
 
-    // Gọi fetchShowtimes khi component mount
-    useEffect(() => {
-        fetchMovies();
-        fetchShowtimes();
-    }, []);
+useEffect(() => {
+    fetchMovies();
+    fetchShowtimes();
+},[fetchMovies, fetchShowtimes]);
 
-    
-    useEffect(() => {
-        fetchAdditionalInfo();
-    }, [showtimes, fetchAdditionalInfo]);
-    
 
-    const RoomsAvailable = useCallback(async () => {
-        try {
-            const response = await axios.get(`http://localhost:8080/v1/getRoomAvailability`,
-                {
-                    params: {
-                        cinema_id: "66fbf96791e08c377610139b",
-                        showtime_start: timeStart,
-                        showtime_end: timeEnd
-                    }
+const RoomsAvailable = useCallback(async () => {
+    try {
+        const response = await axios.get(`http://localhost:8080/v1/getRoomAvailability`,
+            {
+                params: {
+                    cinema_id: cinema_id,
+                    showtime_start: showtime.showtime_start,
+                    showtime_end: showtime.showtime_end
                 }
-            );
-            const roomData = response.data.reduce((acc, res) => ({ ...acc, [res._id]: res.name }), {});
-            setRoomsAvailable(roomData);
-        } catch (error) {
-            console.log("Error fetching rooms availability:", error);
-        }
-    }, [timeStart, timeEnd]);
-
-    useEffect(() => {
-        if (timeStart && timeEnd) {
-            RoomsAvailable();
-        }
-    }, [timeStart, timeEnd, RoomsAvailable]);
-
-    // Hàm để xóa showtime
-    const handleDeleteShowtime = async (id) => {
-        try {
-            await axios.delete(`http://localhost:8080/v1/deleteShowtime/${id}`);
-                fetchShowtimes();
-        } catch (error) {
-            console.log("Error deleting showtime:", error);
-        }
-    };
-    const handleStartTimeChange = (e) => {
-        setTimeStart(e.target.value);
-    }
-    const handleEndTimeChange = (e) => {
-        setTimeEnd(e.target.value);
-    }
-    const handleSubmit = async (e) => {
-        e.preventDefault(); // Ngăn chặn hành động mặc định của form
-
-        try {
-            const response = await axios.post('http://localhost:8080/v1/createShowtime', {
-                movie_id: selectedMovie,
-                showtime_start: timeStart,
-                cinema_id: "66fbf96791e08c377610139b",
-                showtime_end: timeEnd,
-                room_id: selectedRoom,
-            });
-            if (response.status === 201) {
-                setTimeStart('');
-                setTimeEnd('');
-                setSelectedMovie('');
-                setSelectedRoom('');
-                setRoomsAvailable([]);
-                fetchShowtimes();
-                
             }
-        } catch (error) {
-            console.log('Error creating showtime:', error);
+        );
+        const roomData = response.data.reduce((acc, res) => ({ ...acc, [res._id]: res.name }), {});
+        setRoomsAvailable(roomData);
+    } catch (error) {
+        console.log("Error fetching rooms availability:", error);
+    }
+}, [showtime.showtime_start, showtime.showtime_end, cinema_id]);
+
+useEffect(() => {
+    if(!showtime.showtime_start || !showtime.showtime_end) {
+        return;
+    }
+    RoomsAvailable();
+}, [RoomsAvailable, showtime.showtime_start, showtime.showtime_end]);
+
+// Hàm cập nhật showtime
+// const handleUpdateShowtime = async (id) => {
+//     try {
+//         const response = await axios.put(`http://localhost:8080/v1/getShowtimeByID/${id}`);
+
+// Hàm để xóa showtime
+const handleDeleteShowtime = async (id) => {
+    try {
+        await axios.delete(`http://localhost:8080/v1/deleteShowtime/${id}`);
+        fetchShowtimes();
+    } catch (error) {
+        console.log("Error deleting showtime:", error);
+    }
+};
+
+const resetForm = () => {
+    setRoomsAvailable([]);
+    setShowtime({
+        movie_id: "",
+        room_id: "",
+        showtime_start: "",
+        showtime_end: ""
+    });
+};
+console.log("showtime", showtime);
+console.log("cinema_id", cinema_id);
+const handleInputChange = (e) => {
+    setShowtime({ ...showtime, [e.target.name]: e.target.value });
+}
+
+const handleSubmit = async (e) => {
+    e.preventDefault(); // Ngăn chặn hành động mặc định của form
+
+    try {
+        const response = await axios.post('http://localhost:8080/v1/createShowtime', {
+            ...showtime,
+            cinema_id: cinema_id
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (response.status === 201) {
+            resetForm();
+            fetchShowtimes();
+        } else {
+            console.log('Unexpected response status:', response.status);
         }
-    };
-    return (
-        <>
-            <div>
-            <a data-bs-toggle="collapse" href="#add-showtime" role="button" aria-expanded="false">Tạo lịch chiếu</a>
+    } catch (error) {
+        console.error('Error creating showtime:', error);
+    }
+};
+return (
+    <>
+    {/* Modal cập nhật showtime*/}
+    {/* <div className="modal-container">
+        <div className="modal-content">
+            <div className="modal-header">
+                <h5 className="modal-title">Sửa xuất chiếu</h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div className="collapse" id="add-showtime">
+            <div className="modal-body">
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label htmlFor="showtime_start" className="form-label">Thời gian bắt đầu</label>
+                        <input type="datetime-local" className="form-control" id="showtime_start" value={timeStart} onChange={handleStartTimeChange} />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="showtime_end" className="form-label">Thời gian kết thúc</label>
+                        <input type="datetime-local" className="form-control" id="showtime_end" value={timeEnd} onChange={handleEndTimeChange} />
+                    </div>
+                    <select className="form-select form-select-lg mb-3" aria-label="Choose a room" value={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)}>
+                        <option value="" disabled>Chọn phòng</option>
+                        {Object.entries(roomsAvailable).map(([id, name]) => (
+                            <option key={id} value={id}>{name}</option>
+                        ))}
+                    </select>
+                    <button type="submit" className="btn btn-primary">Tạo lịch chiếu</button>
+                </form>
+            </div>
+        </div>
+    </div> */}
+        <div>
+            <a data-bs-toggle="collapse" href="#add-showtime" role="button" aria-expanded="false">Tạo lịch chiếu</a>
+        </div>
+        <div className="collapse" id="add-showtime">
             <h2>Tạo Lịch Chiếu</h2>
             <form onSubmit={handleSubmit}>
+                <label htmlFor="movie" className="form-label">Chọn phim</label>
                 <select
-                    className="form-select form-select-lg mb-3" aria-label="Choose a movie" value={selectedMovie} onChange={(e) => setSelectedMovie(e.target.value)}>
+                    className="form-select form-select-lg mb-3" aria-label="Choose a movie" name="movie_id" value={showtime.movie_id} onChange={handleInputChange}>
+                        
                     <option value="" disabled>Chọn phim</option>
                     {Object.entries(allMovies).map(([id, title]) => (
                         <option key={id} value={id}>{title}</option>
@@ -169,13 +181,14 @@ const ShowtimeList = () => {
 
                 <div className="mb-3">
                     <label htmlFor="showtime_start" className="form-label">Thời gian bắt đầu</label>
-                    <input type="datetime-local" className="form-control" id="showtime_start" value={timeStart} onChange={handleStartTimeChange} />
+                    <input type="datetime-local" className="form-control" id="showtime_start" name="showtime_start" value={showtime.showtime_start} onChange={handleInputChange} />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="showtime_end" className="form-label">Thời gian kết thúc</label>
-                    <input type="datetime-local" className="form-control" id="showtime_end" value={timeEnd} onChange={handleEndTimeChange} />
+                    <input type="datetime-local" className="form-control" id="showtime_end" name="showtime_end" value={showtime.showtime_end} onChange={handleInputChange} />
                 </div>
-                <select className="form-select form-select-lg mb-3" aria-label="Choose a room" value={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)}>
+                <label htmlFor="room" className="form-label">Chọn phòng</label>
+                <select className="form-select form-select-lg mb-3" aria-label="Choose a room" name="room_id" value={showtime.room_id} onChange={handleInputChange}>
                     <option value="" disabled>Chọn phòng</option>
                     {Object.entries(roomsAvailable).map(([id, name]) => (
                         <option key={id} value={id}>{name}</option>
@@ -183,39 +196,42 @@ const ShowtimeList = () => {
                 </select>
                 <button type="submit" className="btn btn-primary">Tạo lịch chiếu</button>
             </form>
-            </div>
+        </div>
 
-            <div> 
-                <table className="table  table-hover">
-                    <thead>
-                        <tr className="text-center">
-                            <th>Movie</th>
-                            <th>Cinema</th>
-                            <th>Room</th>
-                            <th>Time Start</th>
-                            <th>Time End</th>
-                            <th>Actions</th>
+        <div>
+            <table className="table  table-hover">
+                <thead>
+                    <tr className="text-center">
+                        <th>Movie</th>
+                        <th>Cinema</th>
+                        <th>Room</th>
+                        <th>Time Start</th>
+                        <th>Time End</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {showtimes.map((showtime) => (
+                        <tr key={showtime._id}>
+                            <td>{showtime.movie_id.title|| "Loading..."}</td>
+                            <td>{showtime.cinema_id.name|| "Loading..."}</td>
+                            <td>{showtime.room_id.name || "Loading..."}</td>
+                            <td>{new Date(showtime.showtime_start).toLocaleString()}</td>
+                            <td>{new Date(showtime.showtime_end).toLocaleString()}</td>
+                            <td>
+                                <button className="btn btn-primary me-3">Edit</button>
+                                <button className="btn btn-danger" onClick={() => handleDeleteShowtime(showtime._id)}>Delete</button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {showtimes.map((showtime) => (
-                            <tr key={showtime._id}>
-                                <td>{movies[showtime.movie_id] || "Loading..."}</td>
-                                <td>{cinemas[showtime.cinema_id] || "Loading..."}</td>
-                                <td>{rooms[showtime.room_id] || "Loading..."}</td>
-                                <td>{new Date(showtime.showtime_start).toLocaleString()}</td>
-                                <td>{new Date(showtime.showtime_end).toLocaleString()}</td>
-                                <td>
-                                    <button className="btn btn-primary me-3" onClick={() => editShowtime(showtime)}>Edit</button>
-                                    <button className="btn btn-danger" onClick={() => handleDeleteShowtime(showtime._id)}>Delete</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </>
-    );
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    </>
+);
+
 };
+
+
 
 export default ShowtimeList;

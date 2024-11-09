@@ -14,7 +14,7 @@ router.get('/getMovies', movieController.getMovies);
 
 router.get('/getMovieByID/:id', movieController.getMovieByID);
 
-router.put('/updateMovie/:id', upload.fields([{ name: 'poster1'}, {name: 'poster2'}, { name: 'trailer'}]), movieController.updateMovie);
+router.put('/updateMovie/:id', upload.fields([{ name: 'poster1'}, {name: 'poster2'}]), movieController.updateMovie);
 
 router.delete('/deleteMovie/:id', movieController.deleteMovie);
  

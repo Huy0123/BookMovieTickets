@@ -59,8 +59,6 @@ class ShowtimeService {
         .populate(
             'cinema_id'
         )
-
-        
     }
 
     getShowtimeByID = async (id) => {
@@ -86,7 +84,16 @@ class ShowtimeService {
     }
 
     getShowtimesByCinemaID = async (id) => {
-        return await showtime.find({ cinema_id: id });
+        return await showtime.find({ cinema_id: id })
+        .populate(
+            'cinema_id'
+        )
+        .populate(
+            'room_id', 'name'
+        )
+        .populate(
+            'movie_id', 'title'
+        );
     }
 
     getShowtimesByMovieIDAndCinemaIDAndDate = async (movieID, cinemaID, date) => {
