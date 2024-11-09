@@ -17,7 +17,7 @@ class CinemaService {
         const hashPassword = await bcrypt.hash(data.password, saltRounds);
         const userCinema = await UserModel.create({
             fullname: data.nameCinema,
-            username: data.username,
+            username: data.username, 
             email: data.email,
             num: data.num,
             password: hashPassword,

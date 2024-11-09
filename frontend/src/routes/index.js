@@ -32,7 +32,6 @@ const publicRoutes = [
     { path: '/signIn', component:Signin, layout:null},
     { path: '/forgot', component:ForgotPassword, layout:null},
     { path: '/reset-password/:token', component: ResetPassword, layout: null }, 
-    { path: '/payment', component:Payment},
 
     
    
@@ -49,6 +48,8 @@ const privateRoutes = [
     { path: '/admin/movielist', component:MovieList , layout: AdminLayout }, 
     { path: '/admin/memberlist', component:MemberList , layout: AdminLayout }, 
     { path: '/moderator/*', component:Moderator},
+    { path: '/payment', component:Payment},
+
 ]
 
 export {publicRoutes, privateRoutes}

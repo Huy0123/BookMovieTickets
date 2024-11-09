@@ -7,7 +7,7 @@ const upload = multer({
     storage: multer.memoryStorage(),
 })
 
-router.post('/createMovie', upload.fields([{ name: 'poster1' }, {name: 'poster2'}, { name: 'trailer' }]), movieController.createMovie);
+router.post('/createMovie', upload.fields([{ name: 'poster1' }, {name: 'poster2'}]), movieController.createMovie);
 
 
 router.get('/getMovies', movieController.getMovies);
