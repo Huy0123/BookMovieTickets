@@ -29,15 +29,19 @@ const createMovie = new mongoose.Schema({
     },
     cast:{
         type: [String],
-        required: true
+        required: true,
+        default: []
+        
     },
     poster1:{
         type: String,
         required: true
+
     },
     poster2:{
         type: String,
         required: true
+
     },
     trailer:{
         type: String,
@@ -49,6 +53,7 @@ const createMovie = new mongoose.Schema({
     },
     voice_actors:{
         type: [String],
+        default: [],
         required: true
     },
     country:{

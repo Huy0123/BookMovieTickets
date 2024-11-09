@@ -1,4 +1,4 @@
-import React,{ useState }  from 'react';
+import React,{ useEffect, useState }  from 'react';
 import classNames from 'classnames/bind';
 import styles from './VoucherList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faPlus, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditVoucher from '../EditVoucher';
 import images from '~/assets/img';
+import axios from 'axios';
 const cx = classNames.bind(styles);
 function VoucherList() {
   const [showModal, setShowModal] = useState(false);
@@ -15,12 +16,35 @@ function VoucherList() {
     const [selectedOption, setSelectedOption] = useState("");
     const [currentImage, setCurrentImage] = useState('');
     const [isImageOpen, setImageOpen] = useState(false);
+    const [vouncher,setVouncher] = useState([]);
+    const [vouncherId,setVouncherId]= useState('')
+    useEffect(()=>{
+        const vouncherData = async () =>{
+            try{
+                const res = await axios('http://localhost:8080/v1/getPoints');
+                console.log("sres",res.data);
+                setVouncher(res.data);
+            }catch{
+
+            }
+            
+        }
+        vouncherData();
+    },[])
     const handleSearchChange = (event) => {
       setSearchTerm(event.target.value);
     };
-  const openModalEdit = () => setIsModalOpen(true);
-  const closeModalEdit = () => setIsModalOpen(false);
+  const openModalEdit = (id) => 
+    {
+        setIsModalOpen(true);
+        setVouncherId(id);
+        console.log("id",id)
+    }
+  const closeModalEdit = () => {
+    setIsModalOpen(false);
+    setVouncherId('');
 
+        }
 
     const handleAddCinem =() =>{
         setAddCinema(true)
@@ -77,20 +101,24 @@ function VoucherList() {
           </tr>
         </thead>
         <tbody>
-       
-            <tr >
-              <td>02</td>
-              <td>mã giảm 20%</td>  
-              <td onClick={() => handleImageClick(images.petfood)}><img className={cx('img-food')} src={images.petfood}/></td>
-              <td className={cx('decript')}>thức ăn dạng lỏng có thể húp</td>
-              <td>3/3/3302</td>
-              <td>3/5/3303</td>
-              <td>3000</td>
-              <td>
-              <button onClick={openModalEdit}>chỉnh sửa</button> <EditVoucher isOpen={isModalOpen} onClose={closeModalEdit} />
-                <button>xóa</button>
-              </td>
+            {vouncher.map((item,index)=>{
+                return(
+                    <tr key={index}>
+                        <td>{index+1}</td>
+                        <td>{item.title}</td>  
+                        <td onClick={() => handleImageClick(item.image)}><img className={cx('img-food')} src={item.image}/></td>
+                        <td className={cx('decript')}>{item.description}</td>
+                        <td>{item.start_date}</td>
+                        <td>{item.end_date}</td>
+                        <td>{item.points}</td>
+                        <td>
+                        <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditVoucher isOpen={isModalOpen} vouncherId={vouncherId} onClose={closeModalEdit} />
+                        <button>xóa</button>
+                    </td>
             </tr>
+                )
+            })}
+            
           
         
         </tbody>

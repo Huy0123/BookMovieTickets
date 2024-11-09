@@ -3,7 +3,9 @@ import axios from "axios";
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
 import dayjs from "dayjs";
-
+import classNames from 'classnames/bind';
+import styles from './style.module.scss';
+const cx = classNames.bind(styles);
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 const Charts = () => {
 

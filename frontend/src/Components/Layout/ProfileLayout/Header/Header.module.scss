@@ -13,7 +13,7 @@
             
             .wrap{   
                 padding-bottom: 8px;
-                border-bottom: 2px solid #2C2C2C;     
+                border-bottom: 2px solid #353434;     
                 
                 .logo {
                     width: 100%; // Logo width
@@ -28,7 +28,7 @@
                         border-radius: 10px; // Rounded corners for the button
                         font-size: 14px; // Font size for the button text
                         border: 1px solid #2C2C2C;
-                        background-color: #000;
+                        background-color: #363535;
                         color: #fff;
                     }
                 }
@@ -53,6 +53,8 @@
                     }
                     .logined{
                         color:#fff;
+                        padding-top: 13px;
+                    
                         .fullname{
                             margin: 0;
                         }
@@ -97,7 +99,7 @@
     .dropdown-menu {
         background-color: #000;
         border: 1px solid #ffffff98 ;
-        width: 84%;
+        width:50%;
         position: absolute;
         color: #fff;
         padding: 40px ;
@@ -115,7 +117,7 @@
     .dropdown-item {
       
         padding: 10px;
-        width: 320px;
+        width: 150px;
         margin: 0 30px auto;
         cursor: pointer;
     
