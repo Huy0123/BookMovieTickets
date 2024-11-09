@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import styles from "~/pages/BookTicket/BookTicket.module.scss";
+import classNames from "classnames/bind";
 
-import classNames from 'classnames/bind';
+import classNames from "classnames/bind";
 import styles from './style.module.scss';
 const cx = classNames.bind(styles);
 
 const SeatList = () => {
-    const navigate = useNavigate();
+    
     const [seats, setSeats] = useState([]);
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);

@@ -28,6 +28,10 @@ const createOrder = mongoose.Schema({
         required: true
     }
     ,
+    point_id:{
+        type: Schema.Types.ObjectId,
+        ref: 'point',
+    },
     FoodAndDrinks_id: [
         {
             item_id: {

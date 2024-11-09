@@ -18,14 +18,14 @@ function MovieList() {
     const [selectedOption, setSelectedOption] = useState("");
     const [isImageOpen, setImageOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState('');
-
+    const [movieId, setMovieId] = useState('');
+    const [moviedt,setMoviedt]=useState('');
     const [getmovies,setGetmovies] = useState([]);
 
     useEffect (()=> {
         const fetchMovie = async() => {
             try{
                 const res = await axios.get('http://localhost:8080/v1/getMovies');
-            console.log(res.data);
             setGetmovies(res.data)
             }catch(error){
                 throw error
@@ -42,12 +42,18 @@ function MovieList() {
 
   const openModalAdd = () => setIsAddModalOpen(true);
   const closeModalAdd = () => setIsAddModalOpen(false);
-  const openModalEdit = () => setIsModalOpen(true);
-  const closeModalEdit = () => setIsModalOpen(false);
+  const openModalEdit = (id) => {setIsModalOpen(true);
+    setMovieId(id);
+    };
+  const closeModalEdit = () => {setIsModalOpen(false);
+    setMovieId('');
+    };
     const handleAddCinem =async(id) =>{
         setMoreinfo(true);
         try{
-            const res = await axios.get(`http://localhost:8080/v1/getMovieByID/{}`)
+            const res = await axios.get(`http://localhost:8080/v1/getMovieByID/${id}`);
+            setMoviedt(res.data);
+            console.log(res.data);
         }
         catch{
 
@@ -118,7 +124,7 @@ function MovieList() {
               <td>{new Date(item.release_date).toLocaleDateString()}</td>
               <td>
               <button  onClick={()=>handleAddCinem(item._id)}> Chi tiết</button>
-              <button onClick={openModalEdit}>Sửa</button> <EditMovie isOpen={isModalOpen} onClose={closeModalEdit} />
+            <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditMovie isOpen={isModalOpen} movieId={movieId} onClose={closeModalEdit} />
                 <button>xóa</button>
               </td>
             </tr>
@@ -137,74 +143,62 @@ function MovieList() {
    
   
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Tên phim:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Tên phim:{moviedt.title}</h4>
     </div>
     
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Thể loại:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Thể loại:{moviedt.genre}</h4>
     </div>
 
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Thời lượng (phút):</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Thời lượng (phút):{moviedt.duration}</h4>
     </div>
 
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Ngày ra mắt:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Ngày ra mắt:{moviedt.release_date}</h4>
     </div>
     
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Phụ đề:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Phụ đề:{moviedt.subtitles}</h4>
     </div>
 
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Nhãn phim:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Nhãn phim:{moviedt.limit}</h4>
     </div>
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Trailer:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Trailer:{moviedt.trailer}</h4>
     </div>
 
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Quốc gia:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Quốc gia:{moviedt.country}</h4>
     </div>
 
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Đạo diễn:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Đạo diễn:{moviedt.director}</h4>
     </div>
 
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Diễn viên:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Diễn viên:{moviedt.cast}</h4>
     </div>
 
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Diễn viên lồng tiếng:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Diễn viên lồng tiếng:{moviedt.voice_actors}</h4>
     </div>
 
     <div className={cx('content')}>
-        <h4 className={cx('title')}>Mô tả:</h4>
-        <h4 className={cx('content-of-movie')}>Tên phim</h4>
+        <h4 className={cx('title')}>Mô tả:{moviedt.description}</h4>
     </div>
   
 </div>
     <div className="col d-flex flex-column gap-2">
     <div className={cx('content',' flex-column')} onClick={() => handleImageClick('https://images.hdqwalls.com/download/venom-the-last-dance-fx-1920x1200.jpg')}>
         <h4 className={cx('title')}>Poster 1</h4>
-        <img  src='https://images.hdqwalls.com/download/venom-the-last-dance-fx-1920x1200.jpg' className={cx('poster-1')} />
+        <img  src={moviedt.poster1} className={cx('poster-1')} />
     </div>
 
     <div className={cx('content',' flex-column')} onClick={() => handleImageClick('https://cinema.heavymag.com.au/wp-content/uploads/sites/3/2024/06/Venom-The-Last-Dance.jpeg')}>
         <h4 className={cx('title')}>Poster 2</h4>
-        <img  src='https://cinema.heavymag.com.au/wp-content/uploads/sites/3/2024/06/Venom-The-Last-Dance.jpeg' className={cx('poster-2')} />
+        <img  src={moviedt.poster2} className={cx('poster-2')} />
     </div>
    
 </div>
