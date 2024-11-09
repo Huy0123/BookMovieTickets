@@ -21,10 +21,13 @@ const ShowtimeList = () => {
 
 
 // Hàm lấy id của rạp chiếu phim
-// const fetchCinemas = async () => {
-//     try {
-//     } catch (error) {}
-// };
+const fetchCinemas = async () => {
+    try {
+        const response = await axios.get(`http://localhost:8080/v1/getCinemaIdByUserId/${localStorage.getItem('userId')}`);
+        setCinema_id(response.data._id);
+
+    } catch (error) {}
+};
 
 // // Hàm lấy danh sách showtime từ API
 const fetchShowtimes = useCallback(async () => {

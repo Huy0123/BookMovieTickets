@@ -63,8 +63,6 @@ class MovieService {
                 String(file.mimetype)
             );
         };
-        let poster1Url = null;
-        let poster2Url = null;
         const exitingMovie = await movie.findById(id);
         if (files.poster1 && files.poster1[0]) {
             if (exitingMovie.poster1){
