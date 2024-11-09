@@ -49,7 +49,7 @@ function SignIn() {
                 const previousPage = localStorage.getItem('previousPage') || '/';
                 navigate(previousPage);
             } else if (role === "Cinema") {
-                navigate('/moderator/*');
+                navigate('/moderator/charts');
             } else if (role === "Admin") {
                 navigate('/admin/memberlist');  // Điều hướng đến trang admin
             }
@@ -99,7 +99,7 @@ function SignIn() {
                 const previousPage = localStorage.getItem('previousPage') || '/';
                 navigate(previousPage);
             } else if (role === "Cinema") {
-                navigate('/moderator/*');
+                navigate('/moderator/charts');
             } else if (role === "Admin") {
                 navigate('/admin/memberlist');  // Điều hướng đến trang admin
             }

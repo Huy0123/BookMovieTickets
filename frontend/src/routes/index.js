@@ -53,7 +53,7 @@ const privateRoutes = [
     { path: '/admin/voucherlist', component: VoucherList, layout: AdminLayout, adminOnly: true },
     { path: '/admin/FnDlist', component: FnDList, layout: AdminLayout, adminOnly: true },
     { path: '/admin/dashboard', component: DashBoard, layout: AdminLayout, adminOnly: true },
-    { path: '/moderator/*', component: Moderator, cinemaOnly: true }, 
+    { path: '/moderator/*', component: Moderator, cinemaOnly: true, layout:null }, 
 ];
 
 

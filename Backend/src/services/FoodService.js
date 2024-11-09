@@ -55,6 +55,9 @@ class FoodService {
         const food = await FoodModel.findById(idFood)
         return {food}
     }
+    deleteFood = async(idFood) =>{
+        return await FoodModel.findByIdAndDelete(idFood);
+    }
 }
 
 module.exports = new FoodService

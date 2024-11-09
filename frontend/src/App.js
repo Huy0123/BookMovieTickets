@@ -4,8 +4,10 @@ import { publicRoutes, privateRoutes } from '~/routes';
 import { DefaultLayout } from '~/Components/Layout';
 import PrivateRoute from '~/Components/PrivateRoute'; // Nhập đúng
 import { useAuth } from '~/contexts/AuthContext';
-
+import { Navigate } from 'react-router-dom';
 function App() {
+  const { role, isAuthenticated } = useAuth();
+
   return (
     <Router>
       <div className="App">
@@ -20,7 +22,10 @@ function App() {
             } else if (route.layout === null) {
               Layout = Fragment;
             }
-
+            if (isAuthenticated && (role === 'Admin' || role === 'Cinema')) {
+              const redirectPath = role === 'Admin' ? '/admin/dashboard' : '/moderator/';
+              return <Route key={index} path={route.path} element={<Navigate to={redirectPath} />} />;
+            }
             return (
               <Route 
                 key={index} 

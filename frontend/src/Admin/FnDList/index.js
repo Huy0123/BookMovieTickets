@@ -18,6 +18,7 @@ function FnDList() {
     const [isImageOpen, setImageOpen] = useState(false);
     const [food,setFood] = useState([]);
     const [foodId,setFoodId] = useState('')
+    const [foodIdToDelete,setFoodIdToDelete]=useState('');
     const [formData, setFormData] = useState({
       title: "",
       description: "",
@@ -101,6 +102,28 @@ const handleAdd = async () => {
     const handleCloseImage = () => {
         setImageOpen(false);
     };
+    const openModalDelete =  (foodId) => {
+      setFoodIdToDelete(foodId);
+      setShowModal(true);
+      
+    }
+    const closeModal = () => {
+      setShowModal(false); 
+      setFoodIdToDelete('');
+  };
+  const handleDelete = async () =>{
+    try{
+      if(foodIdToDelete){
+        setShowModal(false);
+        const res = await axios.delete(`http://localhost:8080/v1/Food/deleteFood/${foodIdToDelete}`);
+        window.location.reload(); 
+        alert('Bạn đã xóa rạp thành công!!');
+        
+      }
+    }catch(error){
+      throw(error)
+    }
+  }
     return ( 
     <div className={cx('container')}>
         <div className={cx('top')}>
@@ -152,7 +175,7 @@ const handleAdd = async () => {
               <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
               <td>
               <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditFnD isOpen={isModalOpen} onClose={closeModalEdit}  foodId={foodId}/>
-                <button>xóa</button>
+                <button type='button' onClick={() => openModalDelete(item._id)}>xóa</button>
               </td>
             </tr>
             )
@@ -230,23 +253,23 @@ const handleAdd = async () => {
         </div>
     </div>
 )}
-      {showModal && (
-                <div className={cx('modal')}>
-                    <div className={cx('modal-content')}>
-                        <div className={cx('modal-header')}>
-                            <h4>Xác nhận xóa</h4>
-                            <button type="button" >×</button>
-                        </div>
-                        <div className={cx('modal-body')}>
-                            Bạn có chắc chắn muốn xóa món này?
-                        </div>
-                        <div className={cx('modal-footer')}>
-                            <button type="button" >Hủy</button>
-                            <button type="button" >Xóa</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+{showModal && (
+    <div className={cx('modal')}>
+        <div className={cx('modal-content')}>
+            <div className={cx('modal-header')}>
+                <h4>Xác nhận xóa</h4>
+                <button type="button" onClick={closeModal}>×</button>
+            </div>
+            <div className={cx('modal-body')}>
+                Bạn có chắc chắn muốn xóa mã này?
+            </div>
+            <div className={cx('modal-footer')}>
+                <button type="button" onClick={closeModal}>Hủy</button>
+                <button type="button" onClick={handleDelete}>Xóa</button>
+            </div>
+        </div>
+    </div>
+)}
     </div>
 );
 }

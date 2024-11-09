@@ -122,7 +122,7 @@ const handleAdd = async () => {
             setShowModal(false);
             const res = await axios.delete(`http://localhost:8080/v1/deletePoint/${vouncherIdToDelete}`);
             window.location.reload(); 
-            alert('Bạn đã xóa rạp thành công!!');
+            alert('Bạn đã xóa vouncher thành công!!');
             
           }
         }catch(error){
