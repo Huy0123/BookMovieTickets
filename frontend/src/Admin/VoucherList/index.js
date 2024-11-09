@@ -178,8 +178,8 @@ const handleAdd = async () => {
                         <td>{item.title}</td>  
                         <td onClick={() => handleImageClick(item.image)}><img className={cx('img-food')} src={item.image}/></td>
                         <td className={cx('decript')}>{item.description}</td>
-                        <td>{item.start_date}</td>
-                        <td>{item.end_date}</td>
+                        <td>{new Date(item.start_date).toLocaleDateString()}</td>
+                        <td>{new Date(item.end_date).toLocaleDateString()}</td>
                         <td>{item.points}</td>
                         <td>
                         <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditVoucher isOpen={isModalOpen} vouncherId={vouncherId} onClose={closeModalEdit} />

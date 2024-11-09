@@ -34,23 +34,26 @@ function SignIn() {
                 userData, 
                 { withCredentials: true }
             );
-            const token = response.data.accesstoken; // Giả sử token nhận được từ API
-            const userId= response.data.user.userId; 
-            console.log("v",response.data)
+            const token = response.data.accesstoken; 
+            const userId = response.data.user.userId;
+            const role = response.data.user.role;
+            
             if (token) {
                 localStorage.setItem('userToken', token); // Lưu token vào localStorage
                 localStorage.setItem('userId', userId);
-                login(token); // Gọi hàm login từ AuthContext
-                if(response.data.user.role==="User"){
-                    const previousPage = localStorage.getItem('previousPage') || '/';
+                localStorage.setItem('userRole', role); // Lưu role vào localStorage
+    
+                login(token, role); // Đảm bảo login được gọi với token và role
+    
+                if (role === "User") {
+                const previousPage = localStorage.getItem('previousPage') || '/';
                 navigate(previousPage);
-                }
-                else if(response.data.user.role==="Cinema"){
-                    navigate('/moderator/*');
-                }
-                else{
-                    navigate('/admin/memberlist');
-                }
+            } else if (role === "Cinema") {
+                navigate('/moderator/*');
+            } else if (role === "Admin") {
+                navigate('/admin/memberlist');  // Điều hướng đến trang admin
+            }
+
             } else {
                 setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.');
             }
@@ -59,6 +62,7 @@ function SignIn() {
             console.error('Error during sign-in:', error);
         }
     };
+    
     
     
 
@@ -80,17 +84,26 @@ function SignIn() {
                 { googleToken },
                 { withCredentials: true }
             );
-            const token = response.data.accesstoken;
+            const token = response.data.accesstoken; 
             const userId = response.data.user.userId;
-
+            const role = response.data.user.role;
+            
             if (token) {
-                login(token);
-                localStorage.setItem('userToken', token);
+                localStorage.setItem('userToken', token); // Lưu token vào localStorage
                 localStorage.setItem('userId', userId);
-
+                localStorage.setItem('userRole', role); // Lưu role vào localStorage
+    
+                login(token, role); // Đảm bảo login được gọi với token và role
+    
+                if (role === "User") {
                 const previousPage = localStorage.getItem('previousPage') || '/';
                 navigate(previousPage);
+            } else if (role === "Cinema") {
+                navigate('/moderator/*');
+            } else if (role === "Admin") {
+                navigate('/admin/memberlist');  // Điều hướng đến trang admin
             }
+        }
         } catch (error) {
             setErrorMessage('Lỗi khi đăng nhập bằng Google.');
             console.error('Error during Google sign-in:', error);
