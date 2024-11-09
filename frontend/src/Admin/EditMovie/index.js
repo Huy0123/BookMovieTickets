@@ -1,16 +1,68 @@
-import React from "react";
+import React , {useState, useEffect}from "react";
 import classNames from 'classnames/bind';
 import styles from './EditMovie.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faXmark } from '@fortawesome/free-solid-svg-icons';
-
+import axios from "axios";
 
 const cx = classNames.bind(styles);
-const EditMovie = ({ isOpen, onClose }) => {
+const EditMovie = ({ isOpen, onClose, movieId }) => {
+    const [formData, setFormData] = useState({
+        title: "",
+    genre: "",
+    duration: "",
+    release_date: "",
+    description: "",
+    director: "",
+    cast: "",
+    trailer: "",
+    subtitles: "",
+    voice_actors: "",
+    country: "",
+    limit: "",
+    poster1: "",
+    poster2: "",
+    });
+
+    
+    const handleInputChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+    
+    const fetchMoiveId = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/v1/getMovieByID/${id}`);
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                ...response.data,
+                release_date: response.data.release_date.split("T")[0],
+            }));
+            window.location.reload();
+        } catch (error) {
+            console.log("Error fetching movie:", error);
+        }
+    };
+    
+
+    const handleSumbit = async () => {
+        try {
+            const response = await axios.put(`http://localhost:8080/v1/updateMovie/${movieId}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            onClose();
+            console.log("Movie updated:", response.data);
+        } catch (error) {
+            console.log("Error updating movie:", error);
+        }
+    };
 
 
-  
+    useEffect( () => {
+        if (isOpen) {
+            fetchMoiveId(movieId);
+        }
+    }, [isOpen, movieId]);
 
   if (!isOpen) return null;
 
@@ -24,8 +76,7 @@ const EditMovie = ({ isOpen, onClose }) => {
         <h4 className={cx('title')}>Tên phim</h4>
         <input 
             type="text" 
-            name="cinemaname" 
-            className={cx('cinema-name', 'form-info')}     
+            className={cx('cinema-name', 'form-info')} name="title" onChange={handleInputChange} value={formData.title}    
         />
     </div>
     
@@ -34,7 +85,7 @@ const EditMovie = ({ isOpen, onClose }) => {
         <input 
             type="text" 
             name="genre" 
-            className={cx('genre', 'form-info')}     
+            className={cx('genre', 'form-info')}  onChange={handleInputChange} value={formData.genre} 
         />
     </div>
 
@@ -43,7 +94,7 @@ const EditMovie = ({ isOpen, onClose }) => {
         <input 
             type="number" 
             name="duration" 
-            className={cx('duration', 'form-info')}     
+            className={cx('duration', 'form-info')} onChange={handleInputChange} value={formData.duration}
         />
     </div>
 
@@ -51,8 +102,8 @@ const EditMovie = ({ isOpen, onClose }) => {
         <h4 className={cx('title')}>Ngày ra mắt</h4>
         <input 
             type="date" 
-            name="releaseDate" 
-            className={cx('release-date', 'form-info')}     
+            name="release_date" 
+            className={cx('release-date', 'form-info')} onChange={handleInputChange} value={formData.release_date}
         />
     </div>
     
@@ -61,7 +112,7 @@ const EditMovie = ({ isOpen, onClose }) => {
         <input 
             type="text" 
             name="subtitles" 
-            className={cx('subtitles', 'form-info')}     
+            className={cx('subtitles', 'form-info')}  onChange={handleInputChange} value={formData.subtitles}  
         />
     </div>
 
@@ -69,8 +120,8 @@ const EditMovie = ({ isOpen, onClose }) => {
         <h4 className={cx('title')}>Nhãn phim</h4>
         <input 
             type="text" 
-            name="rating" 
-            className={cx('rating', 'form-info')}     
+            name="limit" 
+            className={cx('rating', 'form-info')} onChange={handleInputChange} value={formData.limit}     
         />
     </div>
 
@@ -80,7 +131,7 @@ const EditMovie = ({ isOpen, onClose }) => {
             type="file" 
             name="poster1" 
             accept="image/*" 
-            className={cx('poster1', 'form-info')}     
+            className={cx('poster1', 'form-info')} onChange={(e) => setFormData(e.target.files[0])}
         />
     </div>
 
@@ -90,7 +141,7 @@ const EditMovie = ({ isOpen, onClose }) => {
             type="file" 
             name="poster2" 
             accept="image/*" 
-            className={cx('poster2', 'form-info')}     
+            className={cx('poster2', 'form-info')} onChange={(e) => setFormData(e.target.files[0])}    
         />
     </div>
 </div>
@@ -100,7 +151,7 @@ const EditMovie = ({ isOpen, onClose }) => {
         <input 
             type="url" 
             name="trailer" 
-            className={cx('trailer', 'form-info')}     
+            className={cx('trailer', 'form-info')} onChange={handleInputChange} value={formData.trailer}     
         />
     </div>
 
@@ -109,7 +160,7 @@ const EditMovie = ({ isOpen, onClose }) => {
         <input 
             type="text" 
             name="country" 
-            className={cx('country', 'form-info')}     
+            className={cx('country', 'form-info')}  onChange={handleInputChange} value={formData.country}     
         />
     </div>
 
@@ -118,7 +169,7 @@ const EditMovie = ({ isOpen, onClose }) => {
         <input 
             type="text" 
             name="director" 
-            className={cx('director', 'form-info')}     
+            className={cx('director', 'form-info')} onChange={handleInputChange} value={formData.director}     
         />
     </div>
 
@@ -126,8 +177,8 @@ const EditMovie = ({ isOpen, onClose }) => {
         <h4 className={cx('title')}>Diễn viên</h4>
         <input 
             type="text" 
-            name="actors" 
-            className={cx('actors', 'form-info')}     
+            name="cast" 
+            className={cx('actors', 'form-info')} onChange={handleInputChange} value={formData.cast}     
         />
     </div>
 
@@ -135,8 +186,8 @@ const EditMovie = ({ isOpen, onClose }) => {
         <h4 className={cx('title')}>Diễn viên lồng tiếng</h4>
         <input 
             type="text" 
-            name="voiceActors" 
-            className={cx('voice-actors', 'form-info')}     
+            name="voice_actors" 
+            className={cx('voice-actors', 'form-info')} onChange={handleInputChange} value={formData.voice_actors}  
         />
     </div>
 
@@ -144,13 +195,13 @@ const EditMovie = ({ isOpen, onClose }) => {
         <h4 className={cx('title')}>Mô tả</h4>
         <textarea 
             name="description" 
-            className={cx('description', 'form-info')}     
+            className={cx('description', 'form-info')}  onChange={handleInputChange} value={formData.description}  
         />
     </div>
 </div>
  </div>
     <div className={cx('btn-con')}>
-        <button type='button' className={cx('btn-confirm')}>
+        <button type='button' className={cx('btn-confirm')} onClick={handleSumbit}>
             Xác nhận
         </button>
     </div>

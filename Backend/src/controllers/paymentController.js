@@ -40,9 +40,6 @@ class paymentController  {
         return res.status(200).json(result)
     }
 
-
-
-
     getPayment = async (req,res)=>{
         const result = await paymentService.getPayment()
         return res.status(200).json(result)

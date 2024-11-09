@@ -18,8 +18,10 @@ import AdminLayout from '~/Components/Layout/AdminLayout';
 import MemberList from '~/Admin/MemberList';
 import CinemaList from '~/Admin/CinemaList';
 import MovieList from '~/Admin/MovieList';
-
+import FnDList from '~/Admin/FnDList';
+import VoucherList from '~/Admin/VoucherList';
 import Moderator from '~/pages/Moderator';
+import DashBoard from '~/Admin/DashBoard';
 // Không cần đăng nhập vẫn xem được
 const publicRoutes = [
     { path: '/', component:Home },
@@ -32,6 +34,7 @@ const publicRoutes = [
     { path: '/signIn', component:Signin, layout:null},
     { path: '/forgot', component:ForgotPassword, layout:null},
     { path: '/reset-password/:token', component: ResetPassword, layout: null }, 
+    { path: '/payment', component:Payment},
 
     
    
@@ -48,8 +51,9 @@ const privateRoutes = [
     { path: '/admin/movielist', component:MovieList , layout: AdminLayout }, 
     { path: '/admin/memberlist', component:MemberList , layout: AdminLayout }, 
     { path: '/moderator/*', component:Moderator},
-    { path: '/payment', component:Payment},
-
+    { path: '/admin/voucherlist', component:VoucherList , layout: AdminLayout }, 
+    { path: '/admin/FnDlist', component:FnDList , layout: AdminLayout }, 
+    { path: '/admin/dashboard', component:DashBoard , layout: AdminLayout },
 ]
 
 export {publicRoutes, privateRoutes}

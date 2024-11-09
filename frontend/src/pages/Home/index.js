@@ -14,9 +14,7 @@ const cx = classNames.bind(styles);
 
 function Home() {
     const [movies,setMovie]= useState([])
-    const newmovie = (movies.sort((a,b)=> new Date(b.release_date) - new Date(a.release_date))).slice(0,3)
-    const movieshowing =movies.filter(movies=>new Date(movies.release_date)< new Date())
-    const upcomingmovie =movies.filter(movies=>new Date(movies.release_date)> new Date())
+   
     const [moviesPerPage, setMoviesPerPage] = useState(4); // Default to 4 movies per page
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -34,8 +32,8 @@ function Home() {
         const getHome = async()=>{
             const response = await axios.get('http://localhost:8080/v1/getMovies')
         
-            const setmovie=setMovie(response.data)
-            console.log(setmovie)
+            setMovie(response.data)
+            console.log(response.data)
             
         }
         getHome();
@@ -48,11 +46,15 @@ function Home() {
 
        
     }, []);
-
+    const newmovie = (movies.sort((a,b)=> new Date(b.release_date) - new Date(a.release_date))).slice(0,3)
+    console.log("newmovie",newmovie)
+    const movieshowing =movies.filter(movies=>new Date(movies.release_date)< new Date())
+    console.log("movieshowing",movieshowing)
+    const upcomingmovie =movies.filter(movies=>new Date(movies.release_date)> new Date())
     const totalPages = Math.ceil(movieshowing.length / moviesPerPage);
     const comingTotalPages = Math.ceil(upcomingmovie.length / moviesPerPage);
 
- 
+   
 
     const openModal = (link) => {
         setTrailerUrl(link);
@@ -117,7 +119,7 @@ function Home() {
                     {newmovie.map((movie, index) => (
                         <div className={cx('carousel-item', { active: index === 0 })} key={movie._id}>
                             <div className={cx('wrap-banner', 'w-100')}>
-                                <img src={movie.poster} className={cx('d-block')} alt={`Slide ${index + 1}`} />
+                                <img src={movie.poster1} className={cx('d-block')} alt={`Slide ${index + 1}`} />
                                 <div className={cx('overlay', 'row')}>
                                     <div className={cx('wrap-banner-con', 'col-6 d-flex flex-column justify-content-end gap-4')}>
                                         
@@ -168,7 +170,7 @@ function Home() {
                                     <div className="row d-flex justify-content-center gap-2">
                                         {movieshowing.slice(index * moviesPerPage, (index + 1) * moviesPerPage).map(movieshowing => (
                                             <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column   ')} key={movieshowing._id}>
-                                                <img src={movieshowing.poster} className={cx('img-movie', 'd-block', 'w-100')} alt={movieshowing.title} />
+                                                <img src={movieshowing.poster2} className={cx('img-movie', 'd-block', 'w-100')} alt={movieshowing.title} />
                                                 <h2 className={cx('title-movie', 'text-center')}>{movieshowing.title}</h2>
                                                 <div className={cx('btn-gr', 'd-flex justify-content-center')}>
                                                     <button onClick={() => openModal(movieshowing.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
@@ -217,7 +219,7 @@ function Home() {
                                     <div className="row d-flex justify-content-center gap-2">
                                         {upcomingmovie.slice(index * upcomingmovie, (index + 1) * moviesPerPage).map(upcomingmovie => (
                                             <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column p-3')} key={upcomingmovie._id}>
-                                                <img src={upcomingmovie.poster} className={cx('img-movie', 'd-block', 'w-100')} alt={upcomingmovie.title} />
+                                                <img src={upcomingmovie.poster2} className={cx('img-movie', 'd-block', 'w-100')} alt={upcomingmovie.title} />
                                                 <h2 className={cx('title-movie', 'text-center')}>{upcomingmovie.title}</h2>
                                                 <div className={cx('btn-gr', 'd-flex  justify-content-center')}>
                                                 <button onClick={() => openModal(upcomingmovie.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>

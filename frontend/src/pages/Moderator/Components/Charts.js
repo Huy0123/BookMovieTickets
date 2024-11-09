@@ -40,7 +40,6 @@ const Charts = () => {
         const monthRevenue = {};
         const currentMonth = dayjs().format("YYYY-MM");
         let monthlyTotal = 0;
-
         // Lọc các giao dịch trong tháng hiện tại và tính tổng doanh thu
         payments.forEach((payment) => {
             const month = dayjs(payment.payment_date).format("YYYY-MM");

@@ -6,7 +6,8 @@ const SeatModel = require('../models/Seat.js');
 const ShowtimeModel = require('../models/Showtime.js');
 const PointModel = require('../models/Point.js');
 
-const SeatTimeModel = require('../models/SeatTime.js')
+const SeatTimeModel = require('../models/SeatTime.js');
+const points = require('../models/Point.js');
 
 
 
@@ -54,19 +55,7 @@ class bookingService {
             if(point_id){
                 const pointData = await PointModel.findById(point_id)
                     total_price = total_price - total_price*pointData.discount;
-                const promotions = await userModel.findById(user_id).select('promotions_id')
-                console.log(promotions)
-                for(const promotion_id of promotions.promotions_id){
-                    console.log(promotion_id)
-                    if(point_id==promotion_id){
-                        await userModel.updateOne(
-                            { _id: user_id },                 
-                            { $pull: { promotions_id: promotion_id } } 
-                        );
-                    }
-                }
-                
-                console.log(promotions.promotions_id)
+              
                     console.log(total_price)
             }
             
@@ -76,6 +65,7 @@ class bookingService {
                 cinema_id:showtime.cinema_id,
                 seats_id:seats_id,
                 FoodAndDrinks_id:FoodAndDrinks_id,
+                point_id,
                 order_date: new Date(),
                 total_price
             })
@@ -87,7 +77,7 @@ class bookingService {
             return { message:"Thanh toán thành công ",orders_infor};
         } catch (error) {
             console.error(error);
-            throw new Error('Error creating booking: ' + error.message);
+            return new Error('Error creating booking: ' + error.message);
         }
     }
   
@@ -118,7 +108,7 @@ class bookingService {
            return {order_infor}
            
         } catch (error) {
-            throw error
+            return error
         }
        
 
@@ -149,7 +139,7 @@ class bookingService {
            return {order_infor}
            
         } catch (error) {
-            throw error
+            return error
         }
     }
 
@@ -176,7 +166,7 @@ class bookingService {
                 })
            return {orders_infor}
         } catch (error) {
-            throw error
+            return error
         }
 
     }

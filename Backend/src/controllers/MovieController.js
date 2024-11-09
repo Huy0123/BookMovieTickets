@@ -3,10 +3,12 @@ const movieService = require('../services/MovieService');
 class MovieController {
     createMovie = async (req, res) => {
         try{ 
+            console.log(req.body)
             const movie = await movieService.createMovie(req);
             res.status(201).json(movie);
         } catch (error) {
-            res.status(500).json({ error: 'Failed to create movie' });
+            // res.status(500).json({ error: 'Failed to create movie' });
+            throw error;
         }
     };
 

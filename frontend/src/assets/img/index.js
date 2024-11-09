@@ -13,7 +13,8 @@ const images= {
     comple : require('~/assets/img/comple.png'),
     vnpay : require('~/assets/img/vnpay.png'),
     zalopay : require('~/assets/img/zalopay.webp'),
-    fail : require('~/assets/img/6659895.png')
+    fail : require('~/assets/img/6659895.png'),
+    petfood: require('~/assets/img/449695328_993748358700027_824589688809105584_n.jpg')
 
 
 }
