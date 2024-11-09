@@ -51,7 +51,7 @@ function SignIn() {
             } else if (role === "Cinema") {
                 navigate('/moderator/charts');
             } else if (role === "Admin") {
-                navigate('/admin/memberlist');  // Điều hướng đến trang admin
+                navigate('/admin/dashboard');  // Điều hướng đến trang admin
             }
 
             } else {
@@ -101,7 +101,7 @@ function SignIn() {
             } else if (role === "Cinema") {
                 navigate('/moderator/charts');
             } else if (role === "Admin") {
-                navigate('/admin/memberlist');  // Điều hướng đến trang admin
+                navigate('/admin/dashboard');  // Điều hướng đến trang admin
             }
         }
         } catch (error) {
