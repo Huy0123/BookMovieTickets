@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import styles from "~/pages/BookTicket/BookTicket.module.scss";
 import classNames from "classnames/bind";
-
 const cx = classNames.bind(styles);
 
 const SeatList = () => {

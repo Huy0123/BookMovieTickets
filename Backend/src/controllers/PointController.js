@@ -3,7 +3,7 @@ const userService = require('../services/userService');
 class PointController{
     createPoint = async (req, res) => {
         try {
-            const point = await pointService.createPoint(req.body);
+            const point = await pointService.createPoint(req);
             res.status(201).send(point);
         } catch (error) {
             res.status(400).send(error.message);
@@ -25,14 +25,16 @@ class PointController{
             res.status(400).send(error.message);
         }
     }
+    
     updatePoint = async (req, res) => {
         try {
-            const point = await pointService.updatePoint(req.params.id, req.body);
+            const point = await pointService.updatePoint(req.params.id, req);
             res.status(200).send(point);
         } catch (error) {
             res.status(400).send(error.message);
         }
     }
+    
     deletePoint = async (req, res) => {
         try {
             await pointService.deletePoint(req.params.id);

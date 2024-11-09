@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 import axios from "axios";
-import './style.module.scss';
+import classNames from 'classnames/bind';
+import styles from './style.module.scss';
+const cx = classNames.bind(styles);
 
 const ShowtimeList = () => {
     const [showtimes, setShowtimes] = useState([]);
@@ -21,10 +23,13 @@ const ShowtimeList = () => {
 
 
 // Hàm lấy id của rạp chiếu phim
-// const fetchCinemas = async () => {
-//     try {
-//     } catch (error) {}
-// };
+const fetchCinemas = async () => {
+    try {
+        const response = await axios.get(`http://localhost:8080/v1/getCinemaIdByUserId/${localStorage.getItem('userId')}`);
+        setCinema_id(response.data._id);
+
+    } catch (error) {}
+};
 
 // // Hàm lấy danh sách showtime từ API
 const fetchShowtimes = useCallback(async () => {
@@ -163,43 +168,48 @@ return (
             </div>
         </div>
     </div> */}
-        <div>
+        <div  className={cx('collapse-title')} >
             <a data-bs-toggle="collapse" href="#add-showtime" role="button" aria-expanded="false">Tạo lịch chiếu</a>
         </div>
-        <div className="collapse" id="add-showtime">
+        <div className={cx('collapse')} id="add-showtime">
+        <div className={cx('collapse-container')}>
+            <div className="card card-body shadow-sm p-3 mb-5 bg-body-tertiary rounded">
             <h2>Tạo Lịch Chiếu</h2>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="movie" className="form-label">Chọn phim</label>
                 <select
-                    className="form-select form-select-lg mb-3" aria-label="Choose a movie" name="movie_id" value={showtime.movie_id} onChange={handleInputChange}>
+                    className={cx('form-select',' form-select-lg mb-3')} aria-label="Choose a movie" name="movie_id" value={showtime.movie_id} onChange={handleInputChange}>
                         
                     <option value="" disabled>Chọn phim</option>
                     {Object.entries(allMovies).map(([id, title]) => (
                         <option key={id} value={id}>{title}</option>
                     ))}
                 </select>
-
+           
                 <div className="mb-3">
-                    <label htmlFor="showtime_start" className="form-label">Thời gian bắt đầu</label>
-                    <input type="datetime-local" className="form-control" id="showtime_start" name="showtime_start" value={showtime.showtime_start} onChange={handleInputChange} />
+                    <label htmlFor="showtime_start" className={cx('form-label')}>Thời gian bắt đầu</label>
+                    <input type="datetime-local" className={cx('form-control')} id="showtime_start" name="showtime_start" value={showtime.showtime_start} onChange={handleInputChange} />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="showtime_end" className="form-label">Thời gian kết thúc</label>
-                    <input type="datetime-local" className="form-control" id="showtime_end" name="showtime_end" value={showtime.showtime_end} onChange={handleInputChange} />
+                    <label htmlFor="showtime_end" className={cx('form-label')}>Thời gian kết thúc</label>
+                    <input type="datetime-local" className={cx('form-control')}id="showtime_end" name="showtime_end" value={showtime.showtime_end} onChange={handleInputChange} />
                 </div>
                 <label htmlFor="room" className="form-label">Chọn phòng</label>
-                <select className="form-select form-select-lg mb-3" aria-label="Choose a room" name="room_id" value={showtime.room_id} onChange={handleInputChange}>
+                <select className={cx('form-select',' form-select-lg mb-3')}  aria-label="Choose a room" name="room_id" value={showtime.room_id} onChange={handleInputChange}>
                     <option value="" disabled>Chọn phòng</option>
                     {Object.entries(roomsAvailable).map(([id, name]) => (
                         <option key={id} value={id}>{name}</option>
                     ))}
                 </select>
-                <button type="submit" className="btn btn-primary">Tạo lịch chiếu</button>
+                <div  className={cx('btn-submit')}>
+                    <button type="submit">Tạo lịch chiếu</button>
+                </div>
+                
             </form>
         </div>
-
-        <div>
-            <table className="table  table-hover">
+</div></div>
+        <div className={cx('table-container')}>
+            <table className="table table-hover">
                 <thead>
                     <tr className="text-center">
                         <th>Movie</th>

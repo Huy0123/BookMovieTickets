@@ -17,7 +17,16 @@ function VoucherList() {
     const [currentImage, setCurrentImage] = useState('');
     const [isImageOpen, setImageOpen] = useState(false);
     const [vouncher,setVouncher] = useState([]);
-    const [vouncherId,setVouncherId]= useState('')
+    const [vouncherId,setVouncherId]= useState('');
+    const [formData, setFormData] = useState({
+        title: "",
+        description: "",
+        discount: "",
+        end_date: "",
+        start_date: "",
+        image: null,
+        points: "",     
+    });
     useEffect(()=>{
         const vouncherData = async () =>{
             try{
@@ -63,7 +72,7 @@ function VoucherList() {
     <div className={cx('container')}>
         <div className={cx('top')}>
             <button onClick={handleAddCinem}>
-            <FontAwesomeIcon className="fs-3 me-2" icon={faPlus} />Thêm đồ ăn </button>
+            <FontAwesomeIcon className="fs-3 me-2" icon={faPlus} />Thêm mã giảm giá</button>
         </div>
         <h2>Danh sách mã giảm giá</h2>   
         <div className={cx('table-con')} >
