@@ -30,7 +30,7 @@ function Header() {
    
 
     const handleScroll = () => {
-        setHeaderColor(window.scrollY > 50 ? 'rgba(12, 0, 0, 0.5)' : '#000000');
+        setHeaderColor(window.scrollY > 50 ? 'rgba(12, 0, 0, 0.5)' : '#1d1d1d');
     };
     
     useEffect(() => {
@@ -131,17 +131,13 @@ function Header() {
                                         onClick={() => navigate('/')}
                                     />
                                 </div>
-                                <div className="col-lg-4"></div>
-                                <div className={cx('wrap1', 'col-lg-6', 'mt-3')}>
-                                    <div className="row">
-                                        <div className="col-lg-6 d-flex flex-row-reverse pe-5">
-                                            <button type="button" className={cx('btn', 'book')}>
-                                                Đặt vé ngay
-                                            </button>
-                                        </div>
+                               
+                                <div className={cx('wrap1', 'col-lg-10', 'mt-3')}>
+                                    <div className="row d-flex justify-content-end">
+                                       
                                         {!isLoggedIn ? (
-                                            <div className={cx('sign', 'col-lg-6')}>
-                                                <div className="row gap-2">
+                                            <div className={cx('sign','d-flex gap-3 justify-content-end')}>
+                                               
                                                     <button
                                                         type="button"
                                                         className={cx('btn', 'sign-up', 'col-lg-6')}
@@ -156,19 +152,20 @@ function Header() {
                                                     >
 Đăng nhập
                                                     </button>
-                                                </div>
+                                               
                                             </div>
                                         ) : (
                                          
-                                                <div className={cx('logined', 'col-sm')}>
+                                                <div className={cx('logined', 'col-sm-3')}>
                                                 <Tippy
                                                 content={renderUserDropdown()}
                                                 interactive={true}
                                                 trigger="click"
+                                                arrow={false}
                                                 placement="bottom-start" // Đặt vị trí dưới và căn về bên trái
-                                                offset={[0, 10]} // Điều chỉnh khoảng cách giữa Tippy và thẻ logined
+                                                offset={[100, 10]} // Điều chỉnh khoảng cách giữa Tippy và thẻ logined
                                             >
-                                                    <div className={cx('wrap-logined', 'd-flex align-items-center w-100 h-100')}>
+                                                    <div className={cx('wrap-logined', 'd-flex justify-content-end align-items-center w-100 h-100')}>
                                                         <FontAwesomeIcon className={cx('icon-user')} icon={faUser} />
                                                         <h3 className={cx('fullname')}>{fullname}</h3>
                                                     </div>

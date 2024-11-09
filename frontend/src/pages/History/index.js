@@ -33,10 +33,10 @@ function History() {
                         <div className={cx('histor-contain', 'main-contain')}>
                             <div className='w-100 row'>
                                 <div className={cx('col-1', 'rower')}>Stt</div>
-                                <div className={cx('col-2', 'rower')}>Ngày đặt</div>
-                                <div className={cx('col-1', 'rower')}>Phương thức</div>
-                                <div className={cx('col-2', 'rower')}>Giá tiền</div>
-                                <div className={cx('col-2', 'rower')}>Trạng thái</div>
+                                <div className={cx('col-3', 'rower')}>Ngày đặt</div>
+                                <div className={cx('col-2', 'rower')}>Phương thức</div>
+                                <div className={cx('col-3', 'rower')}>Giá tiền</div>
+                                <div className={cx('col-3', 'rower')}>Trạng thái</div>
                             </div>
                         </div>
 
@@ -44,10 +44,10 @@ function History() {
                             {order.map((item, index) => (
                                 <div key={item._id} className='w-100 row'>
                                     <div className={cx('col-1', 'rower')}>{index + 1}</div>
-                                    <div className={cx('col-2', 'rower')}>{new Date(item.payment_date).toLocaleDateString()}</div>
-                                    <div className={cx('col-1', 'rower')}>{item.payment_method}</div>
-                                    <div className={cx('col-2', 'rower')}>{item.amount.toLocaleString()} VND</div>
-                                    <div className={cx('col-2', 'rower')}>{item.resultCode===0 ? 'Đã thanh toán' : 'Chưa thanh toán'}</div>
+                                    <div className={cx('col-3', 'rower')}>{new Date(item.payment_date).toLocaleDateString()}</div>
+                                    <div className={cx('col-2', 'rower')}>{item.payment_method}</div>
+                                    <div className={cx('col-3', 'rower')}>{item.amount.toLocaleString()} VND</div>
+                                    <div className={cx('col-3', 'rower')}>{item.resultCode===0 ? 'Đã thanh toán' : 'Chưa thanh toán'}</div>
                                 </div>
                             ))}
                         </div>

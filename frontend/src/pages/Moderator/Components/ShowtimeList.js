@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import './style.module.scss';
+import classNames from 'classnames/bind';
+import styles from './style.module.scss';
+const cx = classNames.bind(styles);
 
 const ShowtimeList = () => {
     const navigate = useNavigate();
@@ -153,42 +155,49 @@ const ShowtimeList = () => {
     };
     return (
         <>
-            <div>
+            <div className={cx('collapse-title')}>
             <a data-bs-toggle="collapse" href="#add-showtime" role="button" aria-expanded="false">Tạo lịch chiếu</a>
             </div>
-            <div className="collapse" id="add-showtime">
+            <div className={cx('collapse')} id="add-showtime">
+            <div className={cx('collapse-container')}>
+            <div className="card card-body shadow-sm p-3 mb-5 bg-body-tertiary rounded">
             <h2>Tạo Lịch Chiếu</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} >
                 <select
-                    className="form-select form-select-lg mb-3" aria-label="Choose a movie" value={selectedMovie} onChange={(e) => setSelectedMovie(e.target.value)}>
+                    className={cx('form-select',' form-select-lg mb-3')} aria-label="Choose a movie" value={selectedMovie} onChange={(e) => setSelectedMovie(e.target.value)}>
                     <option value="" disabled>Chọn phim</option>
                     {Object.entries(allMovies).map(([id, title]) => (
                         <option key={id} value={id}>{title}</option>
                     ))}
                 </select>
-
+           
                 <div className="mb-3">
-                    <label htmlFor="showtime_start" className="form-label">Thời gian bắt đầu</label>
-                    <input type="datetime-local" className="form-control" id="showtime_start" value={timeStart} onChange={handleStartTimeChange} />
+                    <label htmlFor="showtime_start" className={cx('form-label')}>Thời gian bắt đầu</label>
+                    <input type="datetime-local" className={cx('form-control')} id="showtime_start" value={timeStart} onChange={handleStartTimeChange} />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="showtime_end" className="form-label">Thời gian kết thúc</label>
-                    <input type="datetime-local" className="form-control" id="showtime_end" value={timeEnd} onChange={handleEndTimeChange} />
+                    <label htmlFor="showtime_end" className={cx('form-label')}>Thời gian kết thúc</label>
+                    <input type="datetime-local" className={cx('form-control')} id="showtime_end" value={timeEnd} onChange={handleEndTimeChange} />
                 </div>
-                <select className="form-select form-select-lg mb-3" aria-label="Choose a room" value={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)}>
+                <select className={cx('form-select',' form-select-lg mb-3')} aria-label="Choose a room" value={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)}>
                     <option value="" disabled>Chọn phòng</option>
                     {Object.entries(roomsAvailable).map(([id, name]) => (
                         <option key={id} value={id}>{name}</option>
                     ))}
                 </select>
-                <button type="submit" className="btn btn-primary">Tạo lịch chiếu</button>
+                <div  className={cx('btn-submit')}>
+                    <button type="submit">Tạo lịch chiếu</button>
+                </div>
+                
             </form>
             </div>
+            </div>
+            </div>
 
-            <div> 
-                <table className="table  table-hover">
+            <div className={cx('table-container')}> 
+                <table className={cx('table',' table-hover')}>
                     <thead>
-                        <tr className="text-center">
+                        <tr className="text-center posision-ficed">
                             <th>Movie</th>
                             <th>Cinema</th>
                             <th>Room</th>

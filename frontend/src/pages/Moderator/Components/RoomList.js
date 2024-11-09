@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import classNames from 'classnames/bind';
+import styles from './style.module.scss';
+const cx = classNames.bind(styles);
 const RoomList = () => {
     const navigate = useNavigate();
     const [rooms, setRooms] = useState([]);
@@ -66,23 +68,26 @@ const RoomList = () => {
 
     return (
         <>
-            <div>
+            <div className={cx('collapse-title')}>
                 <a data-bs-toggle="collapse" href="#add-room" role="button" aria-expanded="false">Tạo phòng mới</a>
             </div>
             <div className="collapse" id="add-room">
+            <div className={cx('collapse-container')}>
                 <div className="card card-body">
                     <h2>Tạo phòng mới</h2>
                     <form onSubmit={handleRoomSubmit}>
                         <div className="mb-3">
                             <label htmlFor="room-name" className="form-label">Tên Phòng</label>
-                            <input type="text" className="form-control" id="room-name" value={room} onChange={(e) => setRoom(e.target.value)} />
+                            <input type="text" className={cx('form-control')} id="room-name" value={room} onChange={(e) => setRoom(e.target.value)} />
                         </div>
-                        <button type="submit" className="btn btn-primary">Tạo Phòng</button>
+                        <div  className={cx('btn-submit')}>
+                    <button type="submit">Tạo lịch chiếu</button>
+                </div>
                     </form>
                 </div>
             </div>
-
-            <div>
+            </div>
+            <div  className={cx('table-container')} >
                 <table className="table table-hover">
                     <thead>
                         <tr className="text-center">

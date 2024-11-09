@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import React from "react";
+import classNames from 'classnames/bind';
+import styles from './style.module.scss';
+const cx = classNames.bind(styles);
 const Sidebar = () => {
   
   return (
-    <div className="d-flex flex-column bg-dark" style={{ width: '250px', height: '100vh' }}>
+    <div className="d-flex flex-column bg-dark" style={{ width: '250px', height: '620px' }}>
       <Link to="/moderator" className="nav-link text-white">
         <h2 className="text-white p-3">Moderator Dashboard</h2>
       </Link>
