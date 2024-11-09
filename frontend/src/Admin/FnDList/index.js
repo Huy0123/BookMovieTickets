@@ -56,7 +56,7 @@ const handleAdd = async () => {
       });
       setImage(null);
       if(response.status === 201){
-          alert('Tạo mã thành công');
+          alert('Tạo F&D thành công');
       window.location.reload();}
   } catch (error) {
       console.error("Error creating movie:", error);

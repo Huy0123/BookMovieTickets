@@ -61,3 +61,14 @@
   
  
 }
+.logout{
+    
+    border-radius:20px ;
+    padding: 8px 20px;
+    box-shadow: 1px 1px 8px rgba(218, 217, 217, 0.742); 
+    &:hover{
+        border: 0px;
+        background-color: rgba(153, 153, 153, 0.493);
+       
+    }
+}
