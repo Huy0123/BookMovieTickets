@@ -27,7 +27,7 @@ class userService{
     
             // Check for existing user by username
             
-          
+           
             // Proceed with hashing the password and creating the user
             const hashPassword = await bcrypt.hash(data.password, saltRounds);
             let result = await user.create({

@@ -18,6 +18,50 @@ function FnDList() {
     const [isImageOpen, setImageOpen] = useState(false);
     const [food,setFood] = useState([]);
     const [foodId,setFoodId] = useState('')
+    const [formData, setFormData] = useState({
+      title: "",
+      description: "",
+      discount: "",
+      end_date: "",
+      start_date: "",
+      points: "",     
+  });
+  const [Image, setImage] = useState(null);
+  const handleInputChange = (e) => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+      if (e.target.name === "Image") setImage(e.target.files[0]);
+  };
+
+const handleAdd = async () => {
+  const data = new FormData();
+  Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+  });
+
+  if (Image) data.append("Image", Image);
+  
+  try { 
+
+      const response = await axios.post("http://localhost:8080/v1/Food/createrFood", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("Movie created:", response.data);
+      setFormData({
+      name: "",
+      category: "",
+      price: "",
+      });
+      setImage(null);
+      if(response.status === 201){
+          alert('Tạo mã thành công');
+      window.location.reload();}
+  } catch (error) {
+      console.error("Error creating movie:", error);
+  }
+};
     useEffect(()=>{
       const fetchFood= async()=>{
         try{
@@ -122,50 +166,52 @@ function FnDList() {
       {addCinema &&(
         <div className={cx('modal-container')}>
             <div className={cx('modal-content')}>
-            <h3 className={cx('tyle')}>Thêm đồ ăn </h3>
+            <h3 className={cx('tyle')}>Thêm đồ ăn</h3>
             <div className={cx('content')}>
-                <h4 className={cx('title')}>Tên phim</h4>
+                <h4 className={cx('title')}>Tên đồ ăn</h4>
                 <input 
                     type="text" 
-                    name="foodaname" 
+                    name="name" 
                     className={cx('food-name', 'form-info')}     
+                    onChange={handleInputChange}
+                            value={formData.name}
                 />
             </div>
             <div className={cx('content')}>
-                <h4 className={cx('title')}>Thể loại</h4>
+                <h4 className={cx('title')}>Loại</h4>
                 <input 
                     type="text" 
-                    name="type" 
-                    className={cx('type', 'form-info')}     
+                    name="category" 
+                    className={cx('type', 'form-info')}    
+                    onChange={handleInputChange}
+                            value={formData.category} 
                 />
             </div>            
             <div className={cx('content')}>
                 <h4 className={cx('title')}>Thêm ảnh</h4>
                 <input 
                     type="file" 
-                    name="imgfood" 
+                    name="Image" 
                     accept="image/*" 
                     className={cx('imgFood', 'form-info')}     
+                    onChange={handleFileChange}
+
                 />
             </div>   
-            <div className={cx('content')}>
-                <h4 className={cx('title')}>Mô tả</h4>
-                <textarea 
-                    name="description" 
-                    className={cx('description', 'form-info')}     
-                />
-            </div>  
+            
             <div className={cx('content')}>
                 <h4 className={cx('title')}>Đơn giá</h4>
                 <input 
                     type="number" 
                     name="price" 
                    
-                    className={cx('price', 'form-info')}     
+                    className={cx('price', 'form-info')}   
+                    onChange={handleInputChange}
+                            value={formData.price}   
                 />
             </div>   
                       <div className={cx('btn-con')}>
-                      <button type='button' className={cx('btn-confirm')} >
+                      <button type='button' className={cx('btn-confirm')} onClick={handleAdd}>
                            Xác nhận
                         </button>
                       </div>

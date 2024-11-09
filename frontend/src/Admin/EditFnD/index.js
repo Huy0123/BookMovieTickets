@@ -23,33 +23,37 @@ const EditFnD = ({ isOpen, onClose,foodId }) => {
     const fetchFoodId = async (id) => {
         try {
             const response = await axios.get(`http://localhost:8080/v1/Food/getFoodById/${id}`);
-            console.log("REs",response.data)
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                ...response.data.food,
-            }));
-            
+            console.log(response); // Check the response for more details
+            if (response.status === 200) {
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    ...response.data.food,                   
+                }));
+            } else {
+                console.log("Error: Failed to fetch food", response);
+            }
         } catch (error) {
-            console.log("Error fetching movie:", error);
+            console.log("Error fetching food:", error);
         }
     };
     
+    
 
-    const handleSumbit = async () => {
+    const handleSubmit = async () => {
+        console.log("formData", formData);
         try {
             const response = await axios.put(`http://localhost:8080/v1/Food/editFood/${foodId}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            if(response.status === 200){
-                onClose();
-                window.location.reload();
+            if (response.status === 200) {
+                alert('Cập nhật thành công');
+                window.location.reload(); 
             }
-            console.log("Movie updated:", response.data);
+            console.log("Voucher updated:", response.data);
         } catch (error) {
-            console.log("Error updating movie:", error);
+            console.log("Error updating voucher:", error);
         }
     };
-
 
     useEffect( () => {
         if (isOpen) {
@@ -105,17 +109,17 @@ const EditFnD = ({ isOpen, onClose,foodId }) => {
                         <h4 className={cx("title")}>Ảnh đồ ăn</h4>
                         <input
                             type="file"
-                            name="image"
+                            name="Image"
                             accept="image/*"
                             className={cx("form-info")}
-                            onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
-                        />
+                            onChange={(e) => setFormData({...formData,Image: e.target.files[0]})}
+                            />
                     </div>
                 </div>
             </div>
 
             <div className={cx("btn-con")}>
-                <button type="button" className={cx("btn-confirm")} onClick={handleSumbit}>
+                <button type="button" className={cx("btn-confirm")} onClick={handleSubmit}>
                     Xác nhận
                 </button>
             </div>
