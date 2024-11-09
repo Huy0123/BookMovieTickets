@@ -15,7 +15,7 @@ const EditVoucher = ({ isOpen, onClose,vouncherId }) => {
         discount: "",
         start_date: "",
         end_date: "",
-        image: "",
+        image: null,
         points: "",
         description: "",
     });

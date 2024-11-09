@@ -46,7 +46,7 @@ const AddMovie = ({ isOpen, onClose }) => {
         if (poster1) data.append("poster1", poster1);
         if (poster2) data.append("poster2", poster2);
         
-        try {
+        try { 
 
             const response = await axios.post("http://localhost:8080/v1/createMovie", data, {
                 headers: { "Content-Type": "multipart/form-data" },

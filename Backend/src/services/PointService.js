@@ -9,7 +9,7 @@ class PointService {
     }
     getPointByID = async (id) => {
         return await pointModel.findById(id);
-    }
+    } 
     updatePoint = async (id, pointData) => {
         return await pointModel.findByIdAndUpdate(id, pointData, { new: true });
     }

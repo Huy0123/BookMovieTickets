@@ -191,12 +191,12 @@ function MovieList() {
   
 </div>
     <div className="col d-flex flex-column gap-2">
-    <div className={cx('content',' flex-column')} onClick={() => handleImageClick('https://images.hdqwalls.com/download/venom-the-last-dance-fx-1920x1200.jpg')}>
+    <div className={cx('content',' flex-column')} onClick={() => handleImageClick(moviedt.poster1)}>
         <h4 className={cx('title')}>Poster 1</h4>
         <img  src={moviedt.poster1} className={cx('poster-1')} />
     </div>
 
-    <div className={cx('content',' flex-column')} onClick={() => handleImageClick('https://cinema.heavymag.com.au/wp-content/uploads/sites/3/2024/06/Venom-The-Last-Dance.jpeg')}>
+    <div className={cx('content',' flex-column')} onClick={() => handleImageClick(moviedt.poster2)}>
         <h4 className={cx('title')}>Poster 2</h4>
         <img  src={moviedt.poster2} className={cx('poster-2')} />
     </div>

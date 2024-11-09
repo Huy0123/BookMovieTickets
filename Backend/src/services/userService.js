@@ -12,7 +12,7 @@ const { messaging } = require('firebase-admin');
 const client = new OAuth2Client(client_id);
 
 class userService{
-
+ 
     createUserService = async (data) => {
         try {
             const usernameExists = await user.findOne({ username: data.username });

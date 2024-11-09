@@ -35,7 +35,7 @@ class SeatTimeService {
     // Lấy tất cả thời gian ghế cho suất chiếu
     const seatTimes = await seatTime.find({ showtime_id: id }).populate('seat_id').lean();
 
-    // Tạo bản đồ cho thời gian ghế để dễ dàng tra cứu
+    // Tạo bản đồ cho thời gian ghế để dễ dàng tra cứu 
     const seatMap = seatTimes.reduce((acc, seatTime) => {
         acc[seatTime.seat_id] = seatTime; // seat_id là khóa
         return acc;
@@ -48,7 +48,7 @@ class SeatTimeService {
             seat_type: seat.seat_type,
             status: seatMap[seat._id] ? seatMap[seat._id].seat_status : false, // Trạng thái ghế
             seat_time_id: seatMap[seat._id] ? seatMap[seat._id]._id : null, // ID của seatTime
-            // Thêm các thông tin khác từ seatTime nếu cần
+            // Thêm các thông tin khác từ seatTime nếu cần 
         };
     });
     return {

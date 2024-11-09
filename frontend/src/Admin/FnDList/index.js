@@ -1,4 +1,4 @@
-import React,{ useState }  from 'react';
+import React,{ useEffect, useState }  from 'react';
 import classNames from 'classnames/bind';
 import styles from './FnDList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faPlus, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditFnD from '../EditFnD';
 import images from '~/assets/img';
+import axios from 'axios';
 const cx = classNames.bind(styles);
 function FnDList() {
   const [showModal, setShowModal] = useState(false);
@@ -15,11 +16,32 @@ function FnDList() {
     const [selectedOption, setSelectedOption] = useState("");
     const [currentImage, setCurrentImage] = useState('');
     const [isImageOpen, setImageOpen] = useState(false);
+    const [food,setFood] = useState([]);
+    const [foodId,setFoodId] = useState('')
+    useEffect(()=>{
+      const fetchFood= async()=>{
+        try{
+          const res = await axios.get('http://localhost:8080/v1/Food/getFood');
+          setFood(res.data.Food);
+          console.log("Res",res.data)
+        }catch{
+
+        }
+      }
+      fetchFood()
+    },[])
     const handleSearchChange = (event) => {
       setSearchTerm(event.target.value);
     };
-  const openModalEdit = () => setIsModalOpen(true);
-  const closeModalEdit = () => setIsModalOpen(false);
+  const openModalEdit = (id) => 
+    {setIsModalOpen(true);
+      setFoodId(id)
+    }
+  const closeModalEdit = () => {
+    setIsModalOpen(false);
+    setFoodId('')
+
+  }
 
 
     const handleAddCinem =() =>{
@@ -70,26 +92,28 @@ function FnDList() {
             <th>Tên đồ ăn</th>
             <th>Loại</th>
             <th>ảnh</th>
-            <th>Mô tả</th>
             <th>Giá</th>
             <th>Hành động</th>
           </tr>
         </thead>
         <tbody>
-       
-            <tr >
-              <td>02</td>
-              <td>thức ăn cho chó</td>
-              <td>thức ăn dạng lỏng</td>
+          {food.map((item,index)=>{
+            return(
+              <tr key={index}>
+              <td>{index+1}</td>
+              <td>{item.name}</td>
+              <td>{item.category}</td>
               
-              <td onClick={() => handleImageClick(images.petfood)}><img className={cx('img-food')} src={images.petfood}/></td>
-              <td className={cx('decript')}>thức ăn dạng lỏng có thể húp</td>
-              <td>3.000.000</td>
+              <td onClick={() => handleImageClick(item.Image)}><img className={cx('img-food')} src={item.Image}/></td>
+              <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
               <td>
-              <button onClick={openModalEdit}>chỉnh sửa</button> <EditFnD isOpen={isModalOpen} onClose={closeModalEdit} />
+              <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditFnD isOpen={isModalOpen} onClose={closeModalEdit}  foodId={foodId}/>
                 <button>xóa</button>
               </td>
             </tr>
+            )
+          })}
+            
           
         
         </tbody>

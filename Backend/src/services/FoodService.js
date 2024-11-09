@@ -44,7 +44,7 @@ class FoodService {
             name:data.body.name,
             Image:ImageUrl,
             price:data.body.price,
-            category:data.body.category
+            category:data.body.category 
         }, { new: true } )
         
         console.log(Food)
