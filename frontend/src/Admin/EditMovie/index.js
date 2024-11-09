@@ -21,8 +21,8 @@ const EditMovie = ({ isOpen, onClose, movieId }) => {
     voice_actors: "",
     country: "",
     limit: "",
-    poster1: "",
-    poster2: "",
+    poster1: null,
+    poster2: null
     });
 
     
@@ -38,7 +38,7 @@ const EditMovie = ({ isOpen, onClose, movieId }) => {
                 ...response.data,
                 release_date: response.data.release_date.split("T")[0],
             }));
-            window.location.reload();
+            
         } catch (error) {
             console.log("Error fetching movie:", error);
         }
@@ -50,7 +50,10 @@ const EditMovie = ({ isOpen, onClose, movieId }) => {
             const response = await axios.put(`http://localhost:8080/v1/updateMovie/${movieId}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            onClose();
+            if(response.status === 200){
+                onClose();
+                window.location.reload();
+            }
             console.log("Movie updated:", response.data);
         } catch (error) {
             console.log("Error updating movie:", error);
@@ -131,7 +134,7 @@ const EditMovie = ({ isOpen, onClose, movieId }) => {
             type="file" 
             name="poster1" 
             accept="image/*" 
-            className={cx('poster1', 'form-info')} onChange={(e) => setFormData(e.target.files[0])}
+            className={cx('poster1', 'form-info')} onChange={(e) => setFormData({...formData,poster1: e.target.files[0]})}
         />
     </div>
 
@@ -141,7 +144,7 @@ const EditMovie = ({ isOpen, onClose, movieId }) => {
             type="file" 
             name="poster2" 
             accept="image/*" 
-            className={cx('poster2', 'form-info')} onChange={(e) => setFormData(e.target.files[0])}    
+            className={cx('poster2', 'form-info')} onChange={(e) => setFormData({...formData,poster2: e.target.files[0]})}    
         />
     </div>
 </div>

@@ -68,8 +68,9 @@ const AddMovie = ({ isOpen, onClose }) => {
             });
             setPoster1(null);
             setPoster2(null);
+            if(response.status === 201){
             onClose();
-            window.location.reload();
+            window.location.reload();}
         } catch (error) {
             console.error("Error creating movie:", error);
         }

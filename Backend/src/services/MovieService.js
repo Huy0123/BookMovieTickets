@@ -55,21 +55,31 @@ class MovieService {
     }
 
     updateMovie = async (id, movieData) => {
-        const poster1File = movieData.files.poster1 ? movieData.files.poster1[0] : null;
-        const poster2File = movieData.files.poster2 ? movieData.files.poster2[0] : null;
-        
+        const { files, body } = movieData;
+        const uploadFile = async (file) => {
+            return await upload.uploadFile(
+                String(file.originalname), 
+                file.buffer, 
+                String(file.mimetype)
+            );
+        };
+        let poster1Url = null;
+        let poster2Url = null;
         const exitingMovie = await movie.findById(id);
-        if (poster1File){
+        if (files.poster1 && files.poster1[0]) {
             if (exitingMovie.poster1){
                 await upload.deleteFile(exitingMovie.poster1);
             }
+            const poster1Url = await uploadFile(files.poster1[0]);
+            movieData.body.poster1 = poster1Url;
+        }
+
+        if (files.poster2 && files.poster2[0]) {
             if (exitingMovie.poster2){
                 await upload.deleteFile(exitingMovie.poster2);
             }
-            const poster1Url = await upload.uploadFile(poster1File.originalname, poster1File.buffer, poster1File.mimetype);
-            const poster2Url = await upload.uploadFile(poster2File.originalname, poster2File.buffer, poster2File.mimetype);
-            movieData.body.poster = poster1Url;
-            movieData.body.poster = poster2Url;
+            const poster2Url = await uploadFile(files.poster2[0]);
+            movieData.body.poster2 = poster2Url;
         }
 
         return await movie.findByIdAndUpdate(id, movieData.body, { new: true });
