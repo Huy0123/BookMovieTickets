@@ -43,16 +43,17 @@ class PointService {
                 String(file.mimetype)
             );
         };
-        let imageUrl = null;
+
+        const existingPoint = await pointModel.findById(id);
         if (file) {
-            imageUrl = await uploadFile(file);
-        } else {
-            console.warn('No image uploaded');
+            if (existingPoint.image) {
+                await upload.deleteFile(existingPoint.image);
+            }
+            const imageUrl = await uploadFile(file);
+            body.image = imageUrl;
         }
-        return await pointModel.findByIdAndUpdate(id, {
-            ...body,
-            image: imageUrl
-        });
+
+        return await pointModel.findByIdAndUpdate(id, body, { new: true });
     }
 
     deletePoint = async (id) => {
