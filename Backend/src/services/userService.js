@@ -342,6 +342,15 @@ refreshToken = async(token,refreshToken)=>{
             }
     }
 }
+getUserAndCinema= async()=>{
+    try {
+        const User = await user.find({role:{$in:["Cinema", "User"]}})
+        console.log(User)
+        return User
+    } catch (error) {
+        throw error
+    }
+}
 
 resetpassword = async (token , newpassword)=>{
     if(!token || !newpassword){
