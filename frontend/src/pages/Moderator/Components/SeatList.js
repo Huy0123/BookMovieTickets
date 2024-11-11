@@ -4,8 +4,8 @@ import styles from "~/pages/BookTicket/BookTicket.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
-const SeatList = () => {
-    
+const SeatList = ({ cinema_id }) => {
+
     const [seats, setSeats] = useState([]);
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
@@ -14,16 +14,48 @@ const SeatList = () => {
     const [seatNumber, setSeatNumber] = useState('');
     const [seatType, setSeatType] = useState('');
     const [amount, setAmount] = useState('');
+    const [seatUpdate, setSeatUpdate] = useState({
+        seat_number: "",
+        seat_type: "",
+        price: "",
+    });
 
+    const fetchSeat = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/v1/getSeatByID/${id}`);
+            if (response.status === 200) {
+                setSeatUpdate(e => ({ ...e, ...response.data }));
+            }
+        } catch (error) {
+            console.error("Error fetching seat:", error);
+        }
+    }
+
+    const handleSeatEdit = async (id) => {
+        try {
+            const response = await axios.put(`http://localhost:8080/v1/updateSeat/${id}`, seatUpdate);
+            if (response.status === 200) {
+                alert('Cập nhật thành công');
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Error updating seat:", error);
+        }
+    }
+
+    const handleInputChange = (e) => {
+        setSeatUpdate({ ...seatUpdate, [e.target.name]: e.target.value });
+    };
     // Fetch rooms once when component mounts
     const fetchRooms = useCallback(async () => {
+        if (!cinema_id) return;
         try {
-            const response = await axios.get(`http://localhost:8080/v1/getRoomByCinemaID/66fbf96791e08c377610139b`);
+            const response = await axios.get(`http://localhost:8080/v1/getRoomByCinemaID/${cinema_id}`);
             setRooms(response.data);
         } catch (error) {
             console.error("Error fetching rooms:", error);
         }
-    }, []);
+    }, [cinema_id]);
 
     // Fetch seats only when selectedRoom changes
     const fetchSeats = useCallback(async () => {
@@ -39,6 +71,8 @@ const SeatList = () => {
     const handleDeleteSeat = async (seatId) => {
         try {
             await axios.delete(`http://localhost:8080/v1/deleteSeat/${seatId}`);
+            setSelectedSeat(null);
+            setSeatDetails(null);
             fetchSeats();
         } catch (error) {
             console.error("Error deleting seat:", error);
@@ -109,7 +143,7 @@ const SeatList = () => {
                     <form onSubmit={onSubmit}>
                         <div className="mb-3">
                             <label htmlFor="seat-number" className="form-label">Tên Ghế</label>
-                            <input type="text" className="form-control" id="seat-number" value={seatNumber} onChange={(e)=> setSeatNumber(e.target.value)} />
+                            <input type="text" className="form-control" id="seat-number" value={seatNumber} onChange={(e) => setSeatNumber(e.target.value)} />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="seat-type" className="form-label">Loại Ghế</label>
@@ -117,7 +151,7 @@ const SeatList = () => {
                         </div>
                         <div className="mb-3">
                             <label htmlFor="amount" className="form-label">Giá Ghế</label>
-                            <input type="text" className="form-control" id="amount" value={amount} onChange={(e) => setAmount(e.target.value)}/>
+                            <input type="text" className="form-control" id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
                         </div>
                         <button type="submit" className="btn btn-primary">Thêm ghế mới</button>
                     </form>
@@ -164,7 +198,7 @@ const SeatList = () => {
                                                                     className={cx('num-seat', {
                                                                         'vip-seat': seatInfo.seat_type.toLowerCase() === 'vip',
                                                                         'selected-seat': selectedSeat === seatNumber,
-                                                                    
+
                                                                     })}
                                                                     style={{
                                                                         backgroundColor: selectedSeat === seatNumber ? '#F9E400' : seatInfo.seat_status ? '#f5004f' : '',
@@ -189,20 +223,20 @@ const SeatList = () => {
                                     </div>
                                     <div className="col-2">
                                         {/* Selected seat information */}
-                                        
+
                                         {
                                             seatDetails && (
                                                 <>
-                                                <h2>Thông tin ghế</h2>
-                                                <div>
-                                                    <p>Ghế: {seatDetails.seat_number}</p>
-                                                    <p>Loại ghế: {seatDetails.seat_type}</p>
-                                                    <p>Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(seatDetails.price)}</p>
-                                                </div>
-                                                <div>
-                                                    <button className="btn btn-primary me-2">Sửa</button>
-                                                    <button className="btn btn-danger" onClick={() => handleDeleteSeat(seatDetails._id)}>Xóa</button>
-                                                </div>
+                                                    <h2>Thông tin ghế</h2>
+                                                    <div>
+                                                        <p>Ghế: {seatDetails.seat_number}</p>
+                                                        <p>Loại ghế: {seatDetails.seat_type}</p>
+                                                        <p>Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(seatDetails.price)}</p>
+                                                    </div>
+                                                    <div>
+                                                        <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#edit-seat" onClick={() => fetchSeat(seatDetails._id)}>Sửa</button>
+                                                        <button className="btn btn-danger" onClick={() => handleDeleteSeat(seatDetails._id)}>Xóa</button>
+                                                    </div>
                                                 </>
                                             )
                                         }
@@ -231,8 +265,40 @@ const SeatList = () => {
                     </div>
                 )}
             </div>
-        </>
-    );
+
+            {/* Edit seat modal */}
+            <div className="modal fade" id="edit-seat" tabIndex="-1" aria-labelledby="edit-seat" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Sửa ghế</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <form>
+                                <div className="mb-3">
+                                    <label htmlFor="seat-number" className="form-label">Tên Ghế</label>
+                                    <input type="text" className="form-control" id="seat-number" name="seat_number" value={seatUpdate.seat_number} onChange={handleInputChange} />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="seat-type" className="form-label">Loại Ghế</label>
+                                    <input type="text" className="form-control" id="seat-type" name="seat_type" value={seatUpdate.seat_type} onChange={handleInputChange} />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="price" className="form-label">Giá Ghế</label>
+                                    <input type="text" className="form-control" id="price" name="price" value={seatUpdate.price} onChange={handleInputChange} />
+                                </div>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" className="btn btn-primary" onClick={() => handleSeatEdit(seatDetails._id)}>Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </>
+            );
 };
 
-export default SeatList;
+            export default SeatList;

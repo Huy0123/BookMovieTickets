@@ -14,7 +14,6 @@ const Sidebar = () => {
 
     
     event.preventDefault();
-    console.log("qươuehqwuihgưhg")
     try {
         await axios.post(
         'http://localhost:8080/v1/Users/logout',

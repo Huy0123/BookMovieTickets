@@ -2,6 +2,7 @@ const roomService = require('../services/RoomService');
 
 class RoomController {
     createRoom = async (req, res) => {
+        console.log(req.body);
         try {
             const room = await roomService.createRoom(req.body);
             res.status(201).send(room);
