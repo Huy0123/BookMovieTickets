@@ -13,7 +13,7 @@ function History() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/v1/Payment/getPaymentById/${userId}`);
+                const res = await axios.get(`http://localhost:8080/v1/Payment/getPaymentByUserId/${userId}`);
                 const orderData = res.data.res;
                 console.log(orderData)
                 setOrder(orderData);

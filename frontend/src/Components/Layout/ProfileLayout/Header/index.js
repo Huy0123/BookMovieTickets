@@ -83,7 +83,7 @@ function Header() {
             <div className={cx('dropdown-item')} onClick={() => navigate('/profile')}>
                 Thông tin cá nhân
             </div>
-            <div className={cx('dropdown-item')} onClick={() => navigate('/transaction-history')}>
+            <div className={cx('dropdown-item')} onClick={() => navigate('/history')}>
                 Lịch sử giao dịch
             </div>
             <div className={cx('dropdown-item')} onClick={logout}>
