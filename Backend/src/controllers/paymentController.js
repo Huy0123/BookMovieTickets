@@ -53,5 +53,9 @@ class paymentController  {
         const result = await paymentService.getPaymentByCinemaId(req.params.id)
         return res.status(200).json(result)
     }
+    getPaymentByUserId= async (req,res)=>{
+        const result = await paymentService.getPaymentByUserId(req.params.id)
+        return res.status(200).json(result)
+    }
 }
 module.exports = new paymentController

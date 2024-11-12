@@ -8,4 +8,4 @@ router.get('/getSeatByID/:id', seatController.getSeatByID)
 router.put('/updateSeat/:id', seatController.updateSeat)
 router.delete('/deleteSeat/:id', seatController.deleteSeat)
 router.get('/getSeatByRoomID/:id', seatController.getSeatByRoomID)
-module.exports = router
+module.exports = router 

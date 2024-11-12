@@ -1,8 +1,31 @@
 const pointModel = require('../models/Point');
 const User = require('../models/userModel')
+const upload = require('../utils/upload');
 class PointService {
     createPoint = async (pointData) => {
-        return await pointModel.create(pointData);
+        try {
+        const { file, body } = pointData;
+        const uploadFile = async (file) => {
+            return await upload.uploadFile(
+                String(file.originalname),
+                file.buffer,
+                String(file.mimetype)
+            );
+        };
+        let imageUrl = null;
+        if (file) {
+             imageUrl = await uploadFile(file);
+        } else {
+            console.warn('No image uploaded');
+        }
+        return await pointModel.create({
+            ...body,
+            image: imageUrl
+        });
+    } catch (error) {
+        throw error;
+    }
+
     }
     getPoints = async () => {
         return await pointModel.find();
@@ -10,8 +33,27 @@ class PointService {
     getPointByID = async (id) => {
         return await pointModel.findById(id);
     }
+    
     updatePoint = async (id, pointData) => {
-        return await pointModel.findByIdAndUpdate(id, pointData, { new: true });
+        const { file, body } = pointData;
+        const uploadFile = async (file) => {
+            return await upload.uploadFile(
+                String(file.originalname),
+                file.buffer,
+                String(file.mimetype)
+            );
+        };
+
+        const existingPoint = await pointModel.findById(id);
+        if (file) {
+            if (existingPoint.image) {
+                await upload.deleteFile(existingPoint.image);
+            }
+            const imageUrl = await uploadFile(file);
+            body.image = imageUrl;
+        }
+
+        return await pointModel.findByIdAndUpdate(id, body, { new: true });
     }
 
     deletePoint = async (id) => {

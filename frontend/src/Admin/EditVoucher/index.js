@@ -15,7 +15,7 @@ const EditVoucher = ({ isOpen, onClose,vouncherId }) => {
         discount: "",
         start_date: "",
         end_date: "",
-        image: "",
+        image: null,
         points: "",
         description: "",
     });
@@ -28,34 +28,34 @@ const EditVoucher = ({ isOpen, onClose,vouncherId }) => {
     const fetchVouncherId = async (id) => {
         try {
             const response = await axios.get(`http://localhost:8080/v1/getPointByID/${id}`);
-            console.log(response.data)
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                ...response.data,
-                start_date: response.data.start_date.split("T")[0],
-                end_date: response.data.end_date.split("T")[0],
-            }));
-            
+            if (response.status === 200) {
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    ...response.data,
+                    start_date: response.data.start_date.split("T")[0],
+                    end_date: response.data.end_date.split("T")[0],
+                }));
+            }
         } catch (error) {
-            console.log("Error fetching movie:", error);
+            console.log("Error fetching voucher:", error);
         }
     };
     
-
-    const handleSumbit = async () => {
-        console.log("formData",formData)
+    const handleSubmit = async () => {
+        console.log("formData", formData);
         try {
             const response = await axios.put(`http://localhost:8080/v1/updatePoint/${vouncherId}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
-                
             });
-           alert('Cập nhật thành công')
-            console.log("Movie updated:", response.data);
+            if (response.status === 200) {
+                alert('Cập nhật thành công');
+                window.location.reload(); 
+            }
+            console.log("Voucher updated:", response.data);
         } catch (error) {
-            console.log("Error updating movie:", error);
+            console.log("Error updating voucher:", error);
         }
     };
-
 
     useEffect( () => {
         if (isOpen) {
@@ -106,7 +106,7 @@ const EditVoucher = ({ isOpen, onClose,vouncherId }) => {
             name="image" 
             accept="image/*" 
             className={cx('imgFood', 'form-info')}     
-            onChange={(e) => setFormData(e.target.files[0])}
+            onChange={(e) => setFormData({...formData,image: e.target.files[0]})}
         />
     </div>   
     <div className={cx('content')}>
@@ -130,7 +130,7 @@ const EditVoucher = ({ isOpen, onClose,vouncherId }) => {
                 />
             </div>    
               <div className={cx('btn-con')}>
-              <button type='button' className={cx('btn-confirm')} onClick={handleSumbit}>
+              <button type='button' className={cx('btn-confirm')} onClick={handleSubmit}>
                    Xác nhận
                 </button>
               </div>

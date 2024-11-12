@@ -28,14 +28,14 @@ const AddMovie = ({ isOpen, onClose }) => {
     const [poster1, setPoster1] = useState(null);
     const [poster2, setPoster2] = useState(null);
 
-    const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+        const handleInputChange = (e) => {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+        };
 
-    const handleFileChange = (e) => {
-        if (e.target.name === "poster1") setPoster1(e.target.files[0]);
-        if (e.target.name === "poster2") setPoster2(e.target.files[0]);
-    };
+        const handleFileChange = (e) => {
+            if (e.target.name === "poster1") setPoster1(e.target.files[0]);
+            if (e.target.name === "poster2") setPoster2(e.target.files[0]);
+        };
 
     const handleSubmit = async () => {
         const data = new FormData();
@@ -46,7 +46,7 @@ const AddMovie = ({ isOpen, onClose }) => {
         if (poster1) data.append("poster1", poster1);
         if (poster2) data.append("poster2", poster2);
         
-        try {
+        try { 
 
             const response = await axios.post("http://localhost:8080/v1/createMovie", data, {
                 headers: { "Content-Type": "multipart/form-data" },

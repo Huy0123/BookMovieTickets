@@ -172,6 +172,15 @@ class UserController{
         });
     }
 }
+
+getUserAndCinema = async(req,res)=>{
+    try {
+        const result = await userService.getUserAndCinema()
+        return res.status(200).json(result)
+    } catch (error) {
+        return error
+    }
+}
     
 forgotpassword = async(req,res)=>{
     try {

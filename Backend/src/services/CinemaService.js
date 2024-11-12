@@ -13,7 +13,7 @@ class CinemaService {
             return { EC: 2, EM: "Email đã được sử dụng!" }
 
         }
-
+ 
         const hashPassword = await bcrypt.hash(data.password, saltRounds);
         const userCinema = await UserModel.create({
             fullname: data.nameCinema,
@@ -34,7 +34,7 @@ class CinemaService {
        return {userCinema,Cinema} 
     }
 
-    getCinemas = async () => {
+    getCinemas = async () => { 
         return cinema.find().populate('user_id');
     }
 

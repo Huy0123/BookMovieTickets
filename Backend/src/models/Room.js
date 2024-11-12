@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const showtimes = require('./Showtime');
-const seats = require('./Seat');
 const createRoom = new mongoose.Schema({
     name:{
         type: String,
@@ -14,13 +12,3 @@ const createRoom = new mongoose.Schema({
     });
 const rooms = mongoose.model('rooms', createRoom);
 module.exports = rooms;
-
-createRoom.pre('remove', async function(next){
-    try{
-        await showtimes.deleteMany({room_id: this._id});
-        await seats.deleteMany({room_id: this._id});
-        next();
-    } catch (error){
-        next(error);
-    }
-});

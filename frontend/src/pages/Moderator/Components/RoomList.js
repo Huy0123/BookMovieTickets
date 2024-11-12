@@ -3,21 +3,24 @@ import axios from "axios";
 import classNames from 'classnames/bind';
 import styles from './style.module.scss';
 const cx = classNames.bind(styles);
-const RoomList = () => {
+const RoomList = ({cinemaId}) => {
     
     const [rooms, setRooms] = useState([]);
     const [cinemas, setCinemas] = useState({});
     const [room, setRoom] = useState('');
-
-    // Fetch rooms from API
+    const [roomEdit, setRoomEdit] = useState({
+        _id: "",
+        name: "",
+    });
     const fetchRooms = useCallback(async () => {
+        if(!cinemaId) return;
         try {
-            const response = await axios.get("http://localhost:8080/v1/getRoomByCinemaID/66fbf96791e08c377610139b");
+            const response = await axios.get(`http://localhost:8080/v1/getRoomByCinemaID/${cinemaId}`);
             setRooms(response.data);
         } catch (error) {
             console.error("Error fetching rooms:", error);
         }
-    }, []);
+    }, [cinemaId]);
 
     // Fetch cinemas information based on room data
     const fetchCinemasInfo = useCallback(async (rooms) => {
@@ -32,10 +35,34 @@ const RoomList = () => {
         }
     }, []);
 
+    const fetchRoom = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/v1/getRoomByID/${id}`);
+            if (response.status === 200) {
+                setRoomEdit({name: response.data.name, _id: response.data._id});
+            }
+        } catch (error) {
+            console.error("Error fetching room:", error);
+        }
+    }
+    console.log(roomEdit);
+
+    const handleRoomEdit = async (id) => {
+        try {
+            const response = await axios.put(`http://localhost:8080/v1/updateRoom/${id}`, { name: roomEdit.name });
+            if (response.status === 200) {
+                alert('Cập nhật thành công');
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Error updating room:", error);
+        }
+    }
     const handleRoomSubmit = async (e) => {
         e.preventDefault();
+        if (!room || !cinemaId) return;
         try {
-            const response = await axios.post("http://localhost:8080/v1/createRoom", { name: room, cinema_id: "66fbf96791e08c377610139b" });
+            const response = await axios.post("http://localhost:8080/v1/createRoom", { name: room, cinema_id: cinemaId });
             if (response.status === 201) {
                 fetchRooms();
             }
@@ -103,13 +130,35 @@ const RoomList = () => {
                                 <td>{room.name}</td>
                                 <td>{cinemas[room.cinema_id]}</td>
                                 <td>
-                                    <button className="btn btn-primary me-2">Sửa</button>
+                                    <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#eidt-room" onClick={()=> fetchRoom(room._id)}>Sửa</button>
                                     <button className="btn btn-danger" onClick={() => handleRoomDelete(room._id)}>Xóa</button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+            </div>
+            <div className="modal fade" id="eidt-room" tabIndex="-1" aria-labelledby="edit-room" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Sửa phòng chiếu</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <form>
+                                <div className="mb-3">
+                                    <label htmlFor="room-name" className="form-label">Tên Phòng</label>
+                                    <input type="text" className={cx('form-control')} id="room-name" value={roomEdit.name} onChange={(e) => setRoomEdit({...roomEdit, name:e.target.value})} />
+                                </div>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" className="btn btn-primary" onClick={() => handleRoomEdit(roomEdit._id)}>Lưu</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
     );

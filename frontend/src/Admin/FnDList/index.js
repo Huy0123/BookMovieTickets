@@ -1,4 +1,4 @@
-import React,{ useState }  from 'react';
+import React,{ useEffect, useState }  from 'react';
 import classNames from 'classnames/bind';
 import styles from './FnDList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faPlus, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditFnD from '../EditFnD';
 import images from '~/assets/img';
+import axios from 'axios';
 const cx = classNames.bind(styles);
 function FnDList() {
   const [showModal, setShowModal] = useState(false);
@@ -15,11 +16,77 @@ function FnDList() {
     const [selectedOption, setSelectedOption] = useState("");
     const [currentImage, setCurrentImage] = useState('');
     const [isImageOpen, setImageOpen] = useState(false);
+    const [food,setFood] = useState([]);
+    const [foodId,setFoodId] = useState('')
+    const [foodIdToDelete,setFoodIdToDelete]=useState('');
+    const [formData, setFormData] = useState({
+      title: "",
+      description: "",
+      discount: "",
+      end_date: "",
+      start_date: "",
+      points: "",     
+  });
+  const [Image, setImage] = useState(null);
+  const handleInputChange = (e) => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+      if (e.target.name === "Image") setImage(e.target.files[0]);
+  };
+
+const handleAdd = async () => {
+  const data = new FormData();
+  Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+  });
+
+  if (Image) data.append("Image", Image);
+  
+  try { 
+
+      const response = await axios.post("http://localhost:8080/v1/Food/createrFood", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("Movie created:", response.data);
+      setFormData({
+      name: "",
+      category: "",
+      price: "",
+      });
+      setImage(null);
+      if(response.status === 201){
+          alert('Tạo F&D thành công');
+      window.location.reload();}
+  } catch (error) {
+      console.error("Error creating movie:", error);
+  }
+};
+    useEffect(()=>{
+      const fetchFood= async()=>{
+        try{
+          const res = await axios.get('http://localhost:8080/v1/Food/getFood');
+          setFood(res.data.Food);
+          console.log("Res",res.data)
+        }catch{
+
+        }
+      }
+      fetchFood()
+    },[])
     const handleSearchChange = (event) => {
       setSearchTerm(event.target.value);
     };
-  const openModalEdit = () => setIsModalOpen(true);
-  const closeModalEdit = () => setIsModalOpen(false);
+  const openModalEdit = (id) => 
+    {setIsModalOpen(true);
+      setFoodId(id)
+    }
+  const closeModalEdit = () => {
+    setIsModalOpen(false);
+    setFoodId('')
+
+  }
 
 
     const handleAddCinem =() =>{
@@ -35,6 +102,28 @@ function FnDList() {
     const handleCloseImage = () => {
         setImageOpen(false);
     };
+    const openModalDelete =  (foodId) => {
+      setFoodIdToDelete(foodId);
+      setShowModal(true);
+      
+    }
+    const closeModal = () => {
+      setShowModal(false); 
+      setFoodIdToDelete('');
+  };
+  const handleDelete = async () =>{
+    try{
+      if(foodIdToDelete){
+        setShowModal(false);
+        const res = await axios.delete(`http://localhost:8080/v1/Food/deleteFood/${foodIdToDelete}`);
+        window.location.reload(); 
+        alert('Bạn đã xóa rạp thành công!!');
+        
+      }
+    }catch(error){
+      throw(error)
+    }
+  }
     return ( 
     <div className={cx('container')}>
         <div className={cx('top')}>
@@ -70,26 +159,28 @@ function FnDList() {
             <th>Tên đồ ăn</th>
             <th>Loại</th>
             <th>ảnh</th>
-            <th>Mô tả</th>
             <th>Giá</th>
             <th>Hành động</th>
           </tr>
         </thead>
         <tbody>
-       
-            <tr >
-              <td>02</td>
-              <td>thức ăn cho chó</td>
-              <td>thức ăn dạng lỏng</td>
+          {food.map((item,index)=>{
+            return(
+              <tr key={index}>
+              <td>{index+1}</td>
+              <td>{item.name}</td>
+              <td>{item.category}</td>
               
-              <td onClick={() => handleImageClick(images.petfood)}><img className={cx('img-food')} src={images.petfood}/></td>
-              <td className={cx('decript')}>thức ăn dạng lỏng có thể húp</td>
-              <td>3.000.000</td>
+              <td onClick={() => handleImageClick(item.Image)}><img className={cx('img-food')} src={item.Image}/></td>
+              <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
               <td>
-              <button onClick={openModalEdit}>chỉnh sửa</button> <EditFnD isOpen={isModalOpen} onClose={closeModalEdit} />
-                <button>xóa</button>
+              <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditFnD isOpen={isModalOpen} onClose={closeModalEdit}  foodId={foodId}/>
+                <button type='button' onClick={() => openModalDelete(item._id)}>xóa</button>
               </td>
             </tr>
+            )
+          })}
+            
           
         
         </tbody>
@@ -98,50 +189,52 @@ function FnDList() {
       {addCinema &&(
         <div className={cx('modal-container')}>
             <div className={cx('modal-content')}>
-            <h3 className={cx('tyle')}>Thêm đồ ăn </h3>
+            <h3 className={cx('tyle')}>Thêm đồ ăn</h3>
             <div className={cx('content')}>
-                <h4 className={cx('title')}>Tên phim</h4>
+                <h4 className={cx('title')}>Tên đồ ăn</h4>
                 <input 
                     type="text" 
-                    name="foodaname" 
+                    name="name" 
                     className={cx('food-name', 'form-info')}     
+                    onChange={handleInputChange}
+                            value={formData.name}
                 />
             </div>
             <div className={cx('content')}>
-                <h4 className={cx('title')}>Thể loại</h4>
+                <h4 className={cx('title')}>Loại</h4>
                 <input 
                     type="text" 
-                    name="type" 
-                    className={cx('type', 'form-info')}     
+                    name="category" 
+                    className={cx('type', 'form-info')}    
+                    onChange={handleInputChange}
+                            value={formData.category} 
                 />
             </div>            
             <div className={cx('content')}>
                 <h4 className={cx('title')}>Thêm ảnh</h4>
                 <input 
                     type="file" 
-                    name="imgfood" 
+                    name="Image" 
                     accept="image/*" 
                     className={cx('imgFood', 'form-info')}     
+                    onChange={handleFileChange}
+
                 />
             </div>   
-            <div className={cx('content')}>
-                <h4 className={cx('title')}>Mô tả</h4>
-                <textarea 
-                    name="description" 
-                    className={cx('description', 'form-info')}     
-                />
-            </div>  
+            
             <div className={cx('content')}>
                 <h4 className={cx('title')}>Đơn giá</h4>
                 <input 
                     type="number" 
                     name="price" 
                    
-                    className={cx('price', 'form-info')}     
+                    className={cx('price', 'form-info')}   
+                    onChange={handleInputChange}
+                            value={formData.price}   
                 />
             </div>   
                       <div className={cx('btn-con')}>
-                      <button type='button' className={cx('btn-confirm')} >
+                      <button type='button' className={cx('btn-confirm')} onClick={handleAdd}>
                            Xác nhận
                         </button>
                       </div>
@@ -160,23 +253,23 @@ function FnDList() {
         </div>
     </div>
 )}
-      {showModal && (
-                <div className={cx('modal')}>
-                    <div className={cx('modal-content')}>
-                        <div className={cx('modal-header')}>
-                            <h4>Xác nhận xóa</h4>
-                            <button type="button" >×</button>
-                        </div>
-                        <div className={cx('modal-body')}>
-                            Bạn có chắc chắn muốn xóa món này?
-                        </div>
-                        <div className={cx('modal-footer')}>
-                            <button type="button" >Hủy</button>
-                            <button type="button" >Xóa</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+{showModal && (
+    <div className={cx('modal')}>
+        <div className={cx('modal-content')}>
+            <div className={cx('modal-header')}>
+                <h4>Xác nhận xóa</h4>
+                <button type="button" onClick={closeModal}>×</button>
+            </div>
+            <div className={cx('modal-body')}>
+                Bạn có chắc chắn muốn xóa mã này?
+            </div>
+            <div className={cx('modal-footer')}>
+                <button type="button" onClick={closeModal}>Hủy</button>
+                <button type="button" onClick={handleDelete}>Xóa</button>
+            </div>
+        </div>
+    </div>
+)}
     </div>
 );
 }

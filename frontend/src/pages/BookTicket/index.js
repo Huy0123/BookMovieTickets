@@ -8,7 +8,7 @@ import { useState, useEffect,useRef  } from 'react';
 import { faClock, faClosedCaptioning, faEarthAsia, faMinus, faPlus, faTag, faTv, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import TrailerModal from '../Trailer/TrailerModal';
-
+import { useAuth } from '~/contexts/AuthContext';
 const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -55,7 +55,7 @@ function BookTicket() {
     const movie_id =useParams().id; 
     const location = useLocation();
     const { showtimeId,cinemaId } = location.state || {}; // Lấy showtimeId từ state
-
+    const { isAuthenticated } = useAuth();
     console.log("showtimeId:", showtimeId);
     console.log(movie_id)
     const openModal = (link) => {
@@ -143,6 +143,18 @@ function BookTicket() {
     }, [showtimeId, cinemaId, price]);
 
     const handleBooking = () => {
+        if (!isAuthenticated) {
+            alert("Vui lòng đăng nhập để tiếp tục.");
+            navigate('/signin'); 
+            return;
+        }
+
+        // Kiểm tra nếu không có ghế nào được chọn
+        if (selectedSeats.length === 0) {
+            alert("Vui lòng chọn ít nhất một ghế trước khi tiếp tục.");
+            return; 
+        }
+
         const orderDetails = {
             title,
             nameCinema,
@@ -156,9 +168,13 @@ function BookTicket() {
             foodId,
             FoodCount
         };
+
         console.log(orderDetails);
-        navigate('/payment', { state: orderDetails }); // 
+
+        // Chuyển qua trang thanh toán với thông tin đơn hàng
+        navigate('/payment', { state: orderDetails });
     };
+
     const handleSeatClick = (seat, seatId) => {
         setSelectedSeats((prevSelectedSeats) => {
 const isSelected = prevSelectedSeats.includes(seat);
@@ -347,64 +363,71 @@ console.log(totalFoodPrice);
             <h1 className={cx('show')}>Lịch chiếu</h1>
             <div className={cx('group-btn')}>
                 <div className={cx('date-show', 'gap-3')}>
-                    {getMovies.map((show, index) => {
-                        const showtimeUTC = new Date(show.showtime_start);
-                        console.log("showtimeUTC",showtimeUTC)
-                        const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            weekday: 'long'
-                        }).replace(/-/g, '/'); 
+                    {getMovies.length === 0 ? (
+                        <h2>HIỆN TẠI KHÔNG CÓ LỊCH CHIẾU</h2> // Hiển thị khi không có phim
+                    ) : (
+                        getMovies.map((show, index) => {
+                            const showtimeUTC = new Date(show.showtime_start);
+                            console.log("showtimeUTC", showtimeUTC);
+                            const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                weekday: 'long'
+                            }).replace(/-/g, '/');
 
-                        if (formattedShowtime !== lastDisplayedDate) {
-                            lastDisplayedDate = formattedShowtime; 
-                            return (
-                                <div 
-                                    className={cx('btn-date', { active: selectedDate === formattedShowtime })} 
-                                    key={show._id} 
-                                    onClick={() => setSelectedDate(formattedShowtime)}
-                                >
-                                    <h2 className={cx('date', 'pt-1')}>
-                                        {formattedShowtime}
-                                    </h2>
-                                </div>
-                            );
-                        } 
-                        return null;
-                    })}
+                            if (formattedShowtime !== lastDisplayedDate) {
+                                lastDisplayedDate = formattedShowtime;
+                                return (
+                                    <div
+                                        className={cx('btn-date', { active: selectedDate === formattedShowtime })}
+                                        key={show._id}
+                                        onClick={() => setSelectedDate(formattedShowtime)}
+                                    >
+                                        <h2 className={cx('date', 'pt-1')}>
+                                            {formattedShowtime}
+                                        </h2>
+                                    </div>
+                                );
+                            }
+                            return null;
+                        })
+                    )}
                 </div>
             </div>
             <div className={cx('about')}>
                 <div className='row'>
                     <div className='col-1'></div>
                     <div className='col-10'>
-                        
                         <div className={cx('time-start')}>
-                            {selectedDate && getShowTimesByDate(selectedDate).map((show, index) => {
-                                const showtimeUTC = new Date(show.showtime_start);
-                                const formattedHour = showtimeUTC.toLocaleTimeString('vi-VN', {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: false,
-                                });
+                            {selectedDate && getShowTimesByDate(selectedDate).length === 0 ? (
+                                <div>HIỆN TẠI KHÔNG CÓ LỊCH CHIẾU</div> // Hiển thị khi không có lịch cho ngày đã chọn
+                            ) : (
+                                selectedDate && getShowTimesByDate(selectedDate).map((show, index) => {
+                                    const showtimeUTC = new Date(show.showtime_start);
+                                    const formattedHour = showtimeUTC.toLocaleTimeString('vi-VN', {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: false,
+                                    });
 
-                                return (
-                                    <div key={show._id}>
-                                        <h4>Tên Rạp: {show.cinema_id.name}</h4>
-                                        <p>Địa chỉ: {show.cinema_id.address}</p>
-                                        <button 
-                                            type='button' 
-                                            className={cx('btn-time', { active: index === 0 })}
-                                            onClick={() => {
-                                                handleShowtimeClick(show._id, show.cinema_id, show.room_id);
-                                                setHour(formattedHour);
-                                            }}
-                                        >
-                                            {formattedHour}
-                                        </button>
-                                    </div>
-                                );
-                            })}
+                                    return (
+                                        <div key={show._id}>
+                                            <h4>Tên Rạp: {show.cinema_id.name}</h4>
+                                            <p>Địa chỉ: {show.cinema_id.address}</p>
+                                            <button
+                                                type='button'
+                                                className={cx('btn-time', { active: index === 0 })}
+                                                onClick={() => {
+                                                    handleShowtimeClick(show._id, show.cinema_id, show.room_id);
+                                                    setHour(formattedHour);
+                                                }}
+                                            >
+                                                {formattedHour}
+                                            </button>
+                                        </div>
+                                    );
+                                })
+                            )}
                         </div>
                     </div>
                     <div className='col-1'></div>
@@ -414,6 +437,7 @@ console.log(totalFoodPrice);
         <div className='col-1'></div>
     </div>
 </div>
+
 
           
             {/* ghe */}

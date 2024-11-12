@@ -31,29 +31,33 @@ class FoodService {
     }
 
     editFood = async (idFood,data)=>{
-        const ImageFile = data.files.Image ? data.files.Image[0] : null;
-        const food = await FoodModel.findById(idFood)
-        if(!food){
-            return {message:"no food"}
+        const {files,body} = data;
+        const uploadFile = async (file) => {
+            return await upload.uploadFile(
+                String(file.originalname), 
+                file.buffer, 
+                String(file.mimetype)
+            );
+        };
+
+        const exitingFood = await FoodModel.findById(idFood);
+        if(files.Image && files.Image[0]){
+            if(exitingFood.Image){
+                await upload.deleteFile(exitingFood.Image);
+            }
+            const imageUrl = await uploadFile(files.Image[0]);
+            data.body.Image = imageUrl;
         }
-        if(food.Image){
-            await upload.deleteFile(food.Image);
-        }
-        const ImageUrl = await upload.uploadFile(String(ImageFile.originalname), ImageFile.buffer, String(ImageFile.mimetype));
-        const Food = await FoodModel.findByIdAndUpdate(idFood,{
-            name:data.body.name,
-            Image:ImageUrl,
-            price:data.body.price,
-            category:data.body.category
-        }, { new: true } )
-        
-        console.log(Food)
-        return {Food}
+
+        return await FoodModel.findByIdAndUpdate(idFood,data.body,{new:true});
     }
 
     getFoodById = async(idFood)=>{
         const food = await FoodModel.findById(idFood)
         return {food}
+    }
+    deleteFood = async(idFood) =>{
+        return await FoodModel.findByIdAndDelete(idFood);
     }
 }
 

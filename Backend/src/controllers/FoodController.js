@@ -41,5 +41,14 @@ class FoodController {
         }
     }
 
+    deleteFood = async(req,res)=>{
+        try{
+            await FoodService.deleteFood(req.params.id);
+            res.status(204).json({message: 'Movie deleted successfully'});
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to delete movie' });
+        }
+    
+    }
 }
 module.exports = new FoodController

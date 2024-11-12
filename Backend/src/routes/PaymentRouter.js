@@ -3,6 +3,7 @@ const router = express.Router()
 const PaymentController = require('../controllers/paymentController')
 
 router.get('/getPaymentById/:id',PaymentController.getPaymentById)
+router.get('/getPaymentByUserId/:id',PaymentController.getPaymentByUserId)
 router.get('/getPayment',PaymentController.getPayment)
 router.post('/createrZalopay',PaymentController.createrZalopay)
 router.post('/callbackZalopay',PaymentController.callbackZalopay)

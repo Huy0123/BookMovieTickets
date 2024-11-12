@@ -12,7 +12,7 @@ const { messaging } = require('firebase-admin');
 const client = new OAuth2Client(client_id);
 
 class userService{
-
+ 
     createUserService = async (data) => {
         try {
             const usernameExists = await user.findOne({ username: data.username });
@@ -27,7 +27,7 @@ class userService{
     
             // Check for existing user by username
             
-          
+           
             // Proceed with hashing the password and creating the user
             const hashPassword = await bcrypt.hash(data.password, saltRounds);
             let result = await user.create({
@@ -340,6 +340,15 @@ refreshToken = async(token,refreshToken)=>{
                     code: 500
                 };
             }
+    }
+}
+getUserAndCinema= async()=>{
+    try {
+        const User = await user.find({role:{$in:["Cinema", "User"]}})
+        console.log(User)
+        return User
+    } catch (error) {
+        throw error
     }
 }
 

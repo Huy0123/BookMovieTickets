@@ -17,7 +17,6 @@ class ShowtimeService {
         }));
 
         await seatTime.insertMany(seatTimes);
-        console.log(newShowtime)
         return newShowtime;
     }
     

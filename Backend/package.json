@@ -4,7 +4,7 @@
   "description": "Web book movie tickets Nodejs",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon ./src/server.js",
+    "start": "nodemon ./src/server.js", 
     "watch-scss": "node-sass --watch src/resources/scss/ --output src/public/css/",
     "watch-css": "chokidar \"src/public/css/**/*.css\"",
     "watch-all": "npm-run-all --parallel watch-scss watch-css"
@@ -14,7 +14,7 @@
     "url": "git+https://github.com/Huy0123/BookMovieTickets.git"
   },
   "keywords": [
-    "nodejs"
+    "nodejs" 
   ],
   "author": "huy",
   "license": "ISC",

@@ -21,7 +21,7 @@ function MovieList() {
     const [movieId, setMovieId] = useState('');
     const [moviedt,setMoviedt]=useState('');
     const [getmovies,setGetmovies] = useState([]);
-
+    const [movieIdToDelete,setMovieIdToDelete] = useState('')
     useEffect (()=> {
         const fetchMovie = async() => {
             try{
@@ -70,6 +70,28 @@ function MovieList() {
     const handleCloseImage = () => {
         setImageOpen(false);
     };
+    const openModalDelete =  (movieId) => {
+        setMovieIdToDelete(movieId);
+        setShowModal(true);
+        
+      }
+      const closeModal = () => {
+        setShowModal(false); 
+        setMovieIdToDelete('');
+    };
+    const handleDelete = async () =>{
+        try{
+          if(movieIdToDelete){
+            setShowModal(false);
+            const res = await axios.delete(`http://localhost:8080/v1/deleteMovie/${movieIdToDelete}`);
+            window.location.reload(); 
+            alert('Bạn đã xóa phim thành công!!');
+            
+          }
+        }catch(error){
+          throw(error)
+        }
+      }
     return ( 
     <div className={cx('container')}>
         <div className={cx('top')}>
@@ -125,7 +147,7 @@ function MovieList() {
               <td>
               <button  onClick={()=>handleAddCinem(item._id)}> Chi tiết</button>
             <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditMovie isOpen={isModalOpen} movieId={movieId} onClose={closeModalEdit} />
-                <button>xóa</button>
+                <button onClick={() => openModalDelete(item._id)}>xóa</button>
               </td>
             </tr>
         )
@@ -191,12 +213,12 @@ function MovieList() {
   
 </div>
     <div className="col d-flex flex-column gap-2">
-    <div className={cx('content',' flex-column')} onClick={() => handleImageClick('https://images.hdqwalls.com/download/venom-the-last-dance-fx-1920x1200.jpg')}>
+    <div className={cx('content',' flex-column')} onClick={() => handleImageClick(moviedt.poster1)}>
         <h4 className={cx('title')}>Poster 1</h4>
         <img  src={moviedt.poster1} className={cx('poster-1')} />
     </div>
 
-    <div className={cx('content',' flex-column')} onClick={() => handleImageClick('https://cinema.heavymag.com.au/wp-content/uploads/sites/3/2024/06/Venom-The-Last-Dance.jpeg')}>
+    <div className={cx('content',' flex-column')} onClick={() => handleImageClick(moviedt.poster2)}>
         <h4 className={cx('title')}>Poster 2</h4>
         <img  src={moviedt.poster2} className={cx('poster-2')} />
     </div>
@@ -221,23 +243,23 @@ function MovieList() {
         </div>
     </div>
 )}
-      {showModal && (
-                <div className={cx('modal')}>
-                    <div className={cx('modal-content')}>
-                        <div className={cx('modal-header')}>
-                            <h4>Xác nhận xóa</h4>
-                            <button type="button" >×</button>
-                        </div>
-                        <div className={cx('modal-body')}>
-                            Bạn có chắc chắn muốn xóa người dùng này?
-                        </div>
-                        <div className={cx('modal-footer')}>
-                            <button type="button" >Hủy</button>
-                            <button type="button" >Xóa</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+{showModal && (
+    <div className={cx('modal')}>
+        <div className={cx('modal-content')}>
+            <div className={cx('modal-header')}>
+                <h4>Xác nhận xóa</h4>
+                <button type="button" onClick={closeModal}>×</button>
+            </div>
+            <div className={cx('modal-body')}>
+                Bạn có chắc chắn muốn xóa mã này?
+            </div>
+            <div className={cx('modal-footer')}>
+                <button type="button" onClick={closeModal}>Hủy</button>
+                <button type="button" onClick={handleDelete}>Xóa</button>
+            </div>
+        </div>
+    </div>
+)}
     </div>
 );
 }

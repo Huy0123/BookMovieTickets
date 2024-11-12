@@ -424,7 +424,7 @@ class paymentService {
 
     getPaymentById = async(data)=>{
         try {
-            const res = await PaymentModel.find()
+            const res = await PaymentModel.findById(data)
             return {res}
         } catch (error) {
             throw error
@@ -437,6 +437,14 @@ class paymentService {
             const orderIds = orders.map(order=>order._id)
             const payment = await PaymentModel.find({order_id:{$in:orderIds}})
             return {payment}
+        } catch (error) {
+            throw error
+        }
+    }
+    getPaymentByUserId  = async(data)=>{
+        try{
+            const res = await PaymentModel.find({user_id:data})
+            return  {res}
         } catch (error) {
             throw error
         }
