@@ -21,7 +21,7 @@ const Sidebar = () => {
             { withCredentials: true } // Đảm bảo gửi cookie cùng request
         );
         setIsLoggedIn(false);
-        
+        window.location.reload();
             navigate('/'); 
         localStorage.clear();
     } catch (error) {

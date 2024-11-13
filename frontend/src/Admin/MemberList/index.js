@@ -29,7 +29,7 @@ function MemberList() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/v1/Users/getUserAndCinema`, {
+                const res = await axios.get(`http://localhost:8080/v1/Users/getUsers`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
@@ -45,6 +45,7 @@ function MemberList() {
     }, [token]);
 
     const handleDelete = async () => {
+        console.log(userIdToDelete)
         if (userIdToDelete) {
             try {
                 await axios.delete(`http://localhost:8080/v1/Users/deleteUser/${userIdToDelete}`, {

@@ -17,7 +17,7 @@ function BookTicket() {
     const [getMovies,setMovies]=useState([])
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [FoodCount, setFoodCount] = useState([]);
-    const [title,setTitle] = useState("")
+    const [title,setTitle] = useState('')
     const [showOrderDetail, setShowOrderDetail] = useState(false);
     const [seats, setSeats] = useState([]);
     const [showTime, setShowTime] = useState('');
@@ -47,7 +47,8 @@ function BookTicket() {
     const [releaseDate, setReleaseDate]=useState('');
     const [description, setDescription]=useState('');
     const [trailer,setTrailer] = useState('');
-    const [poster,setPoster]= useState('')
+    const [poster,setPoster]= useState('');
+    const [movie2,setMovie2]= useState('')
     const navigate = useNavigate();
     let lastDisplayedDate = '';
     const user_id = localStorage.getItem('user_id')
@@ -89,12 +90,14 @@ function BookTicket() {
     };
 
     useEffect(() => {
-        const getMovieByID = async () => {
-            try {
-                const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieID/${movie_id}`);
-                setMovies(res.data);
-                console.log("jkjkj",res.data)
+    const getMovieByID = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieID/${movie_id}`);
+            
+            if (res.data.length > 0) {
+                // Nếu có suất chiếu
                 const movie = res.data.map(item => item);
+                setMovies(res.data);
                 setTitle(movie[0].movie_id.title);
                 setGenre(movie[0].movie_id.genre);
                 setDuration(movie[0].movie_id.duration);
@@ -106,28 +109,43 @@ function BookTicket() {
                 setReleaseDate(movie[0].movie_id.release_date);
                 setDescription(movie[0].movie_id.description);
                 setTrailer(movie[0].movie_id.trailer);
-                setPoster(movie[0].movie_id.poster1);
+                setPoster(movie[0].movie_id.poster2);
                 setNameCinema(movie[0].cinema_id.name);
                 setRoomId(movie[0].room_id.name);
-
-            } catch (error) {
-                console.error("Error fetching data:", error);
+            } else {
+                // Nếu không có suất chiếu thì gọi hàm getMovie2 để lấy thông tin cơ bản của phim
+                getMovie2();
             }
-        };
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
-        const getFood = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/v1/Food/getFood');
-                setFood(response.data.Food);
-                setFoodCount(Array(response.data.Food.length).fill(0));
-            } catch (error) {
-                console.error("Error fetching food:", error);
-            }
-        };
+    const getFood = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/v1/Food/getFood');
+            setFood(response.data.Food);
+            setFoodCount(Array(response.data.Food.length).fill(0));
+        } catch (error) {
+            console.error("Error fetching food:", error);
+        }
+    };
 
-        getFood();
-        getMovieByID();
-    }, [movie_id]);
+    const getMovie2 = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/v1/getMovieByID/${movie_id}`);
+            const movie = res.data;
+            console.log("Data from getMovieByID:", movie);
+            setMovie2(res.data);
+        } catch (error) {
+            console.error("Error fetching movie:", error);
+        }
+    };
+
+    getFood();
+    getMovieByID();
+}, [movie_id]);
+
 
     useEffect(() => {
         if (showtimeId) {
@@ -286,8 +304,8 @@ const totalSeatPrice = selectedSeats.reduce((total, seat) => {
 
 // Tính tổng tất cả
 const totalPrice = totalSeatPrice + totalFoodPrice; // Tổng giá ghế và giá đồ ăn
-console.log(totalFoodPrice);
-
+console.log(totalFoodPrice);   
+if(title!==''){
         return (
         <div className={cx('container')}>
             <div className={cx('info-movie')}>
@@ -608,6 +626,102 @@ console.log(totalFoodPrice);
             </div>
         </div>
     );
+}
+else{
+    return (
+        <div className={cx('container')}>
+            <div className={cx('info-movie')}>
+                <div className='row'>
+                    <div className='col-1'></div>
+                    <div className={cx('content-movie','col-10')}>
+                        <div className='row'>
+                            <img src={movie2.poster2} className={cx('d-block','col-4')} alt="" />
+                            <div className={cx('col-8')}>
+                                <div className={cx('wrap-info','ms-5','mt-4','pt-1')}>
+                                    <h1 id="title"  className={cx('title')}>Tên phim: {movie2.title}</h1>
+                                    <div className='info-group d-flex'>
+                                        <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faTag} />
+                                        <div className={cx('type')}>Thể loại: {movie2.genre}</div>
+                                    </div>
+                                    <div className='info-group d-flex'>
+                                        <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faClock} />
+                                        <div className={cx('duration')}>Thời gian: {movie2.duration} phút </div>
+                                    </div>
+                                    <div className='info-group d-flex'>
+                                        <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faEarthAsia} />
+                                        <div className={cx('country')}>Quốc gia: {movie2.country}</div>
+                                    </div>
+                                    <div className='info-group d-flex'>
+<FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faClosedCaptioning} />
+                                        <div className={cx('sub')}>Phụ đề: {movie2.subtitles}</div>
+                                    </div>
+                                    <div className='info-group d-flex'>
+                                        <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={movie2.faUserCheck} />
+                                        <div className={cx('limit')}>
+                                            Nhãn phim: {movie2.limit ? `${movie2.limit}+` : ''}
+                                        </div>
+
+                                    </div>
+                                </div> 
+                                                      {/* Thông tin */}
+                                <div className={cx('wrap-info','ms-5','mt-4')}>
+                                    <h1 className={cx('title')}> Mô Tả </h1>
+                                    <div className='info-group '>
+                                        <div className={cx('director')}>Đạo diễn: {movie2.director}</div>
+                                    </div>
+                                    <div className='info-group '>
+                                        <div className={cx('performer')}>Diễn viên:  {movie2.cast}</div>
+                                    </div>
+                                    <div className='info-group'>
+                                        <div className={cx('premiere')}>Khởi chiếu:  {new Date(movie2.release_date).toLocaleDateString()}</div>
+                                    </div>
+                                    
+                                </div>  
+                                <div className={cx('wrap-info','ms-5','mt-4')}>
+                                    <h1 className={cx('title')}>Nội Dung Phim</h1>
+                                    <div className={cx('description')}> {movie2.description} </div>                                                                     
+                                </div>
+                                <div className={cx('wrap-info','ms-5','mt-4')}>
+                                    <div className='info-group d-flex' >
+                                        <FontAwesomeIcon className={cx('icon-trailer','pe-2','pt-1')} icon={faTv} />
+                                        <div className={cx('trailer')} style={{ textDecoration: 'underline',cursor:'pointer' }} onClick={() => openModal(movie2.trailer)}>Xem Trailer</div>
+                                                     <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
+                                    </div>                                                                     
+                                </div>                                       
+                            </div>
+</div>
+                        
+                    </div>
+                    <div className='col-1'></div>
+                </div>
+            </div>
+            {/* Lich chieu */}
+            <div className={cx('schedule')}>
+    <div className='row'>
+        <div className='col-1'></div>
+        <div className={cx('wrap', 'col-10')}>
+            <h1 className={cx('show')}>Lịch chiếu</h1>
+            <div className={cx('group-btn')}>
+                <div className={cx('date-show', 'gap-3')}>
+                        <h2>HIỆN TẠI CHƯA CÓ LỊCH CHIẾU</h2>
+                  
+                </div>
+            </div>
+        </div>
+        <div className='col-1'></div>
+    </div>
+</div>
+
+
+          
+            {/* ghe */}
+   
+
+          
+           
+        </div>
+    );
+}
 }
 
 export default BookTicket;
