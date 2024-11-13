@@ -11,6 +11,7 @@ router.post('/logout',UserController.logout)
 router.get('/getUserAndCinema',UserController.getUserAndCinema)
 router.post('/forgotpassword',SendEmailController.SendEmailforgotpassword)
 router.put('/reset-password',UserController.resetpassword)
+router.put('/password',autUser,UserController.password)
 router.get('/getUsers',autAdmin,UserController.getUsers)
 router.get('/getUserByID/:id',autAdmin, UserController.getUserByID) //query
 router.get('/getUserbyid',autUser,UserController.getUserbyid)//user

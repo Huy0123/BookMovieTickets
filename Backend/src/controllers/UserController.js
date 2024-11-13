@@ -203,6 +203,17 @@ resetpassword = async (req,res)=>{
     }
    
 }
+password = async (req,res)=>{
+    try {
+        const { newpassword, currentpassword} = req.body
+        const token = req.token
+        const resetpassword = await userService.password(token , newpassword,currentpassword);
+        return res.status(200).json(resetpassword)
+    } catch (error) {
+        throw error
+    }
+   
+}
 
 
 
