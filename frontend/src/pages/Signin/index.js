@@ -89,11 +89,11 @@ function SignIn() {
             const role = response.data.user.role;
             
             if (token) {
-                localStorage.setItem('userToken', token); // Lưu token vào localStorage
+                localStorage.setItem('userToken', token); 
                 localStorage.setItem('userId', userId);
-                localStorage.setItem('userRole', role); // Lưu role vào localStorage
+                localStorage.setItem('userRole', role);
     
-                login(token, role); // Đảm bảo login được gọi với token và role
+                login(token, role);
     
                 if (role === "User") {
                 const previousPage = localStorage.getItem('previousPage') || '/';
@@ -101,7 +101,7 @@ function SignIn() {
             } else if (role === "Cinema") {
                 navigate('/moderator/charts');
             } else if (role === "Admin") {
-                navigate('/admin/dashboard');  // Điều hướng đến trang admin
+                navigate('/admin/dashboard'); 
             }
         }
         } catch (error) {
