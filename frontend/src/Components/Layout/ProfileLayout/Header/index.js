@@ -83,7 +83,7 @@ function Header() {
             <div className={cx('dropdown-item')} onClick={() => navigate('/profile')}>
                 Thông tin cá nhân
             </div>
-            <div className={cx('dropdown-item')} onClick={() => navigate('/history')}>
+            <div className={cx('dropdown-item')} onClick={() => navigate('/transaction-history')}>
                 Lịch sử giao dịch
             </div>
             <div className={cx('dropdown-item')} onClick={logout}>
@@ -102,7 +102,6 @@ function Header() {
                 {},  // Đảm bảo body không trống
                 { withCredentials: true } // Đảm bảo gửi cookie cùng request
             );
-            window.location.reload();
             setIsLoggedIn(false);
             const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
                 navigate(previousPage);  // Redirect to the previous page
