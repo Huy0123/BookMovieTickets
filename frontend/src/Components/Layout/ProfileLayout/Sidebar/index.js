@@ -8,6 +8,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // Import Tippy styles
+import CryptoJS from 'crypto-js';
+
 
 const cx = classNames.bind(styles);
 function Sidebar(){
@@ -21,11 +23,11 @@ function Sidebar(){
     const [newpass, setNewpass] = useState('');
     const [confirmpass, setConfirmpass] = useState('');
     const [password,setPassword] = useState('');
-   
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const navigate = useNavigate();
-  
+    const hashedCurrentPass = CryptoJS.SHA256(currentpass).toString();
+
     useEffect(() => {
         
         const fetchUserData = async () => {

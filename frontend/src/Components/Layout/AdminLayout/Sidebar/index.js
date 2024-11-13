@@ -23,6 +23,8 @@ function Sidebar(){
             {},  // Đảm bảo body không trống
             { withCredentials: true } // Đảm bảo gửi cookie cùng request
         );
+        window.location.reload();
+
         setIsLoggedIn(false);
         
             navigate('/'); 
