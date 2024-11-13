@@ -1,92 +1,106 @@
 
 .wrapper {
-    cursor: pointer;
+   
     transition: background-color 0.5s ease;
   position: sticky;
   top: 0%;
   z-index: 200;
-
+  box-shadow:inset 0px 0px 100px 5px #fca420;
   
     .container {
        
         .header1{
             
             .wrap{   
-                padding-bottom: 8px;
-                border-bottom: 2px solid #353434;     
+                // padding-bottom: 8px;
+                // border-bottom: 2px solid #fff;   
+              
                 
                 .logo {
                     width: 100%; // Logo width
                     height: 45.6px; // Logo height
                     object-fit: cover;
+                    margin: 1px auto;
+                     cursor: pointer;
+                     background-color: rgba(223, 90, 157, 0.597);
+                     box-shadow:inset 0px 0px 25px 10px rgba(237, 122, 179, 0.596);
+                     border-radius: 10px;
                 }
                 .wrap1{
 
-                    .btn.book { // Book button styles
-                        width: 125px; // Button width
-                        height: 40px; // Button height
-                        border-radius: 10px; // Rounded corners for the button
-                        font-size: 14px; // Font size for the button text
-                        border: 1px solid #2C2C2C;
-                        background-color: #363535;
-                        color: #fff;
-                    }
-                }
+                  
                     .sign {
+                    //   margin: 2px auto;
                         .btn.sign-up, // Sign up button styles
                         .btn.sign-in { // Sign in button styles
                             width: 125px; // Button width
                             height: 40px; // Full width for buttons
                             // border-radius: 40px; // Rounded corners for the button
                             font-size: 14px;
-                            background-color: #2c2c2c;
+                            background-color: #2CD3E1;
                             border: none;
                             border-radius: 10px;
                             color: #fff;
                           
                             
                             &:hover{
-                                background-color: #5c5c5c89;
+                                background-color: #2fdfef;
                               
                             }
                         }
                     }
                     .logined{
                         color:#fff;
-                        padding-top: 13px;
-                    
+                       
+                        font-size: 19px;
+                        cursor: pointer;
+                        overflow-x: visible;
+                        white-space: nowrap;
                         .fullname{
                             margin: 0;
+                          
+                           
                         }
                         .icon-user{
-                            font-size: 18px;
+                          
                             margin-right: 10px;
                             padding-bottom: 5px;
+                        }
+                        &:hover {
+                            color: #2CD3E1;
+                        }
+                    }
+                }
+                   
+
+                    .wrap2 {
+             
+                        .btn-choose,
+                        .btn-schedule{
+                            width: 125px; // Button width
+                            height: 30px; // Full width for buttons
+                            border: none ;
+                            font-size: 14px;
+                            background-color: #00000000;
+                            
+                            color: #fff;
+                            
+                           
+                            .icon{
+                                margin-right: 6px;
+                            }
+                            &:hover{
+                                color: #fff;
+                                border-radius: 15px;
+                                background-color: #f266acba;
+                            }
                         }
                     }
                 } 
                 }
         .header2{
-            .wrap2 {
-                .btn-choose,
-                .btn-schedule{
-                    width: 125px; // Button width
-                    height: 10px; // Full width for buttons
-                    border: none ;
-                    font-size: 14px;
-                    background-color: #00000000;
-                    
-                    color: #fff;
-                    
-                   
-                    .icon{
-                        margin-right: 6px;
-                    }
-                    &:hover{
-                        color: #FCCD2A;
-                    }
-                }
-            }
+          
+           
         }
         .cinema-list{
             background-color: #000;
@@ -97,16 +111,16 @@
         }
     }
     .dropdown-menu {
-        background-color: #000;
-        border: 1px solid #ffffff98 ;
-        width:50%;
+        background-color: #f266acdd;
+        border: 5px solid #A459D1 ;
+        width:83%;
         position: absolute;
         color: #fff;
         padding: 40px ;
-        border-radius: 4px;
+        border-radius: 8px;
         display: flex;
         flex-wrap: wrap;
-        margin: 0 auto;
+        margin-top: 10px ;
         max-height: 300px; 
         overflow-y: auto;
         column-gap: min(10px,30px);
@@ -117,12 +131,13 @@
     .dropdown-item {
       
         padding: 10px;
-        width: 150px;
+        width: 220px;
         margin: 0 30px auto;
+       
         cursor: pointer;
     
         &:hover {
-            background-color: #333;
+            background-color: #f67ab8;
         }
     }
     
@@ -130,19 +145,20 @@
 .hidden {
     display: none; /* Ẩn phần tử */
 }
+
 .user-dropdown{
     width: 100%;
    
-    background-color: #24242400;
+    background-color: #f266acdd;
     .dropdown-item{
         margin: 0;
         &:hover{ 
-            background-color: #5c5c5c89;
+            background-color: #f67ab8;
         }
     }
 }
 .custom-tooltip {
-    background-color: #3838386a; /* Màu nền */
+    background-color:   rgba(255, 184, 77, 0.375)  ; /* Màu nền */
     color: #ffffff;            /* Màu chữ */
     border-radius: 4px;       /* Bo góc */
     padding: 8px;             /* Đệm */
