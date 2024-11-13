@@ -142,7 +142,7 @@ const Charts = () => {
                     </div>
                 </div>
             </div>
-            <div style={{ width: '500px', height: '300px' }}>
+            <div className={cx('chart')}>
 
                 <Line data={{
                     labels: Object.keys(totalRevenueByDay),

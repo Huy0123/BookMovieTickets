@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import styles from "~/pages/BookTicket/BookTicket.module.scss";
+// import styles from "~/pages/BookTicket/BookTicket.module.scss";
+import styles from './style.module.scss';
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
@@ -134,32 +135,36 @@ const SeatList = ({ cinema_id }) => {
     return (
         <>
             {/* Add seats form */}
-            <div>
+            <div className={cx('collapse-title')}>
                 <a data-bs-toggle="collapse" href="#add-room" role="button" aria-expanded="false">Thêm ghế mới</a>
             </div>
-            <div className="collapse" id="add-room">
-                <div className="card card-body">
+            <div className={cx('collapse')} id="add-room">
+                <div className={cx('collapse-container')}>
+                <div className="card card-body shadow-sm p-3 mb-5 bg-body-tertiary rounded"> 
                     <h2>Thêm ghế mới</h2>
                     <form onSubmit={onSubmit}>
                         <div className="mb-3">
-                            <label htmlFor="seat-number" className="form-label">Tên Ghế</label>
-                            <input type="text" className="form-control" id="seat-number" value={seatNumber} onChange={(e) => setSeatNumber(e.target.value)} />
+                            <label htmlFor="seat-number" className={cx('form-label')}>Tên Ghế</label>
+                            <input type="text" className={cx('form-control')}id="seat-number" value={seatNumber} onChange={(e)=> setSeatNumber(e.target.value)} />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="seat-type" className="form-label">Loại Ghế</label>
-                            <input type="text" className="form-control" id="seat-type" value={seatType} onChange={(e) => setSeatType(e.target.value)} />
+                            <label htmlFor="seat-type" className={cx('form-label')}>Loại Ghế</label>
+                            <input type="text" className={cx('form-control')} id="seat-type" value={seatType} onChange={(e) => setSeatType(e.target.value)} />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="amount" className="form-label">Giá Ghế</label>
-                            <input type="text" className="form-control" id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                            <label htmlFor="amount" className={cx('form-label')}>Giá Ghế</label>
+                            <input type="text" className={cx('form-control')}id="amount" value={amount} onChange={(e) => setAmount(e.target.value)}/>
                         </div>
-                        <button type="submit" className="btn btn-primary">Thêm ghế mới</button>
+                        <div  className={cx('btn-submit')}>
+                             <button type="submit">Thêm ghế mới</button>
+                        </div>
+                 
                     </form>
                 </div>
             </div>
-
+</div>
             <select
-                className="form-select form-select-lg mb-3"
+                className={cx('form-select','  form-select-lg mb-3')}
                 aria-label="Choose a room"
                 value={selectedRoom || ""}
                 onChange={(e) => setSelectedRoom(e.target.value)}
@@ -170,14 +175,14 @@ const SeatList = ({ cinema_id }) => {
                 ))}
             </select>
 
-            <div>
+            <div className={cx('container-seat')}>
                 {selectedRoom && (
                     <div className={cx('seat')}>
                         <div className={cx('wrap-seat')}>
                             <div className={cx('all-seat')}>
                                 <div className="row">
-                                    <div className="col-2"></div>
-                                    <div className="col-8">
+                                    <div className="col-1"></div>
+                                    <div className="col-9">
                                         {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((rowName, rowIndex) => {
                                             const availableSeatsInRow = seats.filter(seat =>
                                                 seat._id && seat.seat_number.startsWith(rowName)
@@ -185,7 +190,7 @@ const SeatList = ({ cinema_id }) => {
 
                                             return (
                                                 <div key={rowIndex} className={cx('group-seat')}>
-                                                    <div className={cx('seat-name', 'me-4')}>{rowName}</div>
+                                                    <div  className={cx('seat-name', 'me-4')}><span>{rowName}</span></div>
                                                     <div className={cx('group-btn-seat')}>
                                                         {availableSeatsInRow.map(seatInfo => {
                                                             const seatNumber = seatInfo.seat_number;
@@ -201,7 +206,7 @@ const SeatList = ({ cinema_id }) => {
 
                                                                     })}
                                                                     style={{
-                                                                        backgroundColor: selectedSeat === seatNumber ? '#F9E400' : seatInfo.seat_status ? '#f5004f' : '',
+                                                                        backgroundColor: selectedSeat === seatNumber ? '#5CB8E4' : seatInfo.seat_status ? '#f5004f' : '',
                                                                         color: seatInfo.seat_status ? '#000' : '',
                                                                     }}
                                                                     onClick={() => {
@@ -226,18 +231,18 @@ const SeatList = ({ cinema_id }) => {
 
                                         {
                                             seatDetails && (
-                                                <>
-                                                    <h2>Thông tin ghế</h2>
-                                                    <div>
-                                                        <p>Ghế: {seatDetails.seat_number}</p>
-                                                        <p>Loại ghế: {seatDetails.seat_type}</p>
-                                                        <p>Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(seatDetails.price)}</p>
-                                                    </div>
-                                                    <div>
-                                                        <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#edit-seat" onClick={() => fetchSeat(seatDetails._id)}>Sửa</button>
-                                                        <button className="btn btn-danger" onClick={() => handleDeleteSeat(seatDetails._id)}>Xóa</button>
-                                                    </div>
-                                                </>
+                                                <div className={cx('info-seat')}>
+                                                <h2>Thông tin ghế</h2>
+                                                <div>
+                                                    <p>Ghế: {seatDetails.seat_number}</p>
+                                                    <p>Loại ghế: {seatDetails.seat_type}</p>
+                                                    <p>Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(seatDetails.price)}</p>
+                                                </div>
+                                                <div>
+                                                    <button className={cx('btn','  me-2')}>Sửa</button>
+                                                    <button className={cx('btn','  me-2')} onClick={() => handleDeleteSeat(seatDetails._id)}>Xóa</button>
+                                                </div>
+                                                </div>
                                             )
                                         }
                                     </div>
