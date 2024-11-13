@@ -363,10 +363,37 @@ resetpassword = async (token , newpassword)=>{
             message: 'email không tồn tại',
         };
     }
-    const hashedPassword = await bcrypt.hash(newpassword, 10);
+    const hashedPassword = await bcrypt.hash(newpassword, saltRounds);
     users.password=hashedPassword;
     await users.save()
     return { message: 'Mật khẩu đã được đổi thành công!' };
+}
+
+password = async (token , newpassword,currentpassword)=>{   
+    if(!token || !newpassword || !currentpassword){
+        return { message: 'Thiếu thông tin!' };
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const users =await user.findById(decoded.userId)
+    if(!users){
+        return {
+            message: 'ngươi dùng không tồn tại',
+        };
+    }
+    const hashedcurrentpassword = await bcrypt.compare(currentpassword,users.password)
+    console.log(hashedcurrentpassword)
+    if(!hashedcurrentpassword){
+        return {
+            code:400,
+            message: 'mật khẩu cũ không đúng',
+        }
+    }else{
+        const hashedPassword = await bcrypt.hash(newpassword, saltRounds);
+        users.password=hashedPassword;
+        await users.save()
+        return { message: 'Mật khẩu đã được đổi thành công!' };
+    }
+    
 }
 
 }
