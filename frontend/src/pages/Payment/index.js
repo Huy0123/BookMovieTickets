@@ -178,18 +178,23 @@ function Payment(){
                 return;
             }
             
-            
+           
             const Oder = {
-                "user_id":user_id,
-                "showtime_id":order.selectedShowtimeId,
-                "seats_id":order.seatid,     
+                user_id:user_id,
+                showtime_id:order.selectedShowtimeId,
+                seats_id:order.seatid,     
                 FoodAndDrinks_id: order.foodId.map(foodItem => ({
                     item_id: foodItem.foodid,
                     quantity: foodItem.count
                 })),  
-                "point_id" :pointid,        
+                    
             }
-            console.log(Oder)
+            if(pointid){
+                Oder.pointid = pointid;
+                console.log(Oder)
+            
+            }
+           
             const orderCreater=await axios.post('http://localhost:8080/v1/Booking',Oder)
             console.log("orderCreater",orderCreater.data)
             console.log("orderCreater",orderCreater.data.order_infor)
