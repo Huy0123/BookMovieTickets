@@ -68,30 +68,42 @@ function Home() {
     };
   
     useEffect(() => {
+        let ticking = false;
+
         const handleScroll = () => {
-            const rowers = document.querySelectorAll(`.${styles.rower}`);
-            rowers.forEach(rower => {
-                const rect = rower.getBoundingClientRect();
-                // Kiểm tra nếu phần tử đã vào khung hình (không nằm quá xa khung hình từ phía trên hoặc dưới)
-                if (rect.top < window.innerHeight && rect.bottom > 0) {
-                    rower.classList.add(styles['float-in']);
-                } else {
-                    rower.classList.remove(styles['float-in']); // Nếu ra khỏi khung hình thì gỡ bỏ hiệu ứng
-                }
-            });
+            if (isModalOpen) return;  // Nếu modal mở thì không làm gì cả
+
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const rowers = document.querySelectorAll(`.${cx('rowerr')}`);
+                    rowers.forEach(rowerr => {
+                        const rect = rowerr.getBoundingClientRect();
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            rowerr.classList.add(cx('float-in'));
+                        } else {
+                            rowerr.classList.remove(cx('float-in'));
+                        }
+                    });
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
-    
-        // Kích hoạt sự kiện scroll
+
+        // Thêm event listener cho scroll
         window.addEventListener('scroll', handleScroll);
-    
-        // Kiểm tra lần đầu khi component mount
-        handleScroll();
-    
-        // Dọn dẹp sự kiện khi component unmount
+
+        // Gọi scroll khi component render lần đầu
+        handleScroll(); 
+
+        // Cleanup khi component unmount hoặc thay đổi
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, []);
+    }, [isModalOpen]);
+    
+    
+    
     
     
     return (
@@ -136,7 +148,7 @@ function Home() {
                                         <button onClick={() => openModal(movie.trailer)} type='button' className={cx('trailer-ban')}>Xem trailer
                                             <FontAwesomeIcon className={cx('icon-play')} icon={faPlay} />
                                         </button>
-                                                     <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
+                                      
                                                      
                                         </div>
                                     </div>
@@ -153,7 +165,7 @@ function Home() {
            
 
             {/* Currently Showing Movies Carousel */}
-            <div className={cx('box-shadow-movie')}>
+            <div className={cx('box-shadow-movie','rowerr')}>
             <div id="carouselCurrentlyShowing" className={cx('carousel', 'slide')}>
                 <h1 className={cx('showing-title', 'text-center')}>PHIM ĐANG CHIẾU</h1>
                 <div className={cx('row','rower')}>
@@ -174,7 +186,7 @@ function Home() {
                                                 <h2 className={cx('title-movie', 'text-center')}>{movieshowing.title}</h2>
                                                 <div className={cx('btn-gr', 'd-flex justify-content-center')}>
                                                     <button onClick={() => openModal(movieshowing.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
-                                                     <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
+                                                   
                                                     <button type='button' className={cx('bookin', 'rounded-4')}onClick={()=>handleBooking(movieshowing._id)}>Đặt vé</button>
                                                 </div>
                                                 <div className={cx('wrap-hover')}onClick={()=>handleBooking(movieshowing._id)}>
@@ -201,8 +213,9 @@ function Home() {
                     </div>
                 </div>
             </div>
-
+</div>  
             {/* Upcoming Movies Carousel */}
+            <div className={cx('rowerr')}>
             <div id="carouselUpcomingMovies" className={cx('carousel', 'slide')}>
                 <h1 className={cx('showing-title', 'text-center')}>PHIM SẮP CHIẾU</h1>
                 <div className={cx('row','rower')}>
@@ -223,7 +236,7 @@ function Home() {
                                                 <h2 className={cx('title-movie', 'text-center')}>{upcomingmovie.title}</h2>
                                                 <div className={cx('btn-gr', 'd-flex  justify-content-center')}>
                                                 <button onClick={() => openModal(upcomingmovie.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
-                                                <TrailerModal isOpen={isModalOpen} onClose={closeModal}trailerUrl={trailerUrl} />
+                                              
                                                     <button type='button' className={cx('bookin', 'rounded-4')}onClick={()=>handleBooking(upcomingmovie._id)}>Đặt vé</button>
                                                 </div>
                                                 <div className={cx('wrap-hover')}>
@@ -251,7 +264,7 @@ function Home() {
                 </div>
             </div>
         </div>
-                            
+        <TrailerModal isOpen={isModalOpen} onClose={closeModal}trailerUrl={trailerUrl} />         
         </div>
         
     );
