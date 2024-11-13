@@ -155,7 +155,7 @@ function Home() {
             {/* Currently Showing Movies Carousel */}
             <div className={cx('box-shadow-movie')}>
             <div id="carouselCurrentlyShowing" className={cx('carousel', 'slide')}>
-                <h1 className={cx('showing-title', 'text-center', 'text-light')}>PHIM ĐANG CHIẾU</h1>
+                <h1 className={cx('showing-title', 'text-center')}>PHIM ĐANG CHIẾU</h1>
                 <div className={cx('row','rower')}>
                     <div className={cx('col-1 d-flex justify-content-center align-items-center')}>
                         <button className={cx('carousel-control-prev')} type="button" data-bs-target="#carouselCurrentlyShowing" data-bs-slide="prev">
@@ -167,7 +167,7 @@ function Home() {
                         <div className={cx('carousel-inner')}>
                             {Array.from({ length: totalPages }, (_, index) => (
                                 <div className={cx('carousel-item', { active: index === 0 })} key={index}>
-                                    <div className="row d-flex justify-content-center gap-2">
+                                    <div className="row d-flex justify-content-center     gap-2">
                                         {movieshowing.slice(index * moviesPerPage, (index + 1) * moviesPerPage).map(movieshowing => (
                                             <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column   ')} key={movieshowing._id}>
                                                 <img src={movieshowing.poster2} className={cx('img-movie', 'd-block', 'w-100')} alt={movieshowing.title} />
@@ -177,7 +177,7 @@ function Home() {
                                                      <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
                                                     <button type='button' className={cx('bookin', 'rounded-4')}onClick={()=>handleBooking(movieshowing._id)}>Đặt vé</button>
                                                 </div>
-                                                <div className={cx('wrap-hover')}>
+                                                <div className={cx('wrap-hover')}onClick={()=>handleBooking(movieshowing._id)}>
                                                     <div>
                                                         <h1 className='py-3'>{movieshowing.title}</h1>
                                                         <h3>Thể loại: {movieshowing.genre}</h3>
@@ -204,7 +204,7 @@ function Home() {
 
             {/* Upcoming Movies Carousel */}
             <div id="carouselUpcomingMovies" className={cx('carousel', 'slide')}>
-                <h1 className={cx('showing-title', 'text-center', 'text-light')}>PHIM SẮP CHIẾU</h1>
+                <h1 className={cx('showing-title', 'text-center')}>PHIM SẮP CHIẾU</h1>
                 <div className={cx('row','rower')}>
                     <div className={cx('col-1 d-flex justify-content-center align-items-center')}>
                         <button className={cx('carousel-control-prev')} type="button" data-bs-target="#carouselUpcomingMovies" data-bs-slide="prev">

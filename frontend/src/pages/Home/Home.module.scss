@@ -36,10 +36,17 @@
     animation: moveUp 1s ease-out forwards;
   }
 .container {
-    background-color: #6e6e6e;
+    
+    background: 
+  
+    linear-gradient(to left, rgb(164, 89, 209), rgb(255, 165, 30),rgb(249, 197, 120) );
+    // background-blend-mode: soft-light; /* hoặc screen, overlay, soft-light, etc */
+
     
     .showing-title {
         margin-top: 180px;
+        color: #fff;
+         
     }
 
    
@@ -50,7 +57,7 @@
             img{
                 z-index: 0  ;
                 width: 100%;
-                max-height: 620px;
+                max-height: 680px;
               
                 object-fit: cover;
                 animation: zoom-in-out 3s forwards  ease-in-out;
@@ -64,11 +71,11 @@
                 right: 0;
                 bottom: 0;
                 background: 
-                            linear-gradient( to bottom, rgba(0, 0, 0,0.7), rgba(0, 0, 0, 0) 30%),
+                            linear-gradient( to bottom, rgba(0, 0, 0, 0.181), rgba(0, 0, 0, 0) 30%),
                          
-                            linear-gradient( to top, rgba(0, 0, 0, 0.7),rgb(0, 0, 0,0) 30%);
+                            linear-gradient( to top, rgba(0, 0, 0, 0.158),rgb(0, 0, 0,0) 30%);
                 z-index: 10; /* Đặt z-index lớn hơn để overlay nằm trên hình */
-                color: #FFF;
+                color: #Fff;
                 
                 .wrap-banner-con{
                     background: 
@@ -77,7 +84,7 @@
                     
                 
                 .title{
-                    background-image: linear-gradient(to right, #ffffff, #c8c5c3a8); /* Màu gradient */
+                    background-image: linear-gradient(to right, #FFf, #ffffffb4); /* Màu gradient */
                     -webkit-background-clip: text; /* Cắt background theo chữ */
                     -webkit-text-fill-color: transparent;
                     width: 80%;
@@ -91,7 +98,7 @@
                     animation: floatIn 1.2s ease-out forwards;
                 }
                 .wrap-decr{
-                    background-color: rgba(57, 56, 56, 0.527);
+                    background:#6a69693a;
                     width: 80%;
                     
                    text-align: justify;
@@ -115,27 +122,27 @@
                         width: 25%;
                         height: 70%;
                         background-color: rgba(121, 101, 101, 0.168);
-                        color: #fff;
+                        color: #FFf;
                         border-radius: 15px;
                         box-shadow: 0 1px 5px solid rgba(218, 216, 216, 0.168);
                         
                         &:hover{
                             background-color: rgba(255, 255, 255, 0);
 
-                            box-shadow: 2px 2px 15px  rgb(126, 236, 249),-2px -2px 50px  rgb(240, 115, 234);
+                            box-shadow: 2px 2px 15px  rgb(88, 0, 255),-2px -2px 50px  rgb(233, 0, 255);
                         }
                     }
                     .trailer-ban{
                         width: 25%;
                         height: 70%;
-                        color: #fff;
+                        color: #FFf;
                         background-color: #00000000;
                         border: none;
                         text-decoration: underline;
                         text-align: center;
                         
                         .icon-play{
-                            color: #FFF;
+                            color: #FFf;
                             float: right; 
                             font-size:    1em ; 
                             margin-top: 6px;   
@@ -160,12 +167,10 @@
         .icon-pre, .icon-next {
             width: 40px;
             height: 40px;
-            color: #fff;
+            color: #Fff;
         }
     }
-   .showing-title{
-    margin: 100px 0 50px 0px;
-   }
+  
     .wrap-showing,.wrap-coming{
       
         border-bottom: none;
@@ -174,12 +179,9 @@
             // box-shadow: 2px 2px 15px  rgb(126, 236, 249),-2px -2px 50px  rgb(240, 115, 234);
             // background-color: #ffffff27;
             // background-image: linear-gradient(to right , rgba(105, 237, 251, 0.711),#000000,#000000,#000000,#000000, rgba(245, 89, 224, 0.612)); /* Màu gradient */
-            border: 1px solid #313030;
-            background-color: #414040;
+          
         }
-        .showing-title{
-            background-color: #000;
-        }
+       
        
         
         .wrap {
@@ -188,7 +190,7 @@
             z-index: 3; /* Đảm bảo tiêu đề và nút không bị chồng lên bởi overlay */
             padding: 10px;
            
-            background-color: #000;
+            background-color: #f266acc7;
             border-radius: 15px;
             &:hover{
                 border: 2px solid #ffffff81;
@@ -196,25 +198,31 @@
             }
             img{
                 border-radius: 15px;
+                max-height:77% ;
             }
             .title-movie {
-                color: #fff;
+                color: #FFf;
                 transition: color 0.3s ease;
                 margin-top: 10px;
             }
     
             .btn-gr {
-              
+                position: absolute;
+                bottom: 10px;
+                left: 0%;
+                right: 0%;
                 gap: 20px;
                 .trailer, .bookin {
                     width: 120px;
                     height: 40px;
-                    color: #fff;
-                    background-color: #2f2f2daf;
+                    color: #FFf;
+                    background-color: #2CD3E1;
+                    border: none;
                     
                     &:hover {
-                        background-color: #ffffff00;
-                        color: #fff;
+                        background-color: #31eeff;
+                        border: 1px solid;
+                        color: #FFf;
                         box-shadow: 2px 2px 15px  rgb(126, 236, 249),-2px -2px 50px  rgb(240, 115, 234);
                     }
                 }
@@ -223,9 +231,9 @@
             .wrap-hover {
                 position: absolute;
                 width: 94%;
-                height: 83%;
-                background-color: rgba(0, 0, 0, 0.7); /* Màu nền khi hover */
-                color: white; /* Màu chữ */
+                height: 77%;
+                background-color: #f266ac56; /* Màu nền khi hover */
+                color: #fff; /* Màu chữ */
                 display: none; /* Ẩn mặc định */
                 justify-content: start;
                 align-items: center;
@@ -237,7 +245,7 @@
     
             &:hover .wrap-hover {
                 display: flex; /* Hiện khi hover */
-                color: #ffffff;
+                color: #FFf;
             }
         }
     }
