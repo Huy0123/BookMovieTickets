@@ -391,7 +391,10 @@ password = async (token , newpassword,currentpassword)=>{
         const hashedPassword = await bcrypt.hash(newpassword, saltRounds);
         users.password=hashedPassword;
         await users.save()
-        return { message: 'Mật khẩu đã được đổi thành công!' };
+        return { 
+            code:200,
+            message: 'Mật khẩu đã được đổi thành công!' 
+        };
     }
     
 }
