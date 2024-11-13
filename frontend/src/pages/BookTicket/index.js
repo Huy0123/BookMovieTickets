@@ -106,7 +106,7 @@ function BookTicket() {
                 setReleaseDate(movie[0].movie_id.release_date);
                 setDescription(movie[0].movie_id.description);
                 setTrailer(movie[0].movie_id.trailer);
-                setPoster(movie[0].movie_id.poster);
+                setPoster(movie[0].movie_id.poster1);
                 setNameCinema(movie[0].cinema_id.name);
                 setRoomId(movie[0].room_id.name);
 
