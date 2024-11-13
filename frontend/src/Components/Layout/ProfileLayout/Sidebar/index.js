@@ -68,11 +68,6 @@ function Sidebar(){
             setSuccess(null); 
             return;
         }
-        if(currentpass!==password){
-            setError('Mật khẩu cũ không đúng');
-            setSuccess(null); 
-            return;
-        }
         // Ensure both passwords match
         if (newpass !== confirmpass) {
             setError('Mật khẩu nhập lại không đúng');
@@ -86,18 +81,28 @@ function Sidebar(){
                 newpass,
             });
             const userData = {
-                token, 
+                currentpassword:currentpass,
                 newpassword: newpass,
             }
-            const response = await axios.put('http://localhost:8080/v1/Users/reset-password',userData  );
-            
-            if (response.status === 200) {
+            const response = await axios.put('http://localhost:8080/v1/Users/password',userData,{
+                headers:{
+                    'Authorization':`Bearer ${token}`
+                }
+            }  );
+            console.log("loi passs",response)
+            if (response.data.code === 200) {
                 alert('Mật khẩu đã được đổi thành công')
                 setResetModal(false) ;
                 setCurrentpass('');
                 setNewpass('');
                 setConfirmpass('');
-            } else {
+            }
+            else if(response.data.code===400){
+                setError('Mật Khẩu Cũ Không Đúng');
+                setSuccess(null); 
+            return;
+            }
+            else {
                 setError(response.data.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.');
             }
         } catch (error) {
