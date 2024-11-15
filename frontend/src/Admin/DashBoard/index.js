@@ -85,29 +85,28 @@ const DashBoard = () => {
         fetchMovies();
         fetchTotalRevenue();
     }, []);
-
-    // const fetchAllCinema = async () => {
-    //     try{
-    //         const response = await axios.get("http://localhost:8080/v1/getCinemas");
-    //         response.data.forEach(cinema => {
-    //             fetchShowtimeByCinema(cinema._id);
-    //         });
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-
-
-    // }
+    
+    // Thông tin rạp chiếu phim
+    const fetchAllCinema = async () => {
+        try{
+            const response = await axios.get("http://localhost:8080/v1/getCinemas");
+            response.data.forEach(cinema => {
+                fetchShowtimeByCinema(cinema._id);
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
   
-    // const fetchShowtimeByCinema = async (id) => {
-    //     try {
-    //         const response = await axios.get(`http://localhost:8080/v1/showtime/getShowtimesByCinemaID/${id}`);
-    //         setShowtimeByCinema(response.data);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
+    const fetchShowtimeByCinema = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/v1/showtime/getShowtimesByCinemaID/${id}`);
+            setShowtimeByCinema(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <>
