@@ -1,3 +1,6 @@
+.wrap{
+    height: 100vh;
+}
 .collapse-title{
     padding: 0 100px;
     font-size: 1.1em;
@@ -20,7 +23,7 @@
         margin-bottom: 20px;
     }
     .form-control{
-        height: 30px;
+        height: 100%;
         width: 100%;
         border: 1px solid #000;
         border-radius: 5px;
@@ -120,7 +123,7 @@
                             background-color: #F2F2F2;
                         }
                         .vip-seat {
-                            background-color: #8758FF;
+                            background-color: #FFAF00;
                         }
                         
                     }

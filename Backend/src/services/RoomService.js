@@ -42,6 +42,7 @@ class RoomService {
     }
 
     deleteRoom = async (id) => {
+        await seat.deleteMany({ room_id: id })
         await room.findByIdAndDelete(id)
     }
 }

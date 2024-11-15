@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './MovieList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faPlus, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faFilter, faPenToSquare, faPlus, faSearch, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditMovie from '../EditMovie';
 import AddMovie from '../AddMovie';
 import axios from 'axios';
@@ -100,26 +100,6 @@ function MovieList() {
         </div>
         <h2>Danh sách phim</h2>   
         <div className={cx('table-con')} >
-        <div className={cx('finding')}>
-                <div className={cx('search')}>
-                  <FontAwesomeIcon  className="fs-3 me-2" icon={faSearch} />
-                  <input 
-                    type="text" 
-                    placeholder="Tìm kiếm..." 
-                    value={searchTerm} 
-                    onChange={handleSearchChange} 
-                  />
-                </div>
-              <div className={cx('filter')} ><FontAwesomeIcon className="fs-3 " icon={faFilter} /> 
-              <select id="options" value={selectedOption} >
-                <option value="">--Chọn mục--</option>
-                <option value="option1">Email</option>
-                <option value="option2">Số điện thoại</option>
-                <option value="option3">role</option>
-                <option value="option4">Tài Khoản</option>
-              </select>
-              </div>
-              </div>
         <table striped bordered hover>
         <thead>
           <tr>
@@ -130,7 +110,7 @@ function MovieList() {
             <th>Phụ đề</th>
             <th>nhãn phim</th>
             <th>Ngày khởi chiếu</th>
-            <th>Hành Động</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -144,11 +124,12 @@ function MovieList() {
               <td>{item.subtitles}</td>
               <td>{item.limit ? `${item.limit}+` : ''}</td>
               <td>{new Date(item.release_date).toLocaleDateString()}</td>
-              <td>
-              <button  onClick={()=>handleAddCinem(item._id)}> Chi tiết</button>
-            <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditMovie isOpen={isModalOpen} movieId={movieId} onClose={closeModalEdit} />
-                <button onClick={() => openModalDelete(item._id)}>xóa</button>
-              </td>
+              <td >
+                <FontAwesomeIcon className={cx('btn-info')} icon={faCircleInfo} onClick={()=>handleAddCinem(item._id)}/>
+                <FontAwesomeIcon className={cx('btn-edit')} icon={faPenToSquare} onClick={() => openModalEdit(item._id)}/> 
+                <EditMovie isOpen={isModalOpen} movieId={movieId} onClose={closeModalEdit} />
+                <FontAwesomeIcon className={cx('btn-del')} icon={faTrash} onClick={() => openModalDelete(item._id)}/>
+            </td>
             </tr>
         )
     })}

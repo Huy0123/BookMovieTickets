@@ -414,8 +414,7 @@ class paymentService {
 
     getPayment = async()=>{
         try {
-            const res = await PaymentModel.find().populate('order_id')
-            return {res}
+            return await PaymentModel.find()
         } catch (error) {
             throw error
         }

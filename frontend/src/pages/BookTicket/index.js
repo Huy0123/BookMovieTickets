@@ -375,35 +375,36 @@ if(title!==''){
             </div>
             {/* Lich chieu */}
             <div className={cx('schedule')}>
-    <div className='row'>
-        <div className='col-1'></div>
+    <div className="row">
+        <div className="col-1"></div>
         <div className={cx('wrap', 'col-10')}>
             <h1 className={cx('show')}>Lịch chiếu</h1>
             <div className={cx('group-btn')}>
                 <div className={cx('date-show', 'gap-3')}>
                     {getMovies.length === 0 ? (
-                        <h2>HIỆN TẠI KHÔNG CÓ LỊCH CHIẾU</h2> // Hiển thị khi không có phim
+                        <h2>HIỆN TẠI KHÔNG CÓ LỊCH CHIẾU</h2>
                     ) : (
                         getMovies.map((show, index) => {
                             const showtimeUTC = new Date(show.showtime_start);
-                            console.log("showtimeUTC", showtimeUTC);
-                            const formattedShowtime = showtimeUTC.toLocaleDateString('vi-VN', {
-                                day: '2-digit',
-                                month: '2-digit',
-                                weekday: 'long'
-                            }).replace(/-/g, '/');
+                            const formattedShowtime = showtimeUTC
+                                .toLocaleDateString('vi-VN', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    weekday: 'long',
+                                })
+                                .replace(/-/g, '/');
 
                             if (formattedShowtime !== lastDisplayedDate) {
                                 lastDisplayedDate = formattedShowtime;
                                 return (
                                     <div
-                                        className={cx('btn-date', { active: selectedDate === formattedShowtime })}
+                                        className={cx('btn-date', {
+                                            active: selectedDate === formattedShowtime,
+                                        })}
                                         key={show._id}
                                         onClick={() => setSelectedDate(formattedShowtime)}
                                     >
-                                        <h2 className={cx('date', 'pt-1')}>
-                                            {formattedShowtime}
-                                        </h2>
+                                        <h2 className={cx('date', 'pt-1')}>{formattedShowtime}</h2>
                                     </div>
                                 );
                             }
@@ -413,48 +414,80 @@ if(title!==''){
                 </div>
             </div>
             <div className={cx('about')}>
-                <div className='row'>
-                    <div className='col-1'></div>
-                    <div className='col-10'>
+                <div className="row">
+                    <div className="col-1"></div>
+                    <div className="col-10">
                         <div className={cx('time-start')}>
-                            {selectedDate && getShowTimesByDate(selectedDate).length === 0 ? (
-                                <div>HIỆN TẠI KHÔNG CÓ LỊCH CHIẾU</div> // Hiển thị khi không có lịch cho ngày đã chọn
+                            {selectedDate && !Array.isArray(getShowTimesByDate(selectedDate)) ? (
+                                <div>HIỆN TẠI KHÔNG CÓ LỊCH CHIẾU</div>
                             ) : (
-                                selectedDate && getShowTimesByDate(selectedDate).map((show, index) => {
-                                    const showtimeUTC = new Date(show.showtime_start);
-                                    const formattedHour = showtimeUTC.toLocaleTimeString('vi-VN', {
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false,
-                                    });
+                                selectedDate && (
+                                    Array.isArray(getShowTimesByDate(selectedDate)) 
+                                        ? Object.values(
+                                            getShowTimesByDate(selectedDate)
+                                                .reduce((acc, show) => {
+                                                    const key = show.cinema_id._id; // Lấy ID của rạp làm key
+                                                    if (!acc[key]) {
+                                                        acc[key] = {
+                                                            cinema: show.cinema_id,
+                                                            showtimes: [],
+                                                        };
+                                                    }
+                                                    acc[key].showtimes.push(show);
+                                                    return acc;
+                                                }, {})
+                                        ).map((cinemaGroup, index) => {
+                                            return (
+                                                <div key={cinemaGroup.cinema._id}>
+                                                    <h4>Tên Rạp: {cinemaGroup.cinema.name}</h4>
+                                                    <p>Địa chỉ: {cinemaGroup.cinema.address}</p>
+                                                    <div>
+                                                        {cinemaGroup.showtimes.map((show, index) => {
+                                                            const showtimeUTC = new Date(show.showtime_start);
+                                                            const formattedHour = showtimeUTC.toLocaleTimeString('vi-VN', {
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                                hour12: false,
+                                                            });
 
-                                    return (
-                                        <div key={show._id}>
-                                            <h4>Tên Rạp: {show.cinema_id.name}</h4>
-                                            <p>Địa chỉ: {show.cinema_id.address}</p>
-                                            <button
-                                                type='button'
-                                                className={cx('btn-time', { active: index === 0 })}
-                                                onClick={() => {
-                                                    handleShowtimeClick(show._id, show.cinema_id, show.room_id);
-                                                    setHour(formattedHour);
-                                                }}
-                                            >
-                                                {formattedHour}
-                                            </button>
-                                        </div>
-                                    );
-                                })
+                                                            return (
+                                                                <button
+                                                                    key={show._id}
+                                                                    type="button"
+                                                                    className={cx('btn-time', {
+                                                                        active: index === 0,
+                                                                    })}
+                                                                    onClick={() => {
+                                                                        handleShowtimeClick(
+                                                                            show._id,
+                                                                            show.cinema_id,
+                                                                            show.room_id
+                                                                        );
+                                                                        setHour(formattedHour);
+                                                                    }}
+                                                                >
+                                                                    {formattedHour}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    : <div>Hiện không có suất chiếu cho ngày này.</div>
+                                )
                             )}
                         </div>
                     </div>
-                    <div className='col-1'></div>
+                    <div className="col-1"></div>
                 </div>
             </div>
         </div>
-        <div className='col-1'></div>
+        <div className="col-1"></div>
     </div>
 </div>
+
+
 
 
           
@@ -553,7 +586,7 @@ if(title!==''){
             <div className={cx('food')}>
                 <h1>CHỌN BẮP NƯỚC</h1>
 
-                <div className={cx('wrap-food'  )}>
+                <div className={cx('wrap-food')}>
                     <h2 className={cx('name-food')}>TÊN LOẠI HÀNG</h2>
                     <div className={cx('wrap-item')}>
                     <div className='row'>
