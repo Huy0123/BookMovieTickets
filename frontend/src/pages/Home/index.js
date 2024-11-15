@@ -7,7 +7,7 @@ import { faChevronLeft, faChevronRight, faPlay } from '@fortawesome/free-solid-s
 import TrailerModal from '../Trailer/TrailerModal';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import apiClient from "../../services/apiClient";
 const cx = classNames.bind(styles);
 
 
@@ -46,12 +46,7 @@ function Home() {
 
        
     }, []);
-<<<<<<< HEAD
     
-=======
-    const newmovie = (movies.sort((a,b)=> new Date(b.release_date) - new Date(a.release_date))).slice(0,4)
-    console.log("newmovie",newmovie)
->>>>>>> 4cac3a1ec0c2a6db6bd67536c18c0e203daba14f
     const movieshowing =movies.filter(movies=>new Date(movies.release_date)< new Date())
     console.log("movieshowing",movieshowing)
     const upcomingmovie =movies.filter(movies=>new Date(movies.release_date)> new Date())

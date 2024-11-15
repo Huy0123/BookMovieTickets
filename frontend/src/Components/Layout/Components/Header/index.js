@@ -9,6 +9,8 @@ import axios from 'axios';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // Import Tippy styles
 import Cookies from 'js-cookie';
+import apiClient from "~/services/apiClient";
+import { clear } from '@testing-library/user-event/dist/clear';
 
 const cx = classNames.bind(styles);
 
@@ -54,33 +56,28 @@ function Header() {
             const token = localStorage.getItem('userToken')
             console.log("tk",token)
             if (userId) {
-                try {
+              
                     
-                    const response = await axios.get(`http://localhost:8080/v1/Users/getUserbyid`, {
-                        withCredentials: true,
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                        
-                    });
-                    
-                    console.log(response.data)
-                    setFullname(response.data.userFound.fullname);
-                    setIsLoggedIn(true);
-                    
-                } catch (error) {
-                    const refresh_token = await axios.post(`http://localhost:8080/v1/Users/refresh_token`, {},
-                        {
+                if (token) { // Kiểm tra nếu token có tồn tại
+                    try {
+                        const response = await apiClient.get('Users/getUserbyid', {
                             withCredentials: true,
                             headers: {
                                 'Authorization': `Bearer ${token}`
                             }
-                        }
-
-                    )
-                    console.log(refresh_token)
+                        });
+                
+                        console.log(response.data);
+                        setFullname(response.data.userFound.fullname);
+                        setIsLoggedIn(true);
+                    } catch (error) {
+                        console.error("Có lỗi xảy ra khi lấy dữ liệu người dùng:", error);
+                        // Xử lý khi có lỗi, ví dụ: chuyển hướng đến trang đăng nhập
+                        localStorage.clear()
+                       navigate('/signin') // Điều hướng đến trang đăng nhập
+                    }}
                     
-                }
+                
             }
         };
        
