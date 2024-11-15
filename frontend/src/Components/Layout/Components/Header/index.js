@@ -83,7 +83,7 @@ function Header() {
             <div className={cx('dropdown-item')} onClick={() => navigate('/profile')}>
                 Thông tin cá nhân
             </div>
-            <div className={cx('dropdown-item')} onClick={() => navigate('/transaction-history')}>
+            <div className={cx('dropdown-item')} onClick={() => navigate('/history')}>
                 Lịch sử giao dịch
             </div>
             <div className={cx('dropdown-item')} onClick={() => navigate('/voucher')}>
@@ -123,10 +123,10 @@ function Header() {
             <div className={cx('container')}>
                 <div className={cx('header1')}>
                     <div className="row">
-                        <div className="col-lg-1"></div>
-                        <div className={cx('col-lg-10', 'wrap')}>
+                    
+                        <div className={cx('col-lg', 'wrap')}>
                             <div className="row">
-                                <div className="col-lg-2 " >
+                                <div className="col-lg-3 d-flex justify-content-center" >
                                     <img
                                         className={cx('logo')}
                                         src={images.logos}
@@ -135,7 +135,7 @@ function Header() {
                                     />
                                 </div>
                                
-                                <div className={cx('wrap2', 'col-lg-4')} ref={dropdownRef}>
+                                <div className={cx('wrap2', 'col-lg-3')} ref={dropdownRef}>
                                     <button
                                         type="button"
                                         className={cx('btn-choose', 'col-lg-6', 'me-3')}
@@ -204,7 +204,7 @@ function Header() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-lg-1"></div>
+                       
                     </div>
                 </div>
 
