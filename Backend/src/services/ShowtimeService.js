@@ -72,7 +72,13 @@ class ShowtimeService {
     }
 
     deleteShowtime = async (id) => {
+        const showtimeData = await showtime.findById(id);
+        if(showtimeData.showtime_end < new Date()){
+        await seatTime.deleteMany({ showtime_id: id });
         await showtime.findByIdAndDelete(id);
+        }else{
+            throw new Error('Showtime is not over yet');
+        }
     }
 
     getShowtimesByMovieID = async (id) => {
@@ -85,7 +91,7 @@ class ShowtimeService {
     getShowtimesByCinemaID = async (id) => {
         return await showtime.find({ cinema_id: id })
         .populate(
-            'cinema_id'
+            'cinema_id', 'name'
         )
         .populate(
             'room_id', 'name'

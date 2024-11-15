@@ -7,7 +7,7 @@ import classNames from 'classnames/bind';
 import styles from './style.module.scss';
 const cx = classNames.bind(styles);
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-const Charts = () => {
+const Charts = ({cinema_id}) => {
 
     const [nowShowing, setNowShowing] = useState([]);
     const [comingSoon, setComingSoon] = useState([]);
@@ -15,6 +15,7 @@ const Charts = () => {
     const [totalRevenueByDay, setTotalRevenueByDay] = useState({}); // Doanh thu theo ngày
     const [totalRevenueByMonth, setTotalRevenueByMonth] = useState({}); // Doanh thu theo tháng
 
+    
     const fetchMovies = async () => {
         try {
             const response = await axios.get("http://localhost:8080/v1/getMovies");
@@ -27,7 +28,7 @@ const Charts = () => {
 
     const fetchTotalRevenue = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/v1/Payment/getPaymentByCinemaId/66fbf96791e08c377610139b`);
+            const response = await axios.get(`http://localhost:8080/v1/Payment/getPaymentByCinemaId/${cinema_id}`);
             const payments = response.data.payment;
             // Sau khi có dữ liệu, tính toán doanh thu theo tháng và theo ngày
             calculateMonthlyRevenue(payments);
@@ -81,10 +82,10 @@ const Charts = () => {
     const calculateTotalTickets = (payments) => {
         let total = 0;
         const currentMonth = dayjs().format("YYYY-MM");
-        const today = dayjs().date();
+        
         payments.forEach((payment) => {
             const month = dayjs(payment.payment_date).format("YYYY-MM");
-            if (month === currentMonth && dayjs(payment.payment_date).date() <= today)
+            if (month === currentMonth)
                 total++;
         });
         setTotalTickets(total);

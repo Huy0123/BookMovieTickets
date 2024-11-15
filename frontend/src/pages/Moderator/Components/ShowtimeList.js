@@ -3,13 +3,15 @@ import axios from "axios";
 import classNames from 'classnames/bind';
 import styles from './style.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(styles);
 
 const ShowtimeList = ({ cinema_id }) => {
     const [showtimes, setShowtimes] = useState([]);
     const [roomsAvailable, setRoomsAvailable] = useState([]);
     const [allMovies, setAllMovies] = useState([]);
-
     const [showtime, setShowtime] = useState({
         movie_id: "",
         room_id: "",
@@ -23,10 +25,11 @@ const ShowtimeList = ({ cinema_id }) => {
         showtime_start: "",
         showtime_end: "",
     });
-    console.log(showtimeUpdate);
     const openModal = (id) => {
         handleUpdateShowtime(id);
+
     }
+
 
     // Hàm lấy danh sách showtime từ API
     const fetchShowtimes = useCallback(async () => {
@@ -107,6 +110,9 @@ const ShowtimeList = ({ cinema_id }) => {
             await axios.delete(`http://localhost:8080/v1/deleteShowtime/${id}`);
             fetchShowtimes();
         } catch (error) {
+            if (error.response.data === 'Showtime is not over yet') {
+                toast.error('Không thể xóa lịch chiếu khi chưa kết thúc');
+            }
             console.log("Error deleting showtime:", error);
         }
     };
@@ -135,8 +141,8 @@ const ShowtimeList = ({ cinema_id }) => {
         try {
             const response = await axios.put(`http://localhost:8080/v1/updateShowtime/${id}`, showtimeUpdate);
             if (response.status === 200) {
-                alert('Cập nhật thành công');
-                window.location.reload();
+                toast.success('Cập nhật lịch chiếu thành công');
+                fetchShowtimes();
             }
         } catch (error) {
             console.log("Error updating showtime:", error);
@@ -157,6 +163,7 @@ const ShowtimeList = ({ cinema_id }) => {
             });
 
             if (response.status === 201) {
+                toast.success('Tạo lịch chiếu thành công');
                 resetForm();
                 fetchShowtimes();
             } else {
@@ -166,10 +173,11 @@ const ShowtimeList = ({ cinema_id }) => {
             console.error('Error creating showtime:', error);
         }
     };
+    console.log(showtimeUpdate)
 
     return (
         <>
-
+            <ToastContainer position="top-right" autoClose={3000} />
             <div className={cx('collapse-title')} >
                 <a data-bs-toggle="collapse" href="#add-showtime" role="button" aria-expanded="false">Tạo lịch chiếu</a>
             </div>
@@ -190,11 +198,11 @@ const ShowtimeList = ({ cinema_id }) => {
 
                             <div className="mb-3">
                                 <label htmlFor="showtime_start" className={cx('form-label')}>Thời gian bắt đầu</label>
-                                <input type="datetime-local" className={cx('form-control')} id="showtime_start" name="showtime_start" value={showtime.showtime_start} onChange={handleInputChange} />
+                                <input type="datetime-local" min={new Date().toISOString().slice(0, 16)} className={cx('form-control')} id="showtime_start" name="showtime_start" value={showtime.showtime_start} onChange={handleInputChange} />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="showtime_end" className={cx('form-label')}>Thời gian kết thúc</label>
-                                <input type="datetime-local" className={cx('form-control')} id="showtime_end" name="showtime_end" value={showtime.showtime_end} onChange={handleInputChange} />
+                                <input type="datetime-local" className={cx('form-control')} min={new Date().toISOString().slice(0, 16)} id="showtime_end" name="showtime_end" value={showtime.showtime_end} onChange={handleInputChange} />
                             </div>
                             <label htmlFor="room" className="form-label">Chọn phòng</label>
                             <select className={cx('form-select', ' form-select-lg mb-3')} aria-label="Choose a room" name="room_id" value={showtime.room_id} onChange={handleInputChange}>
@@ -205,11 +213,13 @@ const ShowtimeList = ({ cinema_id }) => {
                             </select>
                             <div className={cx('btn-submit')}>
                                 <button type="submit">Tạo lịch chiếu</button>
+
                             </div>
 
                         </form>
                     </div>
-                </div></div>
+                </div>
+            </div>
             <div className={cx('table-container')}>
                 <table className="table table-hover">
                     <thead>
@@ -233,6 +243,7 @@ const ShowtimeList = ({ cinema_id }) => {
                                 <td>
                                     <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit-showtime" onClick={() => openModal(showtime._id)}>Edit</button>
                                     <button className="btn btn-danger" onClick={() => handleDeleteShowtime(showtime._id)}>Delete</button>
+
                                 </td>
                             </tr>
                         ))}
@@ -249,16 +260,21 @@ const ShowtimeList = ({ cinema_id }) => {
                         </div>
                         <div className="modal-body">
                             <form>
-                                    <label htmlFor="movie" className="form-label">Chọn phim</label>
-                                    <select
-                                        className={cx('form-select', ' form-select-lg mb-3')} aria-label="Choose a movie" name="movie_id" value={showtimeUpdate.movie_id} onChange={handleUpdateInputChange}>
+                                <label htmlFor="movie" className="form-label">Chọn phim</label>
+                                <select
+                                    className={cx('form-select', ' form-select-lg mb-3')} aria-label="Choose a movie" name="movie_id" value={showtimeUpdate.movie_id} onChange={handleUpdateInputChange}>
 
-                                        <option value="" disabled>Chọn phim</option>
-                                        {Object.entries(allMovies).map(([id, title]) => (
-                                            <option key={id} value={id}>{title}</option>
+                                    <option value="" disabled>Chọn phim</option>
+                                    <option value={showtimeUpdate.movie_id._id}>{showtimeUpdate.movie_id.title}</option>
+                                    {Object.entries(allMovies)
+                                        .filter(([id]) => id !== showtimeUpdate.movie_id._id) // Loại bỏ phim hiện tại
+                                        .map(([id, title]) => (
+                                            <option key={id} value={id}>
+                                                {title}
+                                            </option>
                                         ))}
-                                    </select>
-                                
+                                </select>
+
                                 <div className="mb-3">
                                     <label htmlFor="showtime_start" className={cx('form-label')}>Thời gian bắt đầu</label>
                                     <input type="datetime-local" className={cx('form-control')} id="showtime_start" name="showtime_start" value={showtimeUpdate.showtime_start} onChange={handleUpdateInputChange} />
