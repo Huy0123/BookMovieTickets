@@ -29,7 +29,8 @@ const Sidebar = () => {
     }
    }
   return (
-    <div className="d-flex flex-column bg-dark" style={{ width: '250px', height: '620px' }}>
+    <div className={cx('wrap')}>
+    <div className="d-flex flex-column bg-dark" style={{ width: '250px', height:'100vh'}}>
       <Link to="/moderator" className="nav-link text-white">
         <h2 className="text-white p-3">Moderator Dashboard</h2>
       </Link>
@@ -47,7 +48,7 @@ const Sidebar = () => {
       <button type='button' className={cx('logout')} onClick={handleLogout}>Đăng xuất</button>
 
     </div>
-    
+    </div>
   )
 };
 

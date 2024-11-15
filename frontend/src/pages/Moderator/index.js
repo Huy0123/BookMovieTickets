@@ -24,9 +24,9 @@ const Index = () => {
     fetchCinemas();
   }, []);
   return (
-    <div className={cx('d-flex')}>
+    <div className={cx('d-flex','wrap')}>
       <Sidebar />
-      <div className={cx('container','flex-grow-1 p-4 bg-body overflow-auto')}style={{height: '620px' }}>
+      <div className={cx('container','flex-grow-1 p-4 bg-body overflow-auto')}>
         <Routes >
           <Route path="/" element={<Navigate to="charts" />} />
           <Route path="charts" element={<Charts cinema_id ={cinema_id} />} />

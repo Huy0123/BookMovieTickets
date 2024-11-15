@@ -553,7 +553,7 @@ if(title!==''){
             <div className={cx('food')}>
                 <h1>CHỌN BẮP NƯỚC</h1>
 
-                <div className={cx('wrap-food'  )}>
+                <div className={cx('wrap-food')}>
                     <h2 className={cx('name-food')}>TÊN LOẠI HÀNG</h2>
                     <div className={cx('wrap-item')}>
                     <div className='row'>

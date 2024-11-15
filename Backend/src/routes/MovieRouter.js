@@ -12,7 +12,7 @@ router.post('/createMovie', upload.fields([{ name: 'poster1' }, {name: 'poster2'
 
 router.get('/getMovies', movieController.getMovies);
 
-router.get('/getMovieByID/:id', movieController.getMovieByID);
+router.get('/getMovieByID/:id', movieController.getMovieByID); 
 
 router.put('/updateMovie/:id', upload.fields([{ name: 'poster1'}, {name: 'poster2'}]), movieController.updateMovie);
 
