@@ -84,7 +84,7 @@ function ChooseCinema() {
                         <div className={cx('content-movie')}>
                             <h3 className={cx('movie-title')} onClick={() => handleSelectMovie(movie._id)} >{movie.title}</h3>
                             <button 
-                                onClick={() => openModal(movie.trailerLink)} 
+                                onClick={() => openModal(movie.trailer)} 
                                 className={cx('trailer-link')}
                             >
                                 Xem Trailer
