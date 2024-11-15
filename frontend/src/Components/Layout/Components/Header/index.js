@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import images from '~/assets/img';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDays, faLocationDot, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Tippy from '@tippyjs/react';
@@ -96,7 +96,7 @@ function Header() {
             <div className={cx('dropdown-item')} onClick={() => navigate('/profile')}>
                 Thông tin cá nhân
             </div>
-            <div className={cx('dropdown-item')} onClick={() => navigate('/history')}>
+            <div className={cx('dropdown-item')} onClick={() => navigate('/transaction-history')}>
                 Lịch sử giao dịch
             </div>
             <div className={cx('dropdown-item')} onClick={() => navigate('/voucher')}>
@@ -139,7 +139,7 @@ function Header() {
                         <div className="col-lg-1"></div>
                         <div className={cx('col-lg-10', 'wrap')}>
                             <div className="row">
-                                <div className="col-lg-2 pb-3 pt-3" >
+                                <div className="col-lg-2 " >
                                     <img
                                         className={cx('logo')}
                                         src={images.logos}
@@ -148,7 +148,7 @@ function Header() {
                                     />
                                 </div>
                                
-                                <div className={cx('wrap2', 'pt-3', 'col-lg-3', 'pb-3')} ref={dropdownRef}>
+                                <div className={cx('wrap2', 'col-lg-4')} ref={dropdownRef}>
                                     <button
                                         type="button"
                                         className={cx('btn-choose', 'col-lg-6', 'me-3')}
@@ -167,31 +167,31 @@ function Header() {
                                         </div>
                                     )}
                                         <button type="button" className={cx('btn-schedule', 'col-lg-6')} onClick={() => navigate('/schedule')}>
-                                        <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
+                                        <FontAwesomeIcon className={cx('icon')} icon={faCalendarDays} />
                                         Lịch chiếu
                                     </button>
                                 </div>
 
-                                <div className={cx('wrap1', 'col-lg-7')}>
-                                    <div className="row d-flex justify-content-end">
+                                <div className={cx('wrap1', 'col-lg-6')}>
+                                    <div className="row ">
                                        
                                         {!isLoggedIn ? (
-                                            <div className={cx('sign','d-flex gap-3 justify-content-end pb-3 pt-3' )}>
+                                            <div className={cx('sign','d-flex gap-3 justify-content-end ' )}>
                                                
-                                                    <button
-                                                        type="button"
+                                                    <div
+                                                        
                                                         className={cx('btn', 'sign-up', 'col-lg-6')}
                                                         onClick={handleNavigateSignup}
                                                     >
                                                         Đăng ký
-                                                    </button>
-                                                    <button
-                                                        type="button"
+                                                    </div>
+                                                    <div
+                                                       
                                                         className={cx('btn', 'sign-in', 'col-lg-6')}
                                                         onClick={handleNavigateSignin}
                                                     >
-Đăng nhập
-                                                    </button>
+                                                                Đăng nhập
+                                                    </div>
                                                
                                             </div>
                                         ) : (
