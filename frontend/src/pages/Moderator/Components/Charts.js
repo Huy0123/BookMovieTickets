@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useCallback} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
@@ -14,8 +14,8 @@ const Charts = ({cinema_id}) => {
     const [totalTickets, setTotalTickets] = useState(0); // Tổng số vé đã bán
     const [totalRevenueByDay, setTotalRevenueByDay] = useState({}); // Doanh thu theo ngày
     const [totalRevenueByMonth, setTotalRevenueByMonth] = useState({}); // Doanh thu theo tháng
-    
-    const fetchMovies = useCallback( async () => {
+
+    const fetchMovies = useCallback(async () => {
         try {
             const response = await axios.get("http://localhost:8080/v1/getMovies");
             splitMovies(response.data);
@@ -23,10 +23,10 @@ const Charts = ({cinema_id}) => {
         } catch (error) {
             console.error(error);
         }
-    }, [])
+    }, []);
 
     const fetchTotalRevenue = useCallback(async () => {
-        if(!cinema_id) return;
+        if (!cinema_id) return;
         try {
             const response = await axios.get(`http://localhost:8080/v1/Payment/getPaymentByCinemaId/${cinema_id}`);
             const payments = response.data.payment;
@@ -37,7 +37,7 @@ const Charts = ({cinema_id}) => {
         } catch (error) {
             console.error(error);
         }
-    }, [cinema_id   ])
+    }, [cinema_id]);
 
     const calculateMonthlyRevenue = (payments) => {
         const monthRevenue = {};
@@ -71,7 +71,7 @@ const Charts = ({cinema_id}) => {
             const day = dayjs(payment.payment_date).format("YYYY-MM-DD");
             const month = dayjs(payment.payment_date).format("YYYY-MM");
 
-            if (month === currentMonth && dayjs(payment.payment_date).date() <= today) {
+            if (month === currentMonth) {
                 dailyRevenue[day] += payment.amount;
             }
         });
@@ -82,6 +82,7 @@ const Charts = ({cinema_id}) => {
     const calculateTotalTickets = (payments) => {
         let total = 0;
         const currentMonth = dayjs().format("YYYY-MM");
+        
         payments.forEach((payment) => {
             const month = dayjs(payment.payment_date).format("YYYY-MM");
             if (month === currentMonth)
@@ -92,7 +93,7 @@ const Charts = ({cinema_id}) => {
     useEffect(() => {
         fetchMovies();
         fetchTotalRevenue();
-    }, [fetchMovies, fetchTotalRevenue]);
+    }, [fetchTotalRevenue, fetchMovies]);
 
     const splitMovies = async (movies) => {
         const now = new Date();
