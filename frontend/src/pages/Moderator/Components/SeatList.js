@@ -160,9 +160,9 @@ const SeatList = ({ cinema_id }) => {
                         <div className="mb-3">
                             <label htmlFor="seat-type" className={cx('form-label')}>Loại Ghế</label>
                             <select type="text" className={cx('form-control')} id="seat-type" value={seatType} onChange={(e) => setSeatType(e.target.value)}>
-                            <option value="" disabled>Chọn loại ghế</option>
-        <option value="Vip">Vip</option>
-        <option value="Standard">Standard</option>
+                                <option value="" disabled>Chọn loại ghế</option>
+                                <option value="Vip">Vip</option>
+                                <option value="Standard">Standard</option>
                             </select>
                         </div>
 
@@ -246,7 +246,7 @@ const SeatList = ({ cinema_id }) => {
                                                     <p>Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(seatDetails.price)}</p>
                                                 </div>
                                                 <div>
-                                                    <button className={cx('btn','  me-2')}>Sửa</button>
+                                                <button className={cx('btn', 'me-2')} data-bs-toggle="modal" data-bs-target="#edit-seat" onClick={() =>fetchSeat(seatDetails._id)}>Sửa</button>
                                                     <button className={cx('btn','  me-2')} onClick={() => handleDeleteSeat(seatDetails._id)}>Xóa</button>
                                                 </div>
                                                 </div>
@@ -294,7 +294,11 @@ const SeatList = ({ cinema_id }) => {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="seat-type" className="form-label">Loại Ghế</label>
-                                    <input type="text" className="form-control" id="seat-type" name="seat_type" value={seatUpdate.seat_type} onChange={handleInputChange} />
+                                    <select type="text" className="form-control" id="seat-type" name="seat_type" value={seatUpdate.seat_type} onChange={handleInputChange} >
+                                    <option value="" disabled>Chọn loại ghế</option>
+                                        <option value="Vip">Vip</option>
+                                        <option value="Standard">Standard</option>
+                                    </select>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="price" className="form-label">Giá Ghế</label>

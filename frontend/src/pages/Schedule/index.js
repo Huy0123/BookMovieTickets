@@ -110,7 +110,7 @@ function Schedule() {
                                     <div className="row">
                                         <div className={cx('movie-detail', 'col-4')}>
                                             <img
-                                                src={movie.image || images.banner4}
+                                                src={movie.poster2}
                                                 className={cx('d-block')}
                                                 alt={movie.name}
                                             />
