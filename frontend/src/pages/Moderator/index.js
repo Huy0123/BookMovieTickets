@@ -26,7 +26,7 @@ const Index = () => {
   return (
     <div className={cx('d-flex')}>
       <Sidebar />
-      <div className={cx('container','flex-grow-1 p-4 bg-body overflow-auto')}style={{height: '620px' }}>
+      <div className={cx('container','flex-grow-1 p-4 bg-body overflow-auto')}style={{height: '770px' }}>
         <Routes >
           <Route path="/" element={<Navigate to="charts" />} />
           <Route path="charts" element={<Charts cinema_id ={cinema_id} />} />

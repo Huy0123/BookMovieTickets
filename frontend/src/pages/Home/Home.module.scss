@@ -25,11 +25,13 @@
 @keyframes floatIn {
     0% {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(30px) ;
+     
     }
     100% {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) ;
+    
     }
   }
   .float-in {
@@ -244,13 +246,14 @@
                 align-items: center;
                 padding: 10px;
                 border-radius: 15px;
-                transition: opacity 0.3s ease;
+                transition: opacity 0.5s ease;
                 z-index: 4; /* Đảm bảo nó nằm trên tất cả các thành phần khác */
             }
     
             &:hover .wrap-hover {
                 display: flex; /* Hiện khi hover */
                 color: #FFf;
+                animation: floatIn 0.3s ease-out forwards;
             }
         }
     }

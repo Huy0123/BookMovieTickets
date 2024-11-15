@@ -1,155 +1,164 @@
 // ChooseCinema.module.scss
 
 .container {
-    max-width: 1200px; // Kích thước tối đa của container
+    
+    width: 100%; // Kích thước tối đa của container
     margin: 0 auto; // Căn giữa container
     padding: 20px; // Khoảng cách bên trong
-  }
-  
-  .wrap-card {
-    display: flex; // Sử dụng flexbox để sắp xếp card
-   // Cho phép card xuống hàng khi không đủ chỗ
-    justify-content: center; // Căn giữa các card
-    max-height: 500px;
-    overflow: hidden; // Giới hạn nội dung hiển thị trong khung
-    transition: transform 0.5s ease-in-out;
-    .the {
-      max-width: 213px;
-      position: relative;
-      z-index: 0;
-        background-color: #fff; // Màu nền của card
-        border: 1px solid #ddd; // Đường viền
-        border-radius: 8px; // Bo tròn góc
-        margin: 10px; // Khoảng cách giữa các card
-        // padding: 15px; // Khoảng cách bên trong card
-        text-align: center; // Căn giữa nội dung
-        transition: transform 0.3s; // Hiệu ứng chuyển động khi hover
-       padding-bottom: 70px;
-        cursor: pointer; // Con trỏ chuột khi hover vào card
-        transition: transform 0.5s ease-in-out;
-        
-        &:hover {
-           // Hiệu ứng gạch chân khi hover
-           
-            /* Chiều rộng cố định */
+    background-color: #FFB84C;
+    
+    height: 100%;
+    .wrap-card {
+      display: flex; // Sử dụng flexbox để sắp xếp card
+     // Cho phép card xuống hàng khi không đủ chỗ
+      justify-content: center; // Căn giữa các card
+      max-height: 500px;
+      overflow: hidden; // Giới hạn nội dung hiển thị trong khung
+      transition: transform 0.5s ease-in-out;
+      .the {
+        max-width: 240px;
+        height: 400px;
+        position: relative;
+        z-index: 0;
+        background-color: #f266ac8d; // Màu nền của card
+          border: 4px solid #A459D1; // Đường viền
+          border-radius: 8px; // Bo tròn góc
+          margin: 10px; // Khoảng cách giữa các card
+          // padding: 15px; // Khoảng cách bên trong card
+          text-align: center; // Căn giữa nội dung
+          transition: transform 0.3s; // Hiệu ứng chuyển động khi hover
+         padding-bottom: 70px;
+          cursor: pointer; // Con trỏ chuột khi hover vào card
+          transition: transform 0.5s ease-in-out;
           
-            overflow: hidden; 
-          }
-       
-      
-        .movie-image {
-       
-          width: 100%; // Đặt chiều rộng hình ảnh bằng 100% chiều rộng card
-          height: auto;
-          border-radius: 8px; // Bo tròn góc cho hình ảnh
-      
           &:hover {
-            // Hiệu ứng gạch chân khi hover
+             // Hiệu ứng gạch chân khi hover
+             
+              /* Chiều rộng cố định */
             
-             transform: scale(1.5);
-             transition: transform 0.5s ease;
-           }
-        }
-        .content-movie{
-          bottom: 0px;
-          background-color: #fff;
-          position: absolute;
-          width: 100%;
-          z-index: 10;
-          border-radius: 8px; 
-          .movie-title {
-            margin: 10px 0; // Khoảng cách trên dưới cho tiêu đề
-            font-size: 18px; // Kích thước chữ
-            font-weight: bold; // Đậm chữ
-          }
+              overflow: hidden; 
+            }
+         
         
-          .trailer-link {
-            color: #007bff; // Màu cho link
-            background-color: #00000000;
-            text-decoration: none; // Bỏ gạch chân
-            border: none;
+          .movie-image {
+         
+            width: 100%; // Đặt chiều rộng hình ảnh bằng 100% chiều rộng card
+            height: 302px;
+            border-radius: 8px; // Bo tròn góc cho hình ảnh
+        
             &:hover {
-              text-decoration: underline; // Hiệu ứng gạch chân khi hover
-            
+              // Hiệu ứng gạch chân khi hover
+              // Đường viền
+               transform: scale(1.5);
+               transition: transform 0.5s ease;
+             }
+          }
+          .content-movie{
+            bottom: 0px;
+            color: #fff;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+            border-radius: 8px; 
+            background-color: #f266ac8b;
+            .movie-title {
+              margin: 10px 0; // Khoảng cách trên dưới cho tiêu đề
+              font-size: 18px; // Kích thước chữ
+              font-weight: bold; // Đậm chữ
+              max-height: 80px;
+              height: 47px;
+            }
+          
+            .trailer-link {
+              color: #fff; // Màu cho link
+              background-color: #00000000;
+              text-decoration: none; // Bỏ gạch chân
+              border: none;
+              &:hover {
+                text-decoration: underline; // Hiệu ứng gạch chân khi hover
+              color: #2CD3E1;
+              }
             }
           }
-        }
-        
-      }
-  }
-  
-  
-  
-  .pagination {
-    display: flex; // Sử dụng flexbox cho pagination
-    justify-content: center; // Căn giữa các nút
-    margin-top: 80px; // Khoảng cách trên cho pagination
-  
-    button {
-      background-color: #007bff; // Màu nền cho nút
-      color: #fff; // Màu chữ
-      border: none; // Bỏ viền
-      border-radius: 5px; // Bo tròn góc
-      padding: 10px 15px; // Khoảng cách bên trong nút
-      margin: 0 5px; // Khoảng cách giữa các nút
-      cursor: pointer; // Con trỏ chuột khi hover vào nút
-      transition: background-color 0.3s; // Hiệu ứng chuyển màu nền
-  
-      &:hover {
-        background-color: #0056b3; // Màu nền khi hover
-      }
-  
-      &:disabled {
-        background-color: #ccc; // Màu nền cho nút không hoạt động
-        cursor: not-allowed; // Con trỏ chuột khi không hoạt động
-      }
-    }
-  }
-
-    .wrap-content{
-        .movie-detail{
-           width: 40%;
-           display: flex;
-           justify-content: center;
-           img{
-            width: 70%;
-           }
           
         }
+    }
+  }
+  
+ 
+  
+  
+  
+//   .pagination {
+//     display: flex; // Sử dụng flexbox cho pagination
+//     justify-content: center; // Căn giữa các nút
+//     margin-top: 80px; // Khoảng cách trên cho pagination
+  
+//     button {
+//       background-color: #007bff; // Màu nền cho nút
+//       color: #fff; // Màu chữ
+//       border: none; // Bỏ viền
+//       border-radius: 5px; // Bo tròn góc
+//       padding: 10px 15px; // Khoảng cách bên trong nút
+//       margin: 0 5px; // Khoảng cách giữa các nút
+//       cursor: pointer; // Con trỏ chuột khi hover vào nút
+//       transition: background-color 0.3s; // Hiệu ứng chuyển màu nền
+  
+//       &:hover {
+//         background-color: #0056b3; // Màu nền khi hover
+//       }
+  
+//       &:disabled {
+//         background-color: #ccc; // Màu nền cho nút không hoạt động
+//         cursor: not-allowed; // Con trỏ chuột khi không hoạt động
+//       }
+//     }
+//   }
+
+//     .wrap-content{
+//         .movie-detail{
+//            width: 40%;
+//            display: flex;
+//            justify-content: center;
+//            img{
+//             width: 70%;
+//            }
+          
+//         }
      
            
             
-            .wrap-line{
-              color: #fff;
-              width: 60%;
-              padding-right: 0;
+//             .wrap-line{
+//               color: #fff;
+//               width: 60%;
+//               padding-right: 0;
               
-              /* Thêm chiều cao cố định và con lăn dọc */
+//               /* Thêm chiều cao cố định và con lăn dọc */
              
-              overflow-y: auto; /* Cho phép cuộn dọc */
-              overflow-x: hidden; /* Ẩn cuộn ngang nếu có */
-                border-bottom: 1px solid #fff;
-                padding: 15px 0;
-              display: flex;
-           flex-direction: column;
-           justify-content: space-between;
-            .schedule{
-                .group{
+//               overflow-y: auto; /* Cho phép cuộn dọc */
+//               overflow-x: hidden; /* Ẩn cuộn ngang nếu có */
+//                 border-bottom: 1px solid #fff;
+//                 padding: 15px 0;
+//               display: flex;
+//            flex-direction: column;
+//            justify-content: space-between;
+//             .schedule{
+//                 .group{
                     
 
-                    .btn-schedule{
-                        margin: 5px;
-                        width: 80px;
-                        background-color: #000;
-                        color: #fff;
-                        border: 1px solid #fff;
-                        &:hover{
-                            background-color: #ffc100;
-                        }
-                    }
-                }
+//                     .btn-schedule{
+//                         margin: 5px;
+//                         width: 80px;
+//                         background-color: #000;
+//                         color: #fff;
+//                         border: 1px solid #fff;
+//                         &:hover{
+//                             background-color: #ffc100;
+//                         }
+//                     }
+//                 }
             
-        }
-    }
-}
+//         }
+//     }
+// }
   

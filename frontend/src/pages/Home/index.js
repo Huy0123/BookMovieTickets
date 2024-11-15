@@ -46,7 +46,7 @@ function Home() {
 
        
     }, []);
-    const newmovie = (movies.sort((a,b)=> new Date(b.release_date) - new Date(a.release_date))).slice(0,3)
+    const newmovie = (movies.sort((a,b)=> new Date(b.release_date) - new Date(a.release_date))).slice(0,4)
     console.log("newmovie",newmovie)
     const movieshowing =movies.filter(movies=>new Date(movies.release_date)< new Date())
     console.log("movieshowing",movieshowing)

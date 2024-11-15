@@ -73,14 +73,14 @@ function ChooseCinema() {
 
     return (
         <div className={cx('container')}>
-            <div className={cx('wrap-card')}>
+            <div className={cx('wrap-card')} data-bs-ride="carousel">
                 {visibleMovies.map((movie) => (
                     <div 
                         key={movie._id} 
                         className={cx('the')} 
                         // Handle movie selection
                     >
-                        <img src={movie.poster} alt={movie.title} className={cx('movie-image')} onClick={() => handleSelectMovie(movie._id)} />
+                        <img src={movie.poster2} alt={movie.title} className={cx('movie-image')} onClick={() => handleSelectMovie(movie._id)} />
                         <div className={cx('content-movie')}>
                             <h3 className={cx('movie-title')} onClick={() => handleSelectMovie(movie._id)} >{movie.title}</h3>
                             <button 
@@ -89,7 +89,7 @@ function ChooseCinema() {
                             >
                                 Xem Trailer
                             </button>
-                            <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
+                           
                         </div>
                     </div>
                 ))}
@@ -104,7 +104,7 @@ function ChooseCinema() {
                 </button>
             </div>
 
-            {selectedMovie && ( // Show details when a movie is selected
+            {/* {selectedMovie && ( // Show details when a movie is selected
                 <div id="wrap-content" className={cx('wrap-content', 'my-5')}>
                     <div className="row">
                         <div className={cx('movie-detail', 'col-4')}>
@@ -144,7 +144,8 @@ function ChooseCinema() {
                         </div>
                     </div>
                 </div>
-            )}
+            )} */}
+            <TrailerModal isOpen={isModalOpen} onClose={closeModal} trailerUrl={trailerUrl} />
         </div>
     );
 }
