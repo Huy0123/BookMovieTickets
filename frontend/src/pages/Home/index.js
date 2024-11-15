@@ -46,13 +46,14 @@ function Home() {
 
        
     }, []);
-    const newmovie = (movies.sort((a,b)=> new Date(b.release_date) - new Date(a.release_date))).slice(0,3)
-    console.log("newmovie",newmovie)
+    
     const movieshowing =movies.filter(movies=>new Date(movies.release_date)< new Date())
     console.log("movieshowing",movieshowing)
     const upcomingmovie =movies.filter(movies=>new Date(movies.release_date)> new Date())
     const totalPages = Math.ceil(movieshowing.length / moviesPerPage);
     const comingTotalPages = Math.ceil(upcomingmovie.length / moviesPerPage);
+    const newmovie = (movieshowing.sort((a,b)=> new Date(b.release_date) - new Date(a.release_date))).slice(0,3)
+    console.log("newmovie",newmovie)
 
    
 

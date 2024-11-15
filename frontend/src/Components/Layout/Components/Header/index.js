@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // Import Tippy styles
+import Cookies from 'js-cookie';
 
 const cx = classNames.bind(styles);
 
@@ -54,6 +55,7 @@ function Header() {
             console.log("tk",token)
             if (userId) {
                 try {
+                    
                     const response = await axios.get(`http://localhost:8080/v1/Users/getUserbyid`, {
                         withCredentials: true,
                         headers: {
@@ -61,12 +63,23 @@ function Header() {
                         }
                         
                     });
+                    
                     console.log(response.data)
                     setFullname(response.data.userFound.fullname);
                     setIsLoggedIn(true);
                     
                 } catch (error) {
-                    console.error('Error fetching user data:', error);
+                    const refresh_token = await axios.post(`http://localhost:8080/v1/Users/refresh_token`, {},
+                        {
+                            withCredentials: true,
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        }
+
+                    )
+                    console.log(refresh_token)
+                    
                 }
             }
         };
