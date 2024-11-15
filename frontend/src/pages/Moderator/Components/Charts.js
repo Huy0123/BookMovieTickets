@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useCallback} from "react";
 import axios from "axios";
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
@@ -7,15 +7,15 @@ import classNames from 'classnames/bind';
 import styles from './style.module.scss';
 const cx = classNames.bind(styles);
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-const Charts = () => {
+const Charts = ({cinema_id}) => {
 
     const [nowShowing, setNowShowing] = useState([]);
     const [comingSoon, setComingSoon] = useState([]);
     const [totalTickets, setTotalTickets] = useState(0); // Tổng số vé đã bán
     const [totalRevenueByDay, setTotalRevenueByDay] = useState({}); // Doanh thu theo ngày
     const [totalRevenueByMonth, setTotalRevenueByMonth] = useState({}); // Doanh thu theo tháng
-
-    const fetchMovies = async () => {
+    
+    const fetchMovies = useCallback( async () => {
         try {
             const response = await axios.get("http://localhost:8080/v1/getMovies");
             splitMovies(response.data);
@@ -23,11 +23,12 @@ const Charts = () => {
         } catch (error) {
             console.error(error);
         }
-    }
+    }, [])
 
-    const fetchTotalRevenue = async () => {
+    const fetchTotalRevenue = useCallback(async () => {
+        if(!cinema_id) return;
         try {
-            const response = await axios.get(`http://localhost:8080/v1/Payment/getPaymentByCinemaId/66fbf96791e08c377610139b`);
+            const response = await axios.get(`http://localhost:8080/v1/Payment/getPaymentByCinemaId/${cinema_id}`);
             const payments = response.data.payment;
             // Sau khi có dữ liệu, tính toán doanh thu theo tháng và theo ngày
             calculateMonthlyRevenue(payments);
@@ -36,7 +37,7 @@ const Charts = () => {
         } catch (error) {
             console.error(error);
         }
-    };
+    }, [cinema_id   ])
 
     const calculateMonthlyRevenue = (payments) => {
         const monthRevenue = {};
@@ -81,10 +82,9 @@ const Charts = () => {
     const calculateTotalTickets = (payments) => {
         let total = 0;
         const currentMonth = dayjs().format("YYYY-MM");
-        const today = dayjs().date();
         payments.forEach((payment) => {
             const month = dayjs(payment.payment_date).format("YYYY-MM");
-            if (month === currentMonth && dayjs(payment.payment_date).date() <= today)
+            if (month === currentMonth)
                 total++;
         });
         setTotalTickets(total);
@@ -92,7 +92,7 @@ const Charts = () => {
     useEffect(() => {
         fetchMovies();
         fetchTotalRevenue();
-    }, []);
+    }, [fetchMovies, fetchTotalRevenue]);
 
     const splitMovies = async (movies) => {
         const now = new Date();

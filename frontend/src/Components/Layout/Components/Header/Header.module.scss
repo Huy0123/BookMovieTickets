@@ -1,4 +1,17 @@
-
+@keyframes changeColor {
+    0% {
+        background-color: #f266ac; /* Màu ban đầu */
+        box-shadow: inset 0px 0px 25px 10px rgba(237, 122, 179, 0.596);
+    }
+    50% {
+        background-color: #f550a3; /* Màu khi hover */
+        box-shadow: inset 0px 0px 25px 10px rgba(237, 122, 179, 0.8);
+    }
+    100% {
+        background-color: #f266ac; /* Màu ban đầu */
+        box-shadow: inset 0px 0px 25px 10px #bf72ec96;
+    }
+}
 .wrapper {
    
     transition: background-color 0.5s ease;
@@ -14,20 +27,26 @@
             .wrap{   
                 // padding-bottom: 8px;
                 // border-bottom: 2px solid #fff;   
-              
+                
                 
                 .logo {
                     width: 100%; // Logo width
-                    height: 45.6px; // Logo height
+                    height: 60px; // Logo height
                     object-fit: cover;
-                    margin: 1px auto;
+                    // margin: 1px auto;
                      cursor: pointer;
-                     background-color: rgba(223, 90, 157, 0.597);
+                     background-color: rgba(223, 90, 157, 0);
                      box-shadow:inset 0px 0px 25px 10px rgba(237, 122, 179, 0.596);
-                     border-radius: 10px;
+                   
+                     animation: changeColor 5s ease infinite;
+                     &:hover{
+                       
+                     }
                 }
                 .wrap1{
-
+                    display: flex;
+                    align-items: center;
+                    justify-content: end;
                   
                     .sign {
                     //   margin: 2px auto;
@@ -36,16 +55,21 @@
                             width: 125px; // Button width
                             height: 40px; // Full width for buttons
                             // border-radius: 40px; // Rounded corners for the button
-                            font-size: 14px;
-                            background-color: #2CD3E1;
-                            border: none;
-                            border-radius: 10px;
-                            color: #fff;
                           
-                            
+                            padding: auto;
+                            font-size: 16x;
+                            background-color: #00000000;
+                            border: none;
+                            border-radius: 30px;
+                            color: #fff;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: background-color 0.3s ease-out;
                             &:hover{
-                                background-color: #2fdfef;
-                              
+                                background-color: #2CD3E1;
+                                box-shadow: 2px 2px 5px #43dceaaa;
+                                cursor: pointer;
                             }
                         }
                     }
@@ -74,17 +98,20 @@
                    
 
                     .wrap2 {
-             
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
                         .btn-choose,
                         .btn-schedule{
-                            width: 125px; // Button width
-                            height: 30px; // Full width for buttons
+                            
+                            width: 150px; // Button width
+                            height: 50px; // Full width for buttons
                             border: none ;
                             font-size: 14px;
                             background-color: #00000000;
-                            
+                            transition: background-color 0.3s ease-out;
                             color: #fff;
-                            
+                            font-size: 1.1em;
                            
                             .icon{
                                 margin-right: 6px;
@@ -113,7 +140,7 @@
     .dropdown-menu {
         background-color: #f266acdd;
         border: 5px solid #A459D1 ;
-        width:83%;
+        width:84%;
         position: absolute;
         color: #fff;
         padding: 40px ;
@@ -125,6 +152,8 @@
         overflow-y: auto;
         column-gap: min(10px,30px);
         z-index: 1000;
+        top: 100%;
+        left: 8%;
      
     }
 

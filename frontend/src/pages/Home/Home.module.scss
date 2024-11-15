@@ -25,11 +25,13 @@
 @keyframes floatIn {
     0% {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(30px) ;
+     
     }
     100% {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) ;
+    
     }
   }
   .float-in {
@@ -57,8 +59,8 @@
             img{
                 z-index: 0  ;
                 width: 100%;
-                max-height: 680px;
-              
+                height: 680px;
+                
                 object-fit: cover;
                 animation: zoom-in-out 3s forwards  ease-in-out;
             }
@@ -70,12 +72,13 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: 
-                            linear-gradient( to bottom, rgba(0, 0, 0, 0.181), rgba(0, 0, 0, 0) 30%),
+                // box-shadow:inset 0px 0px 100px 5px #ffb74cbe;
+                // background: 
+                //             linear-gradient( to bottom, rgba(0, 0, 0, 0.181), rgba(0, 0, 0, 0) 30%),
                          
-                            linear-gradient( to top, rgba(0, 0, 0, 0.158),rgb(0, 0, 0,0) 30%);
+                //             linear-gradient( to top, rgba(0, 0, 0, 0.158),rgb(0, 0, 0,0) 30%);
                 z-index: 10; /* Đặt z-index lớn hơn để overlay nằm trên hình */
-                color: #Fff;
+                color: #F266AB;
                 
                 .wrap-banner-con{
                     background: 
@@ -84,7 +87,7 @@
                     
                 
                 .title{
-                    background-image: linear-gradient(to right, #FFf, #ffffffb4); /* Màu gradient */
+                    background-image: linear-gradient(to right, #F266AB, #f897c7); /* Màu gradient */
                     -webkit-background-clip: text; /* Cắt background theo chữ */
                     -webkit-text-fill-color: transparent;
                     width: 80%;
@@ -98,7 +101,7 @@
                     animation: floatIn 1.2s ease-out forwards;
                 }
                 .wrap-decr{
-                    background:#6a69693a;
+                    background:#a559d14c;
                     width: 80%;
                     
                    text-align: justify;
@@ -122,39 +125,42 @@
                         width: 25%;
                         height: 70%;
                         background-color: rgba(121, 101, 101, 0.168);
-                        color: #FFf;
+                        color: #F266AB;
                         border-radius: 15px;
                         box-shadow: 0 1px 5px solid rgba(218, 216, 216, 0.168);
                         
                         &:hover{
-                            background-color: rgba(255, 255, 255, 0);
-
-                            box-shadow: 2px 2px 15px  rgb(88, 0, 255),-2px -2px 50px  rgb(233, 0, 255);
+                            // background-color: #2CD3E1;
+                            color: #2CD3E1;
+                            // box-shadow: 2px 2px 15px  rgb(88, 0, 255),-2px -2px 50px  rgb(233, 0, 255);
                         }
                     }
                     .trailer-ban{
                         width: 25%;
                         height: 70%;
-                        color: #FFf;
+                        color: #F266AB;
                         background-color: #00000000;
                         border: none;
                         text-decoration: underline;
                         text-align: center;
                         
                         .icon-play{
-                            color: #FFf;
+                            color: #F266AB;
                             float: right; 
                             font-size:    1em ; 
                             margin-top: 6px;   
                           
-                        }                
+                        }   
+                        &:hover{
+                            color: #2CD3E1;
+                        }             
                     }
                 }
                 }
                 
             }
         }
-    
+    .rowerr{}
     .rower{    
         // background-color: #1c1c1c;
         // animation: floatIn 1.2s ease-out forwards;
@@ -199,6 +205,7 @@
             img{
                 border-radius: 15px;
                 max-height:77% ;
+                object-fit: cover;
             }
             .title-movie {
                 color: #FFf;
@@ -239,13 +246,14 @@
                 align-items: center;
                 padding: 10px;
                 border-radius: 15px;
-                transition: opacity 0.3s ease;
+                transition: opacity 0.5s ease;
                 z-index: 4; /* Đảm bảo nó nằm trên tất cả các thành phần khác */
             }
     
             &:hover .wrap-hover {
                 display: flex; /* Hiện khi hover */
                 color: #FFf;
+                animation: floatIn 0.3s ease-out forwards;
             }
         }
     }
