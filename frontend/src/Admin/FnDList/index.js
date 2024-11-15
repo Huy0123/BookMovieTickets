@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './FnDList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faPlus, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faPenToSquare, faPlus, faSearch, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditFnD from '../EditFnD';
 import images from '~/assets/img';
 import axios from 'axios';
@@ -132,26 +132,7 @@ const handleAdd = async () => {
         </div>
         <h2>Danh sách đồ ăn</h2>   
         <div className={cx('table-con')} >
-        <div className={cx('finding')}>
-                <div className={cx('search')}>
-                  <FontAwesomeIcon  className="fs-3 me-2" icon={faSearch} />
-                  <input 
-                    type="text" 
-                    placeholder="Tìm kiếm..." 
-                    value={searchTerm} 
-                    onChange={handleSearchChange} 
-                  />
-                </div>
-              <div className={cx('filter')} ><FontAwesomeIcon className="fs-3 " icon={faFilter} /> 
-              <select id="options" value={selectedOption} >
-                <option value="">--Chọn mục--</option>
-                <option value="option1">Email</option>
-                <option value="option2">Số điện thoại</option>
-                <option value="option3">role</option>
-                <option value="option4">Tài Khoản</option>
-              </select>
-              </div>
-              </div>
+
         <table striped bordered hover>
         <thead>
           <tr>
@@ -160,7 +141,7 @@ const handleAdd = async () => {
             <th>Loại</th>
             <th>ảnh</th>
             <th>Giá</th>
-            <th>Hành động</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -174,8 +155,9 @@ const handleAdd = async () => {
               <td onClick={() => handleImageClick(item.Image)}><img className={cx('img-food')} src={item.Image}/></td>
               <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
               <td>
-              <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditFnD isOpen={isModalOpen} onClose={closeModalEdit}  foodId={foodId}/>
-                <button type='button' onClick={() => openModalDelete(item._id)}>xóa</button>
+              <FontAwesomeIcon className={cx('btn-edit')} icon={faPenToSquare} onClick={() => openModalEdit(item._id)}/> 
+              <EditFnD isOpen={isModalOpen} onClose={closeModalEdit}  foodId={foodId}/>
+              <FontAwesomeIcon className={cx('btn-del')} icon={faTrash} onClick={() => openModalDelete(item._id)}/>
               </td>
             </tr>
             )
@@ -202,13 +184,17 @@ const handleAdd = async () => {
             </div>
             <div className={cx('content')}>
                 <h4 className={cx('title')}>Loại</h4>
-                <input 
+                <select 
                     type="text" 
                     name="category" 
                     className={cx('type', 'form-info')}    
                     onChange={handleInputChange}
                             value={formData.category} 
-                />
+                >
+                    <option value="" disabled>Chọn loại</option>
+                    <option value="food">food</option>
+                    <option value="drink">drink</option>
+                </select>
             </div>            
             <div className={cx('content')}>
                 <h4 className={cx('title')}>Thêm ảnh</h4>

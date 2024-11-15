@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './CinemaList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faPlus, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faPenToSquare, faPlus, faSearch, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditCinema from '../EditCinema';
 import axios from 'axios';
 
@@ -16,7 +16,7 @@ function CinemaList() {
   const [selectedCinemaId, setSelectedCinemaId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
-  const [Cinemas, setSinemas] = useState([]);
+  const [Cinemas, setCinemas] = useState([]);
   const [cinemaIdToDelete,setCinemaIdToDelete] = useState(null);
   const [nameCinema, setNameCinema] = useState('');
   const [username, setUsername] = useState('');
@@ -25,6 +25,7 @@ function CinemaList() {
   const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [cfpassword,setCfpassword]= useState('');
+
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -52,7 +53,7 @@ function CinemaList() {
     const get = async () => {
       const getCinemaList = await axios.get('http://localhost:8080/v1/getCinemas');
       console.log(getCinemaList.data);
-      setSinemas(getCinemaList.data);
+      setCinemas(getCinemaList.data);
       setSelectedCinemaId('')
     };
     get();
@@ -115,6 +116,16 @@ function CinemaList() {
     setShowModal(false); // Đóng modal
     setCinemaIdToDelete(null); // Reset ID
 };
+const filteredCinemas = Cinemas.filter((user) => {
+  return (
+    (user.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.user_id?.username || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.user_id?.num || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.address || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.user_id?.email || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
+});
+
   return (
     <div className={cx('container')}>
       <div className={cx('top')}>
@@ -134,16 +145,6 @@ function CinemaList() {
               onChange={handleSearchChange}
             />
           </div>
-          <div className={cx('filter')}>
-            <FontAwesomeIcon className="fs-3" icon={faFilter} />
-            <select id="options" value={selectedOption}>
-              <option value="">--Chọn mục--</option>
-              <option value="option1">Email</option>
-              <option value="option2">Số điện thoại</option>
-              <option value="option3">role</option>
-              <option value="option4">Tài Khoản</option>
-            </select>
-          </div>
         </div>
         <table striped bordered hover>
           <thead>
@@ -158,7 +159,7 @@ function CinemaList() {
             </tr>
           </thead>
           <tbody>
-            {Cinemas.map((item, index) => {
+            {filteredCinemas.map((item, index) => {
               return (
                 <tr >
                   <td>{index + 1}</td>
@@ -168,13 +169,14 @@ function CinemaList() {
                   <td>{item.user_id?.email || "no"}</td>
                   <td>{item.address || "no"}</td>
                   <td>
-                    <button onClick={() => openModalEdit(item._id)}>Sửa</button>
+                  <FontAwesomeIcon className={cx('btn-edit')} icon={faPenToSquare} onClick={() => openModalEdit(item._id)}/> 
+
                     <EditCinema
                       isOpen={isModalOpen}
                       onClose={closeModalEdit}
                       cinemaId={selectedCinemaId} // Pass selected cinema ID
                     />
-                    <button onClick={() => openModalDelete(item._id)}>Xóa</button>
+                    <FontAwesomeIcon className={cx('btn-del')} icon={faTrash} onClick={() => openModalDelete(item._id)}/>
                   </td>
                 </tr>
               );

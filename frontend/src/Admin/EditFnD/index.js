@@ -85,13 +85,17 @@ const EditFnD = ({ isOpen, onClose,foodId }) => {
 
                     <div className={cx("content")}>
                         <h4 className={cx("title")}>Loại</h4>
-                        <input
+                        <select
                             type="text"
                             name="category"
                             className={cx("form-info")}
                             onChange={handleInputChange}
                             value={formData.category}
-                        />
+                        >
+                             <option value="" disabled>Chọn loại</option>
+                    <option value="food">food</option>
+                    <option value="drink">drink</option>
+                        </select>
                     </div>
 
                     <div className={cx("content")}>

@@ -131,7 +131,17 @@ const SeatList = ({ cinema_id }) => {
             }
         }
     };
+    const sortedSeats = seats.sort((a, b) => {
+        const rowA = a.seat_number.match(/[A-Za-z]+/)[0];
+        const numberA = parseInt(a.seat_number.match(/\d+/)[0]);
+        const rowB = b.seat_number.match(/[A-Za-z]+/)[0];
+        const numberB = parseInt(b.seat_number.match(/\d+/)[0]);
 
+        if (rowA === rowB) {
+            return numberA - numberB; // Sort by number if rows are the same
+        }
+        return rowA.localeCompare(rowB); // Otherwise, sort by row letter
+    });
     return (
         <>
             {/* Add seats form */}
@@ -149,8 +159,13 @@ const SeatList = ({ cinema_id }) => {
                         </div>
                         <div className="mb-3">
                             <label htmlFor="seat-type" className={cx('form-label')}>Loại Ghế</label>
-                            <input type="text" className={cx('form-control')} id="seat-type" value={seatType} onChange={(e) => setSeatType(e.target.value)} />
+                            <select type="text" className={cx('form-control')} id="seat-type" value={seatType} onChange={(e) => setSeatType(e.target.value)}>
+                                <option value="" disabled>Chọn loại ghế</option>
+                                <option value="Vip">Vip</option>
+                                <option value="Standard">Standard</option>
+                            </select>
                         </div>
+
                         <div className="mb-3">
                             <label htmlFor="amount" className={cx('form-label')}>Giá Ghế</label>
                             <input type="text" className={cx('form-control')}id="amount" value={amount} onChange={(e) => setAmount(e.target.value)}/>
@@ -190,7 +205,7 @@ const SeatList = ({ cinema_id }) => {
 
                                             return (
                                                 <div key={rowIndex} className={cx('group-seat')}>
-                                                    <div  className={cx('seat-name', 'me-4')}><span>{rowName}</span></div>
+                                                    <div className={cx('seat-name', 'me-4')}><span>{rowName}</span></div>
                                                     <div className={cx('group-btn-seat')}>
                                                         {availableSeatsInRow.map(seatInfo => {
                                                             const seatNumber = seatInfo.seat_number;
@@ -203,19 +218,11 @@ const SeatList = ({ cinema_id }) => {
                                                                     className={cx('num-seat', {
                                                                         'vip-seat': seatInfo.seat_type.toLowerCase() === 'vip',
                                                                         'selected-seat': selectedSeat === seatNumber,
-
                                                                     })}
                                                                     style={{
-                                                                        backgroundColor: selectedSeat === seatNumber ? '#5CB8E4' : seatInfo.seat_status ? '#f5004f' : '',
-                                                                        color: seatInfo.seat_status ? '#000' : '',
+                                                                        backgroundColor: selectedSeat === seatNumber ? '#5CB85C' : '',
                                                                     }}
-                                                                    onClick={() => {
-                                                                        if (!seatInfo.seat_status) {
-                                                                            handleSeatClick(seatNumber, seatId);
-                                                                        }
-                                                                    }}
-                                                                    disabled={seatInfo.seat_status}
-                                                                    aria-label={`Seat ${seatNumber} ${seatInfo.seat_status ? 'occupied' : 'available'}`}
+                                                                    onClick={() => handleSeatClick(seatNumber, seatId)}
                                                                 >
                                                                     {seatNumber}
                                                                 </button>
@@ -239,7 +246,7 @@ const SeatList = ({ cinema_id }) => {
                                                     <p>Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(seatDetails.price)}</p>
                                                 </div>
                                                 <div>
-                                                    <button className={cx('btn','  me-2')}>Sửa</button>
+                                                <button className={cx('btn', 'me-2')} data-bs-toggle="modal" data-bs-target="#edit-seat" onClick={() =>fetchSeat(seatDetails._id)}>Sửa</button>
                                                     <button className={cx('btn','  me-2')} onClick={() => handleDeleteSeat(seatDetails._id)}>Xóa</button>
                                                 </div>
                                                 </div>
@@ -287,7 +294,11 @@ const SeatList = ({ cinema_id }) => {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="seat-type" className="form-label">Loại Ghế</label>
-                                    <input type="text" className="form-control" id="seat-type" name="seat_type" value={seatUpdate.seat_type} onChange={handleInputChange} />
+                                    <select type="text" className="form-control" id="seat-type" name="seat_type" value={seatUpdate.seat_type} onChange={handleInputChange} >
+                                    <option value="" disabled>Chọn loại ghế</option>
+                                        <option value="Vip">Vip</option>
+                                        <option value="Standard">Standard</option>
+                                    </select>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="price" className="form-label">Giá Ghế</label>

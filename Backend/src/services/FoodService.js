@@ -57,6 +57,10 @@ class FoodService {
         return {food}
     }
     deleteFood = async(idFood) =>{
+        const existingFood = await FoodModel.findById(idFood);
+        if(existingFood.Image){
+            await upload.deleteFile(existingFood.Image);
+        }
         return await FoodModel.findByIdAndDelete(idFood);
     }
 }

@@ -86,11 +86,11 @@ class MovieService {
 
     deleteMovie = async (id) => {
         const existingMovie = await movie.findById(id);
-        if (existingMovie.poster){
-            await upload.deleteFile(existingMovie.poster);
+        if (existingMovie.poster1){
+            await upload.deleteFile(existingMovie.poster1);
         }
-        if (existingMovie.trailer){
-            await upload.deleteFile(existingMovie.trailer);
+        if (existingMovie.poster2){
+            await upload.deleteFile(existingMovie.poster2);
         }
         return await movie.findByIdAndDelete(id);
     }
