@@ -13,4 +13,5 @@ router.post('/callback',PaymentController.callback)
 router.post('/status',PaymentController.status)
 router.post('/',PaymentController.payment)
 router.get('/getPaymentByCinemaId/:id',PaymentController.getPaymentByCinemaId)
+router.get('/getPaymentByMovie',PaymentController.getPaymentByMovie)
 module.exports = router;

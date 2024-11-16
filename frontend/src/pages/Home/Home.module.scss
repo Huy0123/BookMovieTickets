@@ -59,7 +59,7 @@
             img{
                 z-index: 0  ;
                 width: 100%;
-                height: 680px;
+                height: 670px;
                 
                 object-fit: cover;
                 animation: zoom-in-out 3s forwards  ease-in-out;
@@ -192,6 +192,7 @@
         
         .wrap {
             width: 300px;
+            height: 540px;
             position: relative;
             z-index: 3; /* Đảm bảo tiêu đề và nút không bị chồng lên bởi overlay */
             padding: 10px;
@@ -204,8 +205,10 @@
             }
             img{
                 border-radius: 15px;
-                max-height:77% ;
+                
+                // max-height:77% ;
                 object-fit: cover;
+                
             }
             .title-movie {
                 color: #FFf;
@@ -238,7 +241,7 @@
             .wrap-hover {
                 position: absolute;
                 width: 94%;
-                height: 77%;
+                height: 78%;
                 background-color: #f266ac56; /* Màu nền khi hover */
                 color: #fff; /* Màu chữ */
                 display: none; /* Ẩn mặc định */

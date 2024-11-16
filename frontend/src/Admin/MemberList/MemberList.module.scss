@@ -54,7 +54,6 @@
           
             position: absolute;
             top: 10%;
-            left: 35%;
             display: flex;
             input{
                 width: 100%;
@@ -89,14 +88,11 @@
                 padding:4px 10px ;
                 text-align: center;
                 // background-color: rgba(232, 215, 166, 0.595);
-                button{
-                    padding:2px 10px;
-                    border: none;
-                    border-radius: 5px;
-                    background-color: rgba(205, 38, 38, 0);
+                .btn-del{
+                    color: #000;
                     &:hover{
-                        background-color: rgba(244, 27, 27, 0.696);
-                        color:#eceaeadb;
+                        color:#ed000c;
+                        cursor: pointer;
                     }
                 }
             }

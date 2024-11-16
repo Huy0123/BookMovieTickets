@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './VoucherList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faPlus, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faPenToSquare, faPlus, faSearch, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditVoucher from '../EditVoucher';
 import images from '~/assets/img';
 import axios from 'axios';
@@ -137,26 +137,6 @@ const handleAdd = async () => {
         </div>
         <h2>Danh sách mã giảm giá</h2>   
         <div className={cx('table-con')} >
-        <div className={cx('finding')}>
-                <div className={cx('search')}>
-                  <FontAwesomeIcon  className="fs-3 me-2" icon={faSearch} />
-                  <input 
-                    type="text" 
-                    placeholder="Tìm kiếm..." 
-                    value={searchTerm} 
-                    onChange={handleSearchChange} 
-                  />
-                </div>
-              <div className={cx('filter')} ><FontAwesomeIcon className="fs-3 " icon={faFilter} /> 
-              <select id="options" value={selectedOption} >
-                <option value="">--Chọn mục--</option>
-                <option value="option1">Email</option>
-                <option value="option2">Số điện thoại</option>
-                <option value="option3">role</option>
-                <option value="option4">Tài Khoản</option>
-              </select>
-              </div>
-              </div>
         <table striped bordered hover>
         <thead>
           <tr>
@@ -167,7 +147,7 @@ const handleAdd = async () => {
             <th>Ngày bắt đầu</th>
             <th>Ngày kết thúc</th>
             <th>Điểm đổi</th>
-            <th>Hành động</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -182,8 +162,9 @@ const handleAdd = async () => {
                         <td>{new Date(item.end_date).toLocaleDateString()}</td>
                         <td>{item.points}</td>
                         <td>
-                        <button onClick={() => openModalEdit(item._id)}>Sửa</button> <EditVoucher isOpen={isModalOpen} vouncherId={vouncherId} onClose={closeModalEdit} />
-                        <button onClick={() => openModalDelete(item._id)}>xóa</button>
+                        <FontAwesomeIcon className={cx('btn-edit')} icon={faPenToSquare} onClick={() => openModalEdit(item._id)}/> 
+                        <EditVoucher isOpen={isModalOpen} vouncherId={vouncherId} onClose={closeModalEdit} />
+                        <FontAwesomeIcon className={cx('btn-del')} icon={faTrash} onClick={() => openModalDelete(item._id)}/>
                     </td>
             </tr>
                 )

@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './MemberList.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faPenToSquare, faSearch, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -74,14 +74,10 @@ function MemberList() {
 
     const filteredUsers = getUsers
       .filter(user => {
-        if (selectedOption === "User" && user.role !== "User") return false;
-        if (selectedOption === "Cinema" && user.role !== "Cinema") return false;
-        return true;
-      })
-      .filter(user => {
         return (
           user.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
           user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.num.toLowerCase().includes(searchTerm.toLowerCase()) ||
           user.email.toLowerCase().includes(searchTerm.toLowerCase())
         );
       });
@@ -100,14 +96,6 @@ function MemberList() {
                         onChange={handleSearchChange} 
                       />
                     </div>
-                    <div className={cx('filter')}>
-                      <FontAwesomeIcon className="fs-3 " icon={faFilter} />
-                      <select id="options" value={selectedOption} onChange={handleFilterChange}>
-                        <option value="">--Chọn mục--</option>
-                        <option value="User">User</option>
-                        <option value="Cinema">Cinema</option>
-                      </select>
-                    </div>
                 </div>
                 <table striped bordered hover>
                     <thead>
@@ -117,8 +105,7 @@ function MemberList() {
                             <th>Tài Khoản</th>
                             <th>Số điện thoại</th>
                             <th>Email</th>
-                            <th>Vai trò</th>
-                            <th>Hành Động</th>
+                            <th>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,9 +117,8 @@ function MemberList() {
                                     <td>{item.username}</td>
                                     <td>{item.num}</td>
                                     <td>{item.email}</td>
-                                    <td>{item.role}</td>
                                     <td>
-                                        <button className={cx('btn-del')} type='button' onClick={() => openModal(item._id)}>Xóa</button>
+                                        <FontAwesomeIcon className={cx('btn-del')} icon={faTrash} onClick={() => openModal(item._id)}/>
                                     </td>
                                 </tr>
                             )

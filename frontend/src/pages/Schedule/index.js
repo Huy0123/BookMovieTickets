@@ -64,7 +64,7 @@ function Schedule() {
 
     return (  
         <div className={cx('container')}>
-            <div className={cx('search','pt-4')}>
+            {/* <div className={cx('search','pt-4')}>
                 <div className='row'>
                     <div className='col-lg-1'></div>
                     <div className={cx('wrap','d-flex justify-content-between ', 'col-lg-10','pb-5')}>
@@ -97,7 +97,7 @@ function Schedule() {
                     </div>
                     <div className='col-lg-1'></div>
                 </div>
-            </div>          
+            </div>           */}
 
             {/* Add movie */}
             <div className={cx('content', 'mt-5')}>
@@ -110,7 +110,7 @@ function Schedule() {
                                     <div className="row">
                                         <div className={cx('movie-detail', 'col-4')}>
                                             <img
-                                                src={movie.image || images.banner4}
+                                                src={movie.poster2}
                                                 className={cx('d-block')}
                                                 alt={movie.name}
                                             />
