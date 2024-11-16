@@ -196,6 +196,7 @@ const DashBoard = () => {
                                 'rgb(201, 203, 207)'
                               ],
                             borderWidth: 1,
+                            barThickness: 85
                         },
                     ],
                 }}
