@@ -8,6 +8,8 @@ import axios from 'axios';
 import Select from 'react-select';
 import { useLocation, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+import apiClient from "~/services/apiClient";
+
 const cx = classNames.bind(styles);
 function Payment(){
     const location = useLocation();
@@ -71,7 +73,7 @@ function Payment(){
     const handlePromoChange = async (selectedOption) => {
         if (selectedOption) {
             setPointid(selectedOption.value);
-            const promotion = await axios.get(`http://localhost:8080/v1/getPointByID/${selectedOption.value}`)
+            const promotion = await apiClient.get(`getPointByID/${selectedOption.value}`)
                     console.log("promotion",promotion.data.discount) 
                     settotalprice(order.totalPrice-(order.totalPrice*promotion.data.discount)) // Cập nhật pointid từ giá trị đã chọn
             console.log("Selected Point ID:", selectedOption.value); 
@@ -88,7 +90,7 @@ function Payment(){
             const token = localStorage.getItem('userToken')
             if (userId) {
                 try {
-                    const response = await axios.get(`http://localhost:8080/v1/Users/getUserbyid`, {
+                    const response = await apiClient.get(`Users/getUserbyid`, {
                         withCredentials: true,
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -104,7 +106,7 @@ function Payment(){
                     console.log(response.data.userFound.promotions_id)
                     let Foods=[]
                     for(const food of order.foodId){
-                        const foodin4 = await axios.get(`http://localhost:8080/v1/Food/getFoodById/${food.foodid}`)
+                        const foodin4 = await apiClient.get(`Food/getFoodById/${food.foodid}`)
                         console.log('foodin4',{name:foodin4.data.food.name,quantity:food.count})
                         Foods.push({name:foodin4.data.food.name,quantity:food.count})
                         
@@ -195,7 +197,7 @@ function Payment(){
             
             }
            
-            const orderCreater=await axios.post('http://localhost:8080/v1/Booking',Oder)
+            const orderCreater=await apiClient.post('Booking',Oder)
             console.log("orderCreater",orderCreater.data)
             console.log("orderCreater",orderCreater.data.order_infor)
    
@@ -203,7 +205,7 @@ function Payment(){
                 const data = { amount: totalprice ,orderId:orderCreater.data.orders_infor._id};
                 console.log("data",data)
             if(selectMethodPay==="momo"){
-                const resPay = await axios.post('http://localhost:8080/v1/Payment', data);
+                const resPay = await apiClient.post('Payment', data);
                 console.log("resPay.data",resPay.data)
                 // Chuyển hướng đến URL thanh toán
                 if (resPay.data && resPay.data.payUrl) {
@@ -211,13 +213,13 @@ function Payment(){
                 }
             }
             else if(selectMethodPay==="vnpay"){
-                const resPay = await axios.post('http://localhost:8080/v1/Payment/createrVnpay', data);
+                const resPay = await apiClient.post('Payment/createrVnpay', data);
                 if (resPay.data && resPay.data.paymentUrl) {
                     window.location.href = resPay.data.paymentUrl; // mở URL trong tab hiện tại
                 }
             }
             else if(selectMethodPay==="zalopay"){
-                const resPay = await axios.post('http://localhost:8080/v1/Payment/createrZalopay', data);
+                const resPay = await apiClient.post('Payment/createrZalopay', data);
                 console.log("data",resPay.data.data2)
                 if (resPay.data && resPay.data.data2.order_url) {
                     window.location.href = resPay.data.data2.order_url; // mở URL trong tab hiện tại
