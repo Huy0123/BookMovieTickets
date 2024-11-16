@@ -1,0 +1,104 @@
+.container-fluid {
+    background: linear-gradient(90deg, #ec50f1, #f7bf57, #ffbe33);
+    padding: 20px 0;
+  }
+  
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .logo {
+    max-width: 160px;
+    max-height: 100px;
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
+  
+  p {
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+  }
+  
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  
+    li {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #555;
+  
+      &:first-child {
+        font-weight: bold;
+        color: #000;
+      }
+    }
+  }
+  
+  /* Tô màu riêng cho từng icon */
+  .icon {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  
+    svg {
+      font-size: 24px; /* Kích thước icon */
+      cursor: pointer;
+      transition: color 0.3s, transform 0.3s;
+  
+      /* Màu mặc định */
+      color: #555;
+  
+      &:hover {
+        transform: scale(1.1); /* Hiệu ứng phóng to khi hover */
+      }
+    }
+  
+    .icon-facebook {
+      color: #4267B2; /* Màu xanh Facebook */
+      &:hover {
+        color: #365899; /* Màu xanh đậm hơn khi hover */
+      }
+    }
+  
+    .icon-youtube {
+      color: #FF0000; /* Màu đỏ YouTube */
+      &:hover {
+        color: #CC0000; /* Màu đậm hơn khi hover */
+      }
+    }
+  
+    .icon-tiktok {
+        background: linear-gradient(45deg, #69C9D0, #EE1D52); /* Màu gradient TikTok */
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent; /* Gradient text */
+        &:hover {
+          filter: brightness(1.2); /* Tăng sáng khi hover */
+        }
+      }
+  
+      .icon-instagram {
+        background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4); /* Gradient màu Instagram */
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent; /* Gradient text */
+        &:hover {
+          filter: brightness(1.2); /* Tăng sáng khi hover */
+        }
+      }
+  }
+  
