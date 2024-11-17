@@ -60,7 +60,7 @@ function Header() {
                     
                 if (token) { // Kiểm tra nếu token có tồn tại
                     try {
-                        const response = await apiClient.get('Users/getUserbyid', {
+                        const response = await apiClient.get('/Users/getUserbyid', {
                             withCredentials: true,
                             headers: {
                                 'Authorization': `Bearer ${token}`
