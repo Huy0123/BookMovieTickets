@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const UserController = require('../controllers/UserController.js')
-const SendEmailController = require('../controllers/SendEmailController')
+const SendEmailController = require('../controllers/SendEmailController.js')
 const autAdmin = require('../middleware/autAdmin.js')
 const autUser = require('../middleware/autUser.js')
 

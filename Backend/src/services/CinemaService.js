@@ -1,6 +1,6 @@
-const cinema = require('../models/Cinema');
-const showtime = require('../models/Showtime');
-const UserModel = require('../models/userModel')
+const cinema = require('../models/Cinema.js');
+const showtime = require('../models/Showtime.js');
+const UserModel = require('../models/userModel.js')
 const PaymentModel = require('../models/PaymentModel')
 const OrdersModel = require('../models/OrdersModel.js')
 const saltRounds =10

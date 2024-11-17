@@ -1,5 +1,5 @@
-const pointService = require('../services/PointService');
-const userService = require('../services/userService');
+const pointService = require('../services/PointService.js');
+const userService = require('../services/userService.js');
 class PointController{
     createPoint = async (req, res) => {
         try {

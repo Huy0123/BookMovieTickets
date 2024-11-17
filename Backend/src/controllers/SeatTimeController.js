@@ -1,4 +1,4 @@
-const SeatTimeService = require('../services/SeatTimeService');
+const SeatTimeService = require('../services/SeatTimeService.js');
 
 class SeatTimeController {
     createSeatTime = async (req, res) => {

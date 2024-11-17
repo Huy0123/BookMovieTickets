@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const showtimeController = require('../controllers/ShowtimeController')
+const showtimeController = require('../controllers/ShowtimeController.js')
 
 router.post('/createShowtime', showtimeController.createShowtime)
 router.get('/getShowtimes', showtimeController.getShowtimes)

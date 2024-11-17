@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const autUser = require('../middleware/autUser.js')
-const PaymentController = require('../controllers/paymentController')
+const PaymentController = require('../controllers/paymentController.js')
 
 router.get('/getPaymentById/:id',PaymentController.getPaymentById)
 router.get('/getPaymentByUserId/:id',PaymentController.getPaymentByUserId)

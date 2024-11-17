@@ -1,6 +1,6 @@
-const seatTime = require('../models/SeatTime')
-const showtimes = require('../models/Showtime')
-const seats = require('../models/Seat')
+const seatTime = require('../models/SeatTime.js')
+const showtimes = require('../models/Showtime.js')
+const seats = require('../models/Seat.js')
 class SeatTimeService {
 
     createSeatTime = async (data) => {

@@ -1,4 +1,4 @@
-const seat = require('../models/Seat')
+const seat = require('../models/Seat.js')
 
 class SeatService {
     createSeat = async (data) => {
