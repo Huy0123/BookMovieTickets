@@ -68,11 +68,16 @@ function BookTicket() {
         console.log("showtimeIdshowtimeId",showtimeId)
         try {
             const seatsRes = await axios.get(`http://localhost:8080/v1/getSeatTimeByShowtimeID/${showtimeId}`);
+            console.log("seas",seatsRes.data)  
             setSeats(seatsRes.data.seatTimes);
             setSelectedShowtimeId(showtimeId);
             setCinemaid(cinema_id);
             setPrice(price);
-
+            const show = await axios.get(`http://localhost:8080/v1/getShowtimeByID/${showtimeId}`);
+            console.log("show",show.data)
+            console.log("show231232132",show.data.cinema_id.name);
+            setNameCinema(show.data.cinema_id.name);
+            setRoomId(show.data.room_id.name);
             const selectedShowtimeData = seatsRes.data;
             console.log("anhyem",selectedShowtimeData)
             if (selectedShowtimeData) {
@@ -97,6 +102,7 @@ function BookTicket() {
             if (res.data.length > 0) {
                 // Nếu có suất chiếu
                 const movie = res.data.map(item => item);
+                console.log("ggggggggggg",res.data)
                 setMovies(res.data);
                 setTitle(movie[0].movie_id.title);
                 setGenre(movie[0].movie_id.genre);
@@ -110,8 +116,7 @@ function BookTicket() {
                 setDescription(movie[0].movie_id.description);
                 setTrailer(movie[0].movie_id.trailer);
                 setPoster(movie[0].movie_id.poster2);
-                setNameCinema(movie[0].cinema_id.name);
-                setRoomId(movie[0].room_id.name);
+                
             } else {
                 // Nếu không có suất chiếu thì gọi hàm getMovie2 để lấy thông tin cơ bản của phim
                 getMovie2();
