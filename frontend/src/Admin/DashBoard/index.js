@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from 'classnames/bind';
 import axios from "axios";
-import { Line, Bar } from 'react-chartjs-2';
+import {  Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from "chart.js";
 import dayjs from "dayjs";
 import style from './DashBoard.module.scss';
@@ -13,10 +13,10 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, B
 const DashBoard = () => {
     const [currentMovies, setCurrentMovies] = useState([]);
     const [comingMovies, setComingMovies] = useState([]);
-    const [showtimeByCinema, setShowtimeByCinema] = useState([]); // Số lượng suất chiếu theo rạp trong tháng
     const [totalRevenueByMonth, setTotalRevenueByMonth] = useState({}); // Doanh thu theo tháng
     const [totalRevenueByMovie, setTotalRevenueByMovie] = useState({}); // Doanh thu theo phim
     const [totalTickets, setTotalTickets] = useState(0); // Tổng số vé đã bán
+    const [totalRevenue, setTotalRevenue] = useState({}); // Tổng doanh thu
     const fetchMovies = async () => {
         try {
             const response = await axios.get("http://localhost:8080/v1/getMovies");
@@ -25,7 +25,7 @@ const DashBoard = () => {
             console.error(error);
         }
     }
-
+    
     const fetchTotalRevenue = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/v1/Payment/getPayment`);
@@ -84,54 +84,59 @@ const DashBoard = () => {
     useEffect(() => {
         fetchMovies();
         fetchTotalRevenue();
+        fetchAllCinema();
+        fetchRevenueByMovie();
     }, []);
-
-    // const fetchAllCinema = async () => {
-    //     try{
-    //         const response = await axios.get("http://localhost:8080/v1/getCinemas");
-    //         response.data.forEach(cinema => {
-    //             fetchShowtimeByCinema(cinema._id);
-    //         });
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-
-
-    // }
-
+    
+    // Thông tin rạp chiếu phim
+    const fetchAllCinema = async () => {
+        try{
+            const response = await axios.get("http://localhost:8080/v1/getShowtimeAndPaymentByCinema");
+            if (response.status === 200) {
+                setTotalRevenue(response.data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    
+    const fetchRevenueByMovie = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/v1/Payment/getPaymentByMovie");
+            if (response.status === 200) {
+                setTotalRevenueByMovie(response.data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
   
-    // const fetchShowtimeByCinema = async (id) => {
-    //     try {
-    //         const response = await axios.get(`http://localhost:8080/v1/showtime/getShowtimesByCinemaID/${id}`);
-    //         setShowtimeByCinema(response.data);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
+    
 
     return (
-        <>
-            <div className="row">
-                <div className="col">
+        <div className="container-fluid bg-white">
+            <h2 className="p-4">Dashboard</h2>
+            <div className="row justify-content-center">
+                <div className="col-3">
                     <div className="p-4 bg-primary text-white rounded">
                         <h4 className="fw-bold">Phim đang chiếu</h4>
                         <p className="mb-0">{currentMovies}</p>
                     </div>
                 </div>
 
-                <div className="col">
+                <div className="col-3">
                     <div className="p-4 bg-primary text-white rounded">
                         <h4 className="fw-bold">Phim sắp chiếu</h4>
                         <p className="mb-0">{comingMovies}</p>
                     </div>
                 </div>
-                <div className="col">
+                <div className="col-3">
                     <div className="p-4 bg-primary text-white rounded">
                         <h4 className="fw-bold">Số lượng vé đã đặt trong tháng</h4>
                         <p className="mb-0">{totalTickets}</p>
                     </div>
                 </div>
-                <div className="col">
+                <div className="col-3">
                     <div className="p-4 bg-primary text-white rounded">
                         <h4 className="fw-bold">Doanh số bán vé trong tháng</h4>
                         <p className="mb-0">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalRevenueByMonth)}</p>
@@ -139,7 +144,7 @@ const DashBoard = () => {
                 </div>
             </div>
 
-            <div>
+            <div className="mt-5">
                 <table className="table table-hover">
                     <thead>
                         <tr className="text-center">
@@ -149,60 +154,81 @@ const DashBoard = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                        {Object.keys(totalRevenue).map((cinemaId) => {
+                            const cinema = totalRevenue[cinemaId];
+                            return (
+                                <tr key={cinemaId} className="text-center">
+                                    <td>{cinema.name}</td>
+                                    <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(cinema.payments)}</td>
+                                    <td>{cinema.showtimes}</td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
 
-            <div>
+            <div className="w-100">
                 <Bar data={{
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    labels: Object.keys(totalRevenueByMovie).map((cinemaId) => totalRevenueByMovie[cinemaId].title),
                     datasets: [
                         {
                             label: 'Doanh số bán vé',
-                            data: [65, 59, 80, 81, 56, 55, 40],
+                            
+                            data: Object.keys(totalRevenueByMovie).map((cinemaId) => totalRevenueByMovie[cinemaId].payments),
                             fill: false,
-                            backgroundColor: 'rgb(255, 99, 132)',
-                            borderColor: 'rgba(255, 99, 132, 0.2)',
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                                'rgba(255, 205, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(201, 203, 207, 0.2)'
+                              ],
+                              borderColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(255, 159, 64)',
+                                'rgb(255, 205, 86)',
+                                'rgb(75, 192, 192)',
+                                'rgb(54, 162, 235)',
+                                'rgb(153, 102, 255)',
+                                'rgb(201, 203, 207)'
+                              ],
+                            borderWidth: 1,
+                            barThickness: 85
                         },
                     ],
                 }}
-                    options={{
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Biểu đồ cột cho doanh thu theo tháng',
+                options={{
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Biểu đồ cột cho doanh thu theo phim',
+                            
+                            font: {
+                                size: 16,  
+                                weight: 'bold', 
                             },
                         },
-                        transitions: {
-                            show: {
-                                animations: {
-                                    x: {
-                                        from: 0
-                                    },
-                                    y: {
-                                        from: 0
-                                    }
-                                }
-                            },
-                            hide: {
-                                animations: {
-                                    x: {
-                                        to: 0
-                                    },
-                                    y: {
-                                        to: 0
-                                    }
-                                }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true, 
+                        },
+                        x: {
+                            ticks: {
+                                autoSkip: false,  
+                                maxRotation: 0,
+                                minRotation: 0,
                             }
                         }
-                    }} />
+                    },
+                    
+                }}
+                 />
             </div>
-        </>
+        </div>
     )
 }
 

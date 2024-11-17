@@ -274,74 +274,74 @@ deleteUser = async (userId) => {
 
 
 
-refreshToken = async(token,refreshToken)=>{
+refreshToken = async ( refreshToken) => {
     try {
-        
-        if(!refreshToken || !token){
-            return {
-                message: "Authorization!",
-                code: 401
-            }
-        }
-        const decodedref = jwt.verify(refreshToken,process.env.JWT_SECRET)
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        console.log(decoded)
-        const users = await user.findOne({ _id: decoded.userId }); 
-        if(decodedref.userId != decoded.userId){
-            return {message:"Authorization!"}
-        }
-        if(users){
-            const payload ={
-                userId:users._id,  
-                fullname:users.fullname,
-                email:users.email,
-                role:users.role
-            }
-            const newToken = jwt.sign(
-                payload,
-                process.env.JWT_SECRET,
-                {
-                    expiresIn: process.env.JWT_EXPIRE
-                }
-            )
-                return {
-                    newToken, 
-                    user:{    
-                        userId:users._id,             
-                        fullname:users.fullname,
-                        email:users.email,
-                        role:users.role
-                    }
-                }
-        }else{
+        // Kiểm tra nếu refresh token hoặc access token không tồn tại
+        if (!refreshToken) {
             return {
                 message: "Authorization!",
                 code: 401
             }
         }
 
-    }  catch (error) {
-            // Kiểm tra loại lỗi (ví dụ: lỗi token hết hạn, token không hợp lệ)
-            if (error.name === 'TokenExpiredError') {
-                return {
-                    message: "Token đã hết hạn!",
-                    code: 401
-                };
-            } else if (error.name === 'JsonWebTokenError') {
-                return {
-                    message: "Token không hợp lệ!",
-                    code: 401
-                };
-            } else {
-                // Log lỗi chi tiết và trả về lỗi nội bộ server
-                console.error("Lỗi trong jwt.verify:", error.message);
-                return {
-                    message: "Lỗi trong quá trình xác thực!",
-                    code: 500
-                };
-            }
+        // Giải mã refresh token
+        const decodedref = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+        // Tìm người dùng từ database
+        const users = await user.findOne({ _id: decodedref.userId });
+        if (users) {
+            // Nếu người dùng hợp lệ, tạo payload cho token mới
+            const payload = {
+                userId: users._id,
+                fullname: users.fullname,
+                email: users.email,
+                role: users.role
+            };
+
+            // Tạo access token mới
+            const newToken = jwt.sign(payload, process.env.JWT_SECRET, {
+                expiresIn: process.env.JWT_EXPIRE // Thời gian hết hạn của token mới
+            });
+
+            return {
+                newToken,
+                user: {
+                    userId: users._id,
+                    fullname: users.fullname,
+                    email: users.email,
+                    role: users.role
+                }
+            };
+        } else {
+            return {
+                message: "Authorization!",
+                code: 401
+            };
+        }
+
+    } catch (error) {
+        // Kiểm tra các loại lỗi liên quan đến token
+        if (error.name === 'TokenExpiredError') {
+            return {
+                message: "Token đã hết hạn!",
+                code: 401
+            };
+        } else if (error.name === 'JsonWebTokenError') {
+            return {
+                message: "Token không hợp lệ!",
+                code: 401
+            };
+        } else {
+            // Log lỗi chi tiết và trả về lỗi server
+            console.error("Lỗi trong jwt.verify:", error.message);
+            return {
+                message: "Lỗi trong quá trình xác thực!",
+                code: 500
+            };
+        }
     }
-}
+};
+
 getUserAndCinema= async()=>{
     try {
         const User = await user.find({role:{$in:["Cinema", "User"]}})

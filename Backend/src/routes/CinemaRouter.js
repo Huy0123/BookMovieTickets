@@ -11,4 +11,5 @@ router.delete('/deleteCinema/:id', cinemaController.deleteCinema)
 router.get('/getCinemasByMovieID/:id', cinemaController.getCinemasByMovieID)
 router.get('/getCinemasByCity/:city', cinemaController.getCinemasByCity)
 router.get('/getCinemasByMovieIDAndCity/:id/:city', cinemaController.getCinemasByMovieIDAndCity)
+router.get('/getShowtimeAndPaymentByCinema', cinemaController.getShowtimeAndPaymentByCinema)
 module.exports = router 

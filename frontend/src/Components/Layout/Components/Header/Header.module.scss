@@ -13,7 +13,7 @@
     }
 }
 .wrapper {
-   
+   height: 80px;
     transition: background-color 0.5s ease;
   position: sticky;
   top: 0%;
@@ -21,24 +21,24 @@
   box-shadow:inset 0px 0px 100px 5px #fca420;
   
     .container {
-       
+      
         .header1{
-            
+           
             .wrap{   
                 // padding-bottom: 8px;
                 // border-bottom: 2px solid #fff;   
                 
                 
                 .logo {
-                    width: 100%; // Logo width
-                    height: 60px; // Logo height
+                    width: 50%; // Logo width
+                    height: 80px; // Logo height
                     object-fit: cover;
                     // margin: 1px auto;
                      cursor: pointer;
-                     background-color: rgba(223, 90, 157, 0);
-                     box-shadow:inset 0px 0px 25px 10px rgba(237, 122, 179, 0.596);
-                   
-                     animation: changeColor 5s ease infinite;
+                     background-color: rgba(216, 167, 192, 0);
+                     box-shadow:inset 0px 0px 25px 10px rgba(237, 122, 179, 0);
+                    
+                    //  animation: changeColor 5s ease infinite;
                      &:hover{
                        
                      }

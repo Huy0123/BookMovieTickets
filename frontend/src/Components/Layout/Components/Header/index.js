@@ -8,6 +8,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // Import Tippy styles
+import Cookies from 'js-cookie';
+import apiClient from "~/services/apiClient";
+import { clear } from '@testing-library/user-event/dist/clear';
 
 const cx = classNames.bind(styles);
 
@@ -53,21 +56,28 @@ function Header() {
             const token = localStorage.getItem('userToken')
             console.log("tk",token)
             if (userId) {
-                try {
-                    const response = await axios.get(`http://localhost:8080/v1/Users/getUserbyid`, {
-                        withCredentials: true,
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                        
-                    });
-                    console.log(response.data)
-                    setFullname(response.data.userFound.fullname);
-                    setIsLoggedIn(true);
+              
                     
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                }
+                if (token) { // Kiểm tra nếu token có tồn tại
+                    try {
+                        const response = await apiClient.get('Users/getUserbyid', {
+                            withCredentials: true,
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                
+                        console.log(response.data);
+                        setFullname(response.data.userFound.fullname);
+                        setIsLoggedIn(true);
+                    } catch (error) {
+                        console.error("Có lỗi xảy ra khi lấy dữ liệu người dùng:", error);
+                        // Xử lý khi có lỗi, ví dụ: chuyển hướng đến trang đăng nhập
+                        localStorage.clear()
+                       navigate('/signin') // Điều hướng đến trang đăng nhập
+                    }}
+                    
+                
             }
         };
        
@@ -83,7 +93,7 @@ function Header() {
             <div className={cx('dropdown-item')} onClick={() => navigate('/profile')}>
                 Thông tin cá nhân
             </div>
-            <div className={cx('dropdown-item')} onClick={() => navigate('/transaction-history')}>
+            <div className={cx('dropdown-item')} onClick={() => navigate('/history')}>
                 Lịch sử giao dịch
             </div>
             <div className={cx('dropdown-item')} onClick={() => navigate('/voucher')}>
@@ -123,10 +133,10 @@ function Header() {
             <div className={cx('container')}>
                 <div className={cx('header1')}>
                     <div className="row">
-                        <div className="col-lg-1"></div>
-                        <div className={cx('col-lg-10', 'wrap')}>
+                    
+                        <div className={cx('col-lg', 'wrap')}>
                             <div className="row">
-                                <div className="col-lg-2 " >
+                                <div className="col-lg-3 d-flex justify-content-center" >
                                     <img
                                         className={cx('logo')}
                                         src={images.logos}
@@ -135,7 +145,7 @@ function Header() {
                                     />
                                 </div>
                                
-                                <div className={cx('wrap2', 'col-lg-4')} ref={dropdownRef}>
+                                <div className={cx('wrap2', 'col-lg-3')} ref={dropdownRef}>
                                     <button
                                         type="button"
                                         className={cx('btn-choose', 'col-lg-6', 'me-3')}
@@ -204,7 +214,7 @@ function Header() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-lg-1"></div>
+                       
                     </div>
                 </div>
 

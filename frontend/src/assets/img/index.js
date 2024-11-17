@@ -4,7 +4,7 @@ const images= {
     banner3: require('~/assets/img/3V4kLQg0kSqPLctI5ziYWabAZYF.jpg'),
     banner4: require('~/assets/img/joker-sneakshow.webp'),
     banner5: require('~/assets/img/venom.webp'),
-    logos: require('~/assets/img/$RX8K841.png'),
+    logos: require('~/assets/img/gallery__1_-removebg-preview.png'),
     backgroundlog: require('~/assets/img/background-log.png'),
     icongoogle: require('~/assets/img/gg3.jpg'),
     screen: require('~/assets/img/screen.png'),

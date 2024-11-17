@@ -1,5 +1,8 @@
 const cinema = require('../models/Cinema');
+const showtime = require('../models/Showtime');
 const UserModel = require('../models/userModel')
+const PaymentModel = require('../models/PaymentModel')
+const OrdersModel = require('../models/OrdersModel.js')
 const saltRounds =10
 const bcrypt =require('bcrypt')
 class CinemaService {
@@ -82,6 +85,57 @@ class CinemaService {
         return Cinema? {Cinema} :{message:"Không có rạp này"}
         
     }
+
+    getShowtimeAndPaymentByCinema = async () => {
+        const cinemas = await cinema.find().select('_id name').lean();
+        const cinemaIds = cinemas.map(cinema => cinema._id);
+    
+        // Lấy tất cả các showtimes, orders và payments
+        const showtimes = await showtime.find({ cinema_id: { $in: cinemaIds } }).lean();
+        const orders = await OrdersModel.find({ cinema_id: { $in: cinemaIds } }).lean();
+        const ordersId = orders.map(order => order._id)
+        const payments = await PaymentModel.find({ order_id: { $in: ordersId } }).lean();
+    
+        // Tạo các Map để nhóm showtimes và payments theo cinema_id
+        const showtimesByCinema = showtimes.reduce((acc, showtime) => {
+            const cinemaId = showtime.cinema_id;
+            if (!acc[cinemaId]) acc[cinemaId] = [];
+            acc[cinemaId].push(showtime);
+            return acc;
+        }, {});
+    
+        const paymentsByCinema = payments.reduce((acc, payment) => {
+            const order = orders.find(order => order._id.toString() === payment.order_id.toString());
+            
+            if (order) {
+                const cinemaId = order.cinema_id;
+                if (!acc[cinemaId]) acc[cinemaId] = [];
+                acc[cinemaId].push(payment);
+            }
+            return acc;
+        }, {});
+    
+        // Tạo kết quả cuối cùng
+        const result = cinemas.map(cinema => {
+            const cinemaId = cinema._id;
+            // Tính số lượng showtimes
+            const totalShowtimes = showtimesByCinema[cinemaId] ? showtimesByCinema[cinemaId].length : 0;
+            
+            // Tính tổng doanh thu
+            const totalRevenue = paymentsByCinema[cinemaId]
+                ? paymentsByCinema[cinemaId].reduce((acc, payment) => acc + payment.amount, 0)
+                : 0;
+            
+            return {
+                ...cinema,
+                showtimes: totalShowtimes,
+                payments: totalRevenue
+            };
+        });
+    
+        return result;
+    };
+    
 }
 
 module.exports = new CinemaService;

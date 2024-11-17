@@ -64,18 +64,16 @@ class UserController{
    // refresh_token
     refreshToken = async (req, res, next) => {
         try {
-            const  token  = req.token;
+           
             const refreshToken = req.cookies.refreshToken; 
             // Lấy Refresh Token từ body
             
-            console.log(refreshToken)
+            console.log("refreshToken",refreshToken)
             // Kiểm tra xem Refresh Token có tồn tại không
-            if (!token) {
-                return res.status(401).json({ message: "Refresh Token is required!" });
-            }
+           
 
             // Gọi service để làm mới Access Token
-            const dataToken = await userService.refreshToken(token,refreshToken); // Gọi service với Refresh Token
+            const dataToken = await userService.refreshToken(refreshToken); // Gọi service với Refresh Token
             // Trả về Access Token mới
             return res.status(200).json(dataToken);
         } catch (error) {
