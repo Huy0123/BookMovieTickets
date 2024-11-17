@@ -82,8 +82,14 @@ class CinemaController {
         }
     }
 
-
-
+    getShowtimeAndPaymentByCinema = async (req, res) => {
+        try {
+            const showtimeAndPayment = await cinemaService.getShowtimeAndPaymentByCinema();
+            return res.status(200).json(showtimeAndPayment);
+        } catch (error) {
+            res.status(400).send(error.message);
+        }
+    }
 
 }
 
