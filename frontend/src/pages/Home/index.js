@@ -235,10 +235,11 @@ function Home() {
                                             <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column p-3')} key={upcomingmovie._id}>
                                                 <img src={upcomingmovie.poster2} className={cx('img-movie', 'd-block', 'w-100')} alt={upcomingmovie.title} />
                                                 <h2 className={cx('title-movie', 'text-center')}>{upcomingmovie.title}</h2>
+                                                <h3 className={cx('daterelese','text-center')}>Ngày ra mắt: {new Date(upcomingmovie.release_date).toLocaleDateString() }</h3>
                                                 <div className={cx('btn-gr', 'd-flex  justify-content-center')}>
                                                 <button onClick={() => openModal(upcomingmovie.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
                                               
-                                                    <button type='button' className={cx('bookin', 'rounded-4')}onClick={()=>handleBooking(upcomingmovie._id)}>Đặt vé</button>
+                                                    <button type='button' className={cx('bookin', 'rounded-4')}onClick={()=>handleBooking(upcomingmovie._id)}>Chi tiết</button>
                                                 </div>
                                                 <div className={cx('wrap-hover')}>
                                                 <div>
