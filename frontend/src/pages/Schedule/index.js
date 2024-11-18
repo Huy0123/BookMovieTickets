@@ -34,7 +34,7 @@ function Schedule() {
 
                 const formattedShowtimes = resShowtimes.flatMap((response) =>
                     response.data.map((showtime) => ({
-                        cinemaId: showtime.cinema_id._id,
+                        cinema_id: showtime.cinema_id._id,
                         cinemaName: showtime.cinema_id.name,
                         cinemaAddress: showtime.cinema_id.address,
                         showtimeStart: showtime.showtime_start,
@@ -130,7 +130,7 @@ function Schedule() {
         (showtime) =>
             (!selectedMovieId || showtime.movieId === selectedMovieId) && // Lọc theo ID phim
             (!selectedDate || showtime.showtimeStart.startsWith(selectedDate)) && // Lọc theo ngày
-            (!selectedCinema || showtime.cinemaId === selectedCinema) // Lọc theo rạp
+            (!selectedCinema || showtime.cinema_id === selectedCinema) // Lọc theo rạp
     );
     
 
@@ -247,59 +247,67 @@ function Schedule() {
                                     </div>
                                 </div>
                                 <div className={cx('time', 'col-8',  'mt-5')}>
-                                        {Object.entries(
-                                            showtimes
-                                                // Lọc lịch chiếu từ ngày hôm nay trở về sau
-                                                .filter((st) => {
-                                                    const showtimeDate = new Date(st.showtimeStart);
-                                                    const today = new Date();
-                                                    today.setHours(0, 0, 0, 0); // Đặt giờ của ngày hôm nay về 0:00:00
-                                                    return showtimeDate >= today; // Chỉ lấy lịch từ hôm nay trở về sau
-                                                })
-                                                // Lọc theo movieId và selectedDate
-                                                .filter((st) => st.movieId === movie._id && st.showtimeStart.startsWith(selectedDate))
-                                                // Gom nhóm lịch chiếu theo tên rạp
-                                                .reduce((acc, showtime) => {
-                                                    const key = showtime.cinemaName;
-                                                    if (!acc[key]) {
-                                                        acc[key] = { 
-                                                            cinemaAddress: showtime.cinemaAddress,
-                                                            showtimeStarts: [] 
-                                                        };
-                                                    }
+                                {Object.entries(
+    showtimes
+        // Lọc lịch chiếu từ ngày hôm nay trở về sau
+        .filter((st) => {
+            const showtimeDate = new Date(st.showtimeStart);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Đặt giờ của ngày hôm nay về 0:00:00
+            return showtimeDate >= today; // Chỉ lấy lịch từ hôm nay trở về sau
+        })
+        // Lọc theo movieId và selectedDate
+        .filter((st) => st.movieId === movie._id && st.showtimeStart.startsWith(selectedDate))
+        // Gom nhóm lịch chiếu theo tên rạp
+        .reduce((acc, showtime) => {
+            const key = showtime.cinemaName;
+            if (!acc[key]) {
+                acc[key] = { 
+                    cinemaAddress: showtime.cinemaAddress,
+                    showtimeStarts: [] 
+                };
+            }
 
-                                                    // Convert showtime to Vietnam time
-                                                    const showtimeUTC = new Date(showtime.showtimeStart);
-                                                    const formattedShowtime = showtimeUTC.toLocaleTimeString('vi-VN', {
-                                                        hour: '2-digit',
-                                                        minute: '2-digit',
-                                                        hour12: false,
-                                                    });
+            // Convert showtime to Vietnam time
+            const showtimeUTC = new Date(showtime.showtimeStart);
+            const formattedShowtime = showtimeUTC.toLocaleTimeString('vi-VN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+            });
 
-                                                    acc[key].showtimeStarts.push({
-                                                        time: formattedShowtime,
-                                                        showtimeId: showtime.showtimeId, // Lưu showtimeId để điều hướng
-                                                    });
-                                                    return acc;
-                                                }, {})
-                                        ).map(([cinemaName, { cinemaAddress, showtimeStarts }], idx) => (
-                                            <div key={idx} className={cx('wrap-line', 'mb-3')}>
-                                                <div className="row">
-                                                    <div className={cx('about', 'col-4')}>
-                                                        <h1 className={cx('cinema-name')}>TÊN RẠP: {cinemaName}</h1>
-                                                        <div className={cx('address')}>Địa chỉ: {cinemaAddress}</div>
-                                                    </div>
-                                                    <div className={cx('schedule', 'col-8')}>
-                                                        <div className={cx('group')}>
-                                                            {showtimeStarts.map(({ time, showtimeId }, i) => (
-                                                                <button 
-                                                                    key={i} 
-                                                                    className={cx('btn-schedule')}
-                                                                    onClick={() => navigate(`/bookTicket/${movie._id}`, { state: { showtimeId } })}
-                                                                >
-                                                                    {time}
-                                                                </button>
-                                                                ))}
+            acc[key].showtimeStarts.push({
+                time: formattedShowtime,
+                showtimeId: showtime.showtimeId, // Lưu showtimeId để điều hướng
+                cinema_id: showtime.cinema_id // Lưu cinema_id vào đây
+            });
+            return acc;
+        }, {})
+).map(([cinemaName, { cinemaAddress, showtimeStarts }], idx) => (
+    <div key={idx} className={cx('wrap-line', 'mb-3')}>
+        <div className="row">
+            <div className={cx('about', 'col-4')}>
+                <h1 className={cx('cinema-name')}>TÊN RẠP: {cinemaName}</h1>
+                <div className={cx('address')}>Địa chỉ: {cinemaAddress}</div>
+            </div>
+            <div className={cx('schedule', 'col-8')}>
+                <div className={cx('group')}>
+                    {showtimeStarts.map(({ time, showtimeId, cinema_id }, i) => (
+                        <button
+                            key={i}
+                            className={cx('btn-schedule')}
+                            onClick={() => {
+                                // Lưu cinema_id vào state qua navigate
+                                navigate(`/bookTicket/${movie._id}`, {
+                                    state: { cinema_id,showtimeId } // Truyền cinema_id vào state
+                                });
+                            }}
+                        >
+                            {time}
+                        </button>
+                    ))}
+
+
                                                             </div>
                                                         </div>
                                                     </div>

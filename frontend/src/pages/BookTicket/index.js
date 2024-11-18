@@ -12,7 +12,7 @@ import { useAuth } from '~/contexts/AuthContext';
 const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-    const seatSelectionRef = useRef(null); // Create a ref for the seat selection area
+    const scheduleRef  = useRef(null); // Create a ref for the seat selection area
     const [hour,setHour] = useState('')
     const [getMovies,setMovies]=useState([])
     const [selectedSeats, setSelectedSeats] = useState([]);
@@ -55,8 +55,7 @@ function BookTicket() {
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
     const location = useLocation();
-    const cinema_id = location.state?.cinema_id;
-    const { showtimeId,cinemaId } = location.state || {}; // Lấy showtimeId từ state
+    const { showtimeId,cinema_id } = location.state || {}; // Lấy showtimeId từ state
     const { isAuthenticated } = useAuth();
     console.log("showtimeId:", showtimeId);
     console.log(movie_id)
@@ -100,6 +99,7 @@ function BookTicket() {
         if(cinema_id){
             try{
                 const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieFromCinemaId/${movie_id}/${cinema_id}`);
+                if (res.data.length > 0) {
                 console.log("hqewrgeyuqt",res.data)
                 setMovies(res.data);
                 setTitle(res.data[0].movie_id.title);
@@ -113,9 +113,12 @@ function BookTicket() {
                 setReleaseDate(res.data[0].movie_id.release_date);
                 setDescription(res.data[0].movie_id.description);
                 setTrailer(res.data[0].movie_id.trailer);
-                setPoster(res.data[0].movie_id.poster2);             
-            }catch{
-
+                setPoster(res.data[0].movie_id.poster2);      
+                }else{
+                    getMovie2();
+                }       
+            }catch (error) {
+                console.error("Error fetching data:", error);
             }
         }else{
         try {
@@ -176,17 +179,16 @@ function BookTicket() {
 
 
     useEffect(() => {
-        if (showtimeId) {
-            handleShowtimeClick(showtimeId, cinemaId, price);
+        if (showTimeId) {
             // Scroll to seat selection area when showtimeId exists
-            if (seatSelectionRef.current) {
-                seatSelectionRef.current.scrollIntoView({ behavior: 'smooth' });
+            if (scheduleRef.current) {
+                scheduleRef.current.scrollIntoView({ behavior: 'smooth' });
             }
         } else {
             // If no showtimeId, do not scroll or show seat selection
             console.log("No showtimeId available.");
         }
-    }, [showtimeId, cinemaId, price]);
+    }, [showtimeId, cinema_id, price]);
 
     const handleBooking = () => {
         if (!isAuthenticated) {
@@ -402,7 +404,7 @@ if(title!==''){
                 </div>
             </div>
             {/* Lich chieu */}
-            <div className={cx('schedule')}>
+            <div className={cx('schedule')} ref={scheduleRef}>
     <div className="row">
         <div className="col-1"></div>
         <div className={cx('wrap', 'col-10')}>
@@ -530,8 +532,7 @@ if(title!==''){
 
           
             {/* ghe */}
-            <div ref={seatSelectionRef}>
-    {selectedShowtimeId && (
+        {selectedShowtimeId && (
         <div className={cx('seat')}>
             <div className={cx('wrap-seat')}>
                 <div className={cx('screen')}>
@@ -619,7 +620,6 @@ if(title!==''){
             </div>
         </div>
     )}
-</div>
 
             <div className={cx('food')}>
                 <h1>CHỌN BẮP NƯỚC</h1>

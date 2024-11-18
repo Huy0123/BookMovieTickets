@@ -66,6 +66,7 @@ function Home() {
     const handleBooking = (movieId) => {
         console.log("modđ",movieId)
         navigate(`/bookticket/${movieId}`); 
+        window.scrollTo(0, 0);
     };
   
     useEffect(() => {
