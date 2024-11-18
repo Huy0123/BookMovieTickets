@@ -210,7 +210,9 @@ function Header() {
                                                 </div>
                                            
                                         )}
+                                       
                                     </div>
+                                    <div className='col-1'></div>
                                 </div>
                             </div>
                         </div>
@@ -218,13 +220,13 @@ function Header() {
                     </div>
                 </div>
 
-                <div className={cx('header2')} >
+                {/* <div className={cx('header2')} >
                     <div className="row">
                         <div className="col-lg-1"></div>
                    
                         <div className="col-lg-8"></div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

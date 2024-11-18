@@ -45,12 +45,13 @@
             width: 100%; // Đặt chiều rộng hình ảnh bằng 100% chiều rộng card
             height: 302px;
             border-radius: 8px; // Bo tròn góc cho hình ảnh
-        
+            object-fit: cover;
             &:hover {
               // Hiệu ứng gạch chân khi hover
               // Đường viền
                transform: scale(1.5);
                transition: transform 0.5s ease;
+
              }
           }
           .content-movie{
@@ -89,78 +90,78 @@
   
   
   
-//   .pagination {
-//     display: flex; // Sử dụng flexbox cho pagination
-//     justify-content: center; // Căn giữa các nút
-//     margin-top: 80px; // Khoảng cách trên cho pagination
+  .pagination {
+    display: flex; // Sử dụng flexbox cho pagination
+    justify-content: center; // Căn giữa các nút
+    margin-top: 80px; // Khoảng cách trên cho pagination
   
-//     button {
-//       background-color: #007bff; // Màu nền cho nút
-//       color: #fff; // Màu chữ
-//       border: none; // Bỏ viền
-//       border-radius: 5px; // Bo tròn góc
-//       padding: 10px 15px; // Khoảng cách bên trong nút
-//       margin: 0 5px; // Khoảng cách giữa các nút
-//       cursor: pointer; // Con trỏ chuột khi hover vào nút
-//       transition: background-color 0.3s; // Hiệu ứng chuyển màu nền
+    button {
+      background-color: #F266AB; // Màu nền cho nút
+      color: #fff; // Màu chữ
+      border: none; // Bỏ viền
+      border-radius: 5px; // Bo tròn góc
+      padding: 10px 15px; // Khoảng cách bên trong nút
+      margin: 0 5px; // Khoảng cách giữa các nút
+      cursor: pointer; // Con trỏ chuột khi hover vào nút
+      transition: background-color 0.3s; // Hiệu ứng chuyển màu nền
   
-//       &:hover {
-//         background-color: #0056b3; // Màu nền khi hover
-//       }
+      &:hover {
+        background-color: #f27ab6; // Màu nền khi hover
+      }
   
-//       &:disabled {
-//         background-color: #ccc; // Màu nền cho nút không hoạt động
-//         cursor: not-allowed; // Con trỏ chuột khi không hoạt động
-//       }
-//     }
-//   }
+      &:disabled {
+        background-color: #ccc; // Màu nền cho nút không hoạt động
+        cursor: not-allowed; // Con trỏ chuột khi không hoạt động
+      }
+    }
+  }
 
-//     .wrap-content{
-//         .movie-detail{
-//            width: 40%;
-//            display: flex;
-//            justify-content: center;
-//            img{
-//             width: 70%;
-//            }
+    .wrap-content{
+        .movie-detail{
+           width: 40%;
+           display: flex;
+           justify-content: center;
+           img{
+            width: 70%;
+           }
           
-//         }
+        }
      
            
             
-//             .wrap-line{
-//               color: #fff;
-//               width: 60%;
-//               padding-right: 0;
+            .wrap-line{
+              color: #fff;
+              width: 60%;
+              padding-right: 0;
               
-//               /* Thêm chiều cao cố định và con lăn dọc */
+              /* Thêm chiều cao cố định và con lăn dọc */
              
-//               overflow-y: auto; /* Cho phép cuộn dọc */
-//               overflow-x: hidden; /* Ẩn cuộn ngang nếu có */
-//                 border-bottom: 1px solid #fff;
-//                 padding: 15px 0;
-//               display: flex;
-//            flex-direction: column;
-//            justify-content: space-between;
-//             .schedule{
-//                 .group{
+              overflow-y: auto; /* Cho phép cuộn dọc */
+              overflow-x: hidden; /* Ẩn cuộn ngang nếu có */
+                border-bottom: 1px solid #fff;
+                padding: 15px 0;
+              display: flex;
+           flex-direction: column;
+           justify-content: space-between;
+            .schedule{
+                .group{
                     
 
-//                     .btn-schedule{
-//                         margin: 5px;
-//                         width: 80px;
-//                         background-color: #000;
-//                         color: #fff;
-//                         border: 1px solid #fff;
-//                         &:hover{
-//                             background-color: #ffc100;
-//                         }
-//                     }
-//                 }
+                    .btn-schedule{
+                        margin: 5px;
+                        width: 80px;
+                        background-color: #000;
+                        color: #fff;
+                        border: 1px solid #fff;
+                        &:hover{
+                            background-color: #ffc100;
+                        }
+                    }
+                }
             
-//         }
-//     }
-// }
+        }
+    }
+}
 .slide-enter {
   transform: translateX(100%);
   opacity: 0;
