@@ -97,21 +97,29 @@
                     font-optical-sizing: auto;
                     letter-spacing: 4px;
                     font-style: normal;
-                    
+                    color: #F266AB;
                     animation: floatIn 1.2s ease-out forwards;
+                }
+                .datetime{
+                    color: #F266AB;
+                    text-align: start;
                 }
                 .wrap-decr{
                     background:#a559d14c;
                     width: 80%;
-                    
+                   
                    text-align: justify;
                     padding: 15px 30px;
                     border-radius: 10px;
                    
                     animation: floatIn 1.2s ease-out forwards;
+                    p{
+                        color: #F266AB;
+                    }
                 }
                 .timeset{
                     animation: floatIn 1.2s ease-out forwards;
+                    color: #F266AB;
                 }
                 .wrap-btn-banner{
                     margin-bottom: 6%;
@@ -176,7 +184,9 @@
             color: #Fff;
         }
     }
-  
+    .wrap-coming{
+        margin-bottom: 50px;
+    }
     .wrap-showing,.wrap-coming{
       
         border-bottom: none;

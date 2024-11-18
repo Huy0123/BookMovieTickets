@@ -61,7 +61,43 @@ function Schedule() {
 
         getShowtimeByMovieID();
     }, []);
+    useEffect(() => {
+        let ticking = false;
 
+        const handleScroll = () => {
+            // Nếu modal mở thì không làm gì cả
+
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const rowers = document.querySelectorAll(`.${cx('rowerr')}`);
+                  
+                    rowers.forEach(rowerr => {
+                        const rect = rowerr.getBoundingClientRect();
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            rowerr.classList.add(cx('float-in'));
+                            // img-she.classList.add(cx('float-in'));
+                        } else {
+                            rowerr.classList.remove(cx('float-in'));
+                        }
+                    });
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+
+        // Thêm event listener cho scroll
+        window.addEventListener('scroll', handleScroll);
+
+        // Gọi scroll khi component render lần đầu
+        handleScroll(); 
+
+        // Cleanup khi component unmount hoặc thay đổi
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    });
+    
     return (  
         <div className={cx('container')}>
             {/* <div className={cx('search','pt-4')}>
@@ -100,20 +136,22 @@ function Schedule() {
             </div>           */}
 
             {/* Add movie */}
-            <div className={cx('content', 'mt-5')}>
+            <div className={cx('content')}>
                 <div className="row">
                     <div className="col-1"></div>
                     <div className={cx('wrap-content', 'col-10')}>
                         <div className="row">
                             {movies.map((movie, index) => (
                                 <div key={index} className="col-12 mb-5">
-                                    <div className="row">
+                                    <div className={cx('row','content-shadow','rowerr')}>
                                         <div className={cx('movie-detail', 'col-4')}>
+                                            <div className={cx('img-contain')}>
                                             <img
                                                 src={movie.poster2}
-                                                className={cx('d-block')}
+                                                className={cx('img-she')}
                                                 alt={movie.name}
                                             />
+                                            </div>
                                             <div className={cx('wrap-info', 'ms-5', 'mt-4')}>
                                                 <h1 className={cx('title')}>Tên phim: {movie.title}</h1>
                                                 {/* Movie information */}
@@ -139,7 +177,7 @@ function Schedule() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className={cx('time', 'col-8', 'ps-5', 'pt-5', 'mt-5')}>
+                                        <div className={cx('time', 'col-8',  'mt-5')}>
                                             {Object.entries(
                                                 showtimes
                                                     .filter(st => st.movieId === movie._id)
