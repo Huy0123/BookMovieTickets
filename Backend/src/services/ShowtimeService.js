@@ -5,6 +5,7 @@ const seatTime = require('../models/SeatTime')
 class ShowtimeService {
 
     createShowtime =    async (data) => {
+        try{
         data.showtime_start = new Date(data.showtime_start);
         data.showtime_end = new Date(data.showtime_end);
         const newShowtime = await showtime.create(data);
@@ -18,6 +19,9 @@ class ShowtimeService {
 
         await seatTime.insertMany(seatTimes);
         return newShowtime;
+    }catch(error){
+        throw error;
+    }
     }
     
     getRoomAvailabilityByCinemaIDAndDate = async (cinemaID, showtime_start, showtime_end) => {
