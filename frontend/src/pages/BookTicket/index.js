@@ -55,6 +55,7 @@ function BookTicket() {
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
     const location = useLocation();
+    const cinema_id = location.state?.cinema_id;
     const { showtimeId,cinemaId } = location.state || {}; // Lấy showtimeId từ state
     const { isAuthenticated } = useAuth();
     console.log("showtimeId:", showtimeId);
@@ -96,13 +97,34 @@ function BookTicket() {
 
     useEffect(() => {
     const getMovieByID = async () => {
+        if(cinema_id){
+            try{
+                const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieFromCinemaId/${movie_id}/${cinema_id}`);
+                console.log("hqewrgeyuqt",res.data)
+                setMovies(res.data);
+                setTitle(res.data[0].movie_id.title);
+                setGenre(res.data[0].movie_id.genre);
+                setDuration(res.data[0].movie_id.duration);
+                setCountry(res.data[0].movie_id.country);
+                setSubtitles(res.data[0].movie_id.subtitles);
+                setLimit(res.data[0].movie_id.limit);
+                setDirector(res.data[0].movie_id.director);
+                setCast(res.data[0].movie_id.cast);
+                setReleaseDate(res.data[0].movie_id.release_date);
+                setDescription(res.data[0].movie_id.description);
+                setTrailer(res.data[0].movie_id.trailer);
+                setPoster(res.data[0].movie_id.poster2);             
+            }catch{
+
+            }
+        }else{
         try {
             const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieID/${movie_id}`);
             
             if (res.data.length > 0) {
                 // Nếu có suất chiếu
                 const movie = res.data.map(item => item);
-                console.log("ggggggggggg",res.data)
+                console.log("ggggggggggg",movie)
                 setMovies(res.data);
                 setTitle(movie[0].movie_id.title);
                 setGenre(movie[0].movie_id.genre);
@@ -124,6 +146,7 @@ function BookTicket() {
         } catch (error) {
             console.error("Error fetching data:", error);
         }
+    }
     };
 
     const getFood = async () => {
@@ -445,7 +468,7 @@ if(title!==''){
                                             return (
                                                 <div key={cinemaGroup.cinema._id}>
                                                     <h4>Tên Rạp: {cinemaGroup.cinema.name}</h4>
-                                                    <p>Địa chỉ: {cinemaGroup.cinema.address}</p>
+                                                    <h4>Địa chỉ: {cinemaGroup.cinema.address}</h4>
                                                     <div>
                                                         {cinemaGroup.showtimes.map((show, index) => {
                                                             const showtimeUTC = new Date(show.showtime_start);

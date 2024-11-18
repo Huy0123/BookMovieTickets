@@ -8,5 +8,4 @@ router.get('/getSeatTimeByID/:id', seatTimeController.getSeatTimeByID)
 router.put('/updateSeatTime/:id', seatTimeController.updateSeatTime)
 router.delete('/deleteSeatTime/:id', seatTimeController.deleteSeatTime)
 router.get('/getSeatTimeByShowtimeID/:id', seatTimeController.getSeatTimeByShowtimeID)
-
 module.exports = router

@@ -5,6 +5,7 @@ const seatTime = require('../models/SeatTime')
 class ShowtimeService {
 
     createShowtime =    async (data) => {
+        try{
         data.showtime_start = new Date(data.showtime_start);
         data.showtime_end = new Date(data.showtime_end);
         const newShowtime = await showtime.create(data);
@@ -18,6 +19,9 @@ class ShowtimeService {
 
         await seatTime.insertMany(seatTimes);
         return newShowtime;
+    }catch(error){
+        throw error;
+    }
     }
     
     getRoomAvailabilityByCinemaIDAndDate = async (cinemaID, showtime_start, showtime_end) => {
@@ -97,7 +101,7 @@ class ShowtimeService {
             'room_id', 'name'
         )
         .populate(
-            'movie_id', 'title'
+            'movie_id'
         );
     }
 
@@ -115,7 +119,14 @@ class ShowtimeService {
         return results;
     };
     
-
+    getShowtimeByMovieFromCinemaId = async (movieID, cinemaID) => {
+        return await showtime.find({
+            movie_id: movieID,
+            cinema_id: cinemaID,
+            
+        })
+        .populate('cinema_id movie_id');;
+    };
 }
 
 module.exports = new ShowtimeService;
