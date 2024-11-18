@@ -116,6 +116,10 @@ class ShowtimeService {
     };
     
 
+    getShowtimeByMovieIDAndCinemaID = async (movieID, cinemaID) => {
+        return await showtime.find({ movie_id: movieID, cinema_id: cinemaID });
+    }
+
 }
 
 module.exports = new ShowtimeService;

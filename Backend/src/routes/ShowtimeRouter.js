@@ -10,5 +10,6 @@ router.delete('/deleteShowtime/:id', showtimeController.deleteShowtime)
 router.get('/getShowtimeByMovieID/:id', showtimeController.getShowtimeByMovieID)
 router.get('/getShowtimeByCinemaID/:id', showtimeController.getShowtimeByCinemaID)
 router.get('/getShowtimeByMovieIDAndCinemaIDAndDate/:movieID/:cinemaID/:date', showtimeController.getShowtimeByMovieIDAndCinemaIDAndDate)
+router.get('/getShowtimeByMovieIDAndCinemaID/:movieID/:cinemaID', showtimeController.getShowtimeByMovieIDAndCinemaID)
 router.get('/getRoomAvailability', showtimeController.getRoomAvailabilityByCinemaIDAndDate)
 module.exports = router

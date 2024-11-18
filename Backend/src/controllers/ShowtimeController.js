@@ -82,6 +82,15 @@ class ShowtimeController {
         }
     }
 
+    getShowtimeByMovieIDAndCinemaID = async (req, res) => {
+        try{
+            const showtimes = await showtimeService.getShowtimesByMovieIDAndCinemaID(req.params.movieID, req.params.cinemaID);
+            res.status(200).send(showtimes);
+        } catch (error) {
+            res.status(400).send(error.message);
+        }
+    }
+
 }
 
 module.exports = new ShowtimeController;
