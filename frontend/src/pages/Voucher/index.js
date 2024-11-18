@@ -206,7 +206,7 @@ className={cx('btn-poi')}
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
                      
-                        <p>{modalContent}</p>
+                        <h4>{modalContent}</h4>
                         <button className={cx('btn-cancel')} onClick={closeModal} >
                             Đóng
                         </button>
@@ -219,7 +219,7 @@ className={cx('btn-poi')}
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
 
-                        <p>{modalContent}</p>
+                        <h4>{modalContent}</h4>
                         <button className={cx('btn-confirm')} onClick={() => {closeModal();handleVoucherClick(selectedVoucherId); }}>
                             Đồng ý
                         </button>

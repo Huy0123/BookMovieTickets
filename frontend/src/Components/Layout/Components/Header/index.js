@@ -116,6 +116,7 @@ function Header() {
                 { withCredentials: true } // Đảm bảo gửi cookie cùng request
             );
             setIsLoggedIn(false);
+            window.location.reload()
             const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
                 navigate(previousPage);  // Redirect to the previous page
             localStorage.clear();
