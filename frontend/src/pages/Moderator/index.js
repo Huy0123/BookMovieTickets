@@ -13,9 +13,10 @@ import axios from 'axios';
 const cx = classNames.bind(styles);
 const Index = () => {
   const [cinema_id, setCinema_id] = useState('');
+  const userId = localStorage.getItem('userId');
   const fetchCinemas = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/v1/getCinemaIdByUserId/6729e5f07886f0f1c05ebdc3`);
+      const response = await axios.get(`http://localhost:8080/v1/getCinemaIdByUserId/${userId}`);
       setCinema_id(response.data.Cinema[0]._id);
     } catch (error) {}
   };
