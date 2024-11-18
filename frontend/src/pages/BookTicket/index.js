@@ -389,7 +389,7 @@ if(title!==''){
                                     <h1 className={cx('title')}>Nội Dung Phim</h1>
                                     <div className={cx('description')}> {description} </div>                                                                     
                                 </div>
-                                <div className={cx('wrap-info','ms-5','mt-4')}>
+                                <div className={cx('wrap-info-trailer','ms-5','mt-4')}>
                                     <div className='info-group d-flex' >
                                         <FontAwesomeIcon className={cx('icon-trailer','pe-2','pt-1')} icon={faTv} />
                                         <div className={cx('trailer')} style={{ textDecoration: 'underline',cursor:'pointer' }} onClick={() => openModal(trailer)}>Xem Trailer</div>
