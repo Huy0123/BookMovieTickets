@@ -30,5 +30,6 @@ const createPoint = new mongoose.Schema({
         required: true
     }
 });
+
 const points = mongoose.model('point', createPoint);
 module.exports = points;

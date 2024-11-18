@@ -14,4 +14,4 @@ router.post('/createrFood',upload.fields([{name:'Image'}]),FoodController.create
 router.put('/editFood/:id',upload.fields([{name:'Image'}]),FoodController.editFood)
 router.delete('/deleteFood/:id', FoodController.deleteFood);
 
-module.exports = router
+module.exports = router 

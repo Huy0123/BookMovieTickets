@@ -17,6 +17,6 @@ router.get('/getUsers',autAdmin,UserController.getUsers)
 router.get('/getUserByID/:id',autAdmin, UserController.getUserByID) //query
 router.get('/getUserbyid',autUser,UserController.getUserbyid)//user
 router.post('/refresh_token',UserController.refreshToken);
-router.put('/updateUser/:id',autUser, UserController.updateUser);
+router.put('/updateUser/:id',autUser, UserController.updateUser); 
 router.delete('/deleteUser/:id',autAdmin, UserController.deleteUser);
 module.exports = router 

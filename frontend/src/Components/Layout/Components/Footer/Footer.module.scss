@@ -1,8 +1,8 @@
+
 .container-fluid {
-    background: linear-gradient(90deg, #ec50f1, #f7bf57, #ffbe33);
+    background: #F266AB;
     padding: 20px 0;
-    margin-top: 80px;
-  }
+  
   
   .row {
     display: flex;
@@ -19,16 +19,17 @@
   }
   
   .logo {
-    max-width: 160px;
-    max-height: 100px;
-    object-fit: contain;
+    max-width: 280px;
+    max-height: 150px;
+    background-color: #a559d1;
     width: 100%;
     height: 100%;
+    object-fit: cover;
   }
   
   p {
     font-size: 16px;
-    color: #333;
+    color: #Fff;
     text-align: center;
   }
   
@@ -40,11 +41,11 @@
     li {
       font-size: 14px;
       margin-bottom: 8px;
-      color: #555;
+      color: #Fff;
   
       &:first-child {
         font-weight: bold;
-        color: #000;
+        color: #Fff;
       }
     }
   }
@@ -92,9 +93,9 @@
         }
       }
   
-      .icon-instagram {
+      .icon-instagram{
         background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4); /* Gradient màu Instagram */
-        background-clip: text;
+       
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent; /* Gradient text */
         &:hover {
@@ -102,4 +103,5 @@
         }
       }
   }
-  
+ 
+}

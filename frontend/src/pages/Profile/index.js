@@ -17,7 +17,8 @@ function Profile() {
 
     const [fullname,setFullname] = useState('');
     const [num, setNum] = useState('');
-    const [email, setEmail] = useState('')
+    const [email, setEmail] = useState('');
+    const [id, setId] = useState('');
 
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('userToken');
@@ -42,7 +43,7 @@ function Profile() {
                     setFullname(response.data.userFound.fullname);
                     setNum(response.data.userFound.num);
                     setEmail(response.data.userFound.email);
-                   
+                    setId(response.data.userFound._id)
                     console.log("bb",response.data.userFound.promotions_id)
                    
                     const resvouncher = await axios.get(`http://localhost:8080/v1/getPoints`);
@@ -111,10 +112,20 @@ function Profile() {
             
 
                 <div className="col">
-              
+                
                     <div className={cx('modal-info','infomation', ' p-4 ')}>
                         <h3 className={cx('title-info')}>THÔNG TIN TÀI KHOẢN</h3>
                         {/* Add additional user information content here */}
+                        <div className={cx('wrap-info-user')}>
+                      <h4 className={cx('info-user-etc')}>ID</h4>
+                   
+                      <div 
+                        type="text" 
+                        id="id" 
+                        className={cx('number','form-info')}
+                      >{id}    
+                      </div>
+                      </div>
                       <div className={cx('wrap-info-user')}>
                       <h4 className={cx('info-user-etc')}>TÊN ĐẦY ĐỦ</h4>
                       <input 
@@ -144,7 +155,7 @@ function Profile() {
                       <h4 className={cx('info-user-etc')}>EMAIL</h4>
                    
                       <div 
-                        type="text" 
+                        type="email" 
                         id="Email" 
                         className={cx('number','form-info')}
                       >{email}    

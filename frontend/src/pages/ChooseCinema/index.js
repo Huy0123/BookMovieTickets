@@ -61,7 +61,7 @@ function ChooseCinema() {
         //         wrapContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
         //     }
         // }, 0);
-        navigate(`/bookticket/${movieId}`); 
+        navigate(`/bookticket/${movieId}`, { state: { cinema_id } }); 
     };
 
     const openModal = (link) => {
@@ -93,7 +93,7 @@ function ChooseCinema() {
                         </div>
                     </div>
                 ))}
-            </div>
+            </div>  
 
             <div className={cx('pagination')}>
                 <button onClick={handleNext} disabled={startIndex === 0}>
