@@ -15,6 +15,11 @@ const createSeatTime = new mongoose.Schema({
         type: Boolean,
         required: true
     },
+    cinema_id:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'cinemas',
+        required: true
+    },
 });
 createSeatTime.index({ seat_id: 1, showtime_id: 1 }, { unique: true });
 

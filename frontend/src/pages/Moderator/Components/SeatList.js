@@ -246,7 +246,7 @@ const SeatList = ({ cinema_id }) => {
                                                     <p>Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(seatDetails.price)}</p>
                                                 </div>
                                                 <div>
-                                                <button className={cx('btn', 'me-2')} data-bs-toggle="modal" data-bs-target="#edit-seat" onClick={() =>fetchSeat(seatDetails._id)}>Sửa</button>
+                                                    <button className={cx('btn', 'me-2')} data-bs-toggle="modal" data-bs-target="#edit-seat" onClick={() =>fetchSeat(seatDetails._id)}>Sửa</button>
                                                     <button className={cx('btn','  me-2')} onClick={() => handleDeleteSeat(seatDetails._id)}>Xóa</button>
                                                 </div>
                                                 </div>

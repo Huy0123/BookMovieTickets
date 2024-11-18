@@ -1,6 +1,6 @@
 // contexts/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
+import apiClient from "../services/apiClient";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -9,13 +9,24 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const checkAuthentication = () => {
+        const checkAuthentication = async () => {
             const token = localStorage.getItem('userToken');
             const userRole = localStorage.getItem('userRole'); // Lấy role từ localStorage
+           
             if (token) {
-                setIsAuthenticated(true);
-                setRole(userRole);
+
+                
+                try {
+                    
+                    setIsAuthenticated(true);
+                    setRole(userRole);
+                } catch (error) {
+                    console.error("Token expired or invalid:", error);
+                    setIsAuthenticated(false);
+                    setRole(null);
+                }
             } else {
+               
                 setIsAuthenticated(false);
                 setRole(null);
             }
