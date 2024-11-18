@@ -11,4 +11,6 @@ router.get('/getShowtimeByMovieID/:id', showtimeController.getShowtimeByMovieID)
 router.get('/getShowtimeByCinemaID/:id', showtimeController.getShowtimeByCinemaID)
 router.get('/getShowtimeByMovieIDAndCinemaIDAndDate/:movieID/:cinemaID/:date', showtimeController.getShowtimeByMovieIDAndCinemaIDAndDate)
 router.get('/getRoomAvailability', showtimeController.getRoomAvailabilityByCinemaIDAndDate)
+router.get('/getShowtimeByMovieFromCinemaId/:movieID/:cinemaID', showtimeController.getShowtimeByMovieFromCinemaId)
+
 module.exports = router

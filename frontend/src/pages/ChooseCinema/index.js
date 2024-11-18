@@ -23,7 +23,7 @@ function ChooseCinema() {
     useEffect(() => {
         const fetchMoviesByCinemaId = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/v1/getMovies`);
+                const res = await axios.get(`http://localhost:8080/v1/getShowtimeByCinemaID/${cinema_id}`);
                 setAllMovies(res.data);
                 setVisibleMovies(res.data.slice(0, 5)); // Display first 5 movies
                 console.log("mv",res.data);
@@ -61,7 +61,7 @@ function ChooseCinema() {
         //         wrapContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
         //     }
         // }, 0);
-        navigate(`/bookticket/${movieId}`); 
+        navigate(`/bookByCinema/${movieId}`, { state: { cinema_id } }); 
     };
 
     const openModal = (link) => {
@@ -80,11 +80,11 @@ function ChooseCinema() {
                         className={cx('the')} 
                         // Handle movie selection
                     >
-                        <img src={movie.poster2} alt={movie.title} className={cx('movie-image')} onClick={() => handleSelectMovie(movie._id)} />
+                        <img src={movie.movie_id.poster2} alt={movie.movie_id.title} className={cx('movie-image')} onClick={() => handleSelectMovie(movie.movie_id._id)} />
                         <div className={cx('content-movie')}>
-                            <h3 className={cx('movie-title')} onClick={() => handleSelectMovie(movie._id)} >{movie.title}</h3>
+                            <h3 className={cx('movie-title')} onClick={() => handleSelectMovie(movie.movie_id._id)} >{movie.title}</h3>
                             <button 
-                                onClick={() => openModal(movie.trailer)} 
+                                onClick={() => openModal(movie.movie_id.trailer)} 
                                 className={cx('trailer-link')}
                             >
                                 Xem Trailer
@@ -93,7 +93,7 @@ function ChooseCinema() {
                         </div>
                     </div>
                 ))}
-            </div>
+            </div>  
 
             <div className={cx('pagination')}>
                 <button onClick={handleNext} disabled={startIndex === 0}>

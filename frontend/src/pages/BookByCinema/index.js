@@ -1,16 +1,16 @@
 import classNames from 'classnames/bind';
-import styles from './BookTicket.module.scss';
+import styles from './BookByCinema.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import images from '~/assets/img';
 import { useParams, useNavigate, useLocation   } from 'react-router-dom';
 import { useState, useEffect,useRef  } from 'react';
-import { faClock, faClosedCaptioning, faEarthAsia, faMinus, faPlus, faTag, faTv, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import TrailerModal from '../Trailer/TrailerModal';
 import { useAuth } from '~/contexts/AuthContext';
+import { faClock, faClosedCaptioning, faEarthAsia, faMinus, faPlug, faPlus, faTag, faTv, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 const cx = classNames.bind(styles);
-function BookTicket() {
+function BookByCinema() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const seatSelectionRef = useRef(null); // Create a ref for the seat selection area
     const [hour,setHour] = useState('')
@@ -54,10 +54,12 @@ function BookTicket() {
     const user_id = localStorage.getItem('user_id')
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
+    
     const location = useLocation();
+    const cinema_id = location.state?.cinema_id;
+    console.log("ididi",cinema_id)
     const { showtimeId,cinemaId } = location.state || {}; // Lấy showtimeId từ state
     const { isAuthenticated } = useAuth();
-    console.log("showtimeId:", showtimeId);
     console.log(movie_id)
     const openModal = (link) => {
         setTrailerUrl(link);
@@ -97,8 +99,8 @@ function BookTicket() {
     useEffect(() => {
     const getMovieByID = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieID/${movie_id}`);
-            
+            const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieFromCinemaId/${movie_id}/${cinema_id}`);
+            console.log("stwtwt",res.data)
             if (res.data.length > 0) {
                 // Nếu có suất chiếu
                 const movie = res.data.map(item => item);
@@ -115,7 +117,7 @@ function BookTicket() {
                 setReleaseDate(movie[0].movie_id.release_date);
                 setDescription(movie[0].movie_id.description);
                 setTrailer(movie[0].movie_id.trailer);
-                setPoster(movie[0].movie_id.poster2);
+                // setPoster(movie[0].movie_id.poster2);
                 
             } else {
                 // Nếu không có suất chiếu thì gọi hàm getMovie2 để lấy thông tin cơ bản của phim
@@ -673,30 +675,30 @@ else{
                     <div className='col-1'></div>
                     <div className={cx('content-movie','col-10')}>
                         <div className='row'>
-                            <img src={movie2.poster2} className={cx('d-block','col-4')} alt="" />
+                            <img src='' className={cx('d-block','col-4')} alt="" />
                             <div className={cx('col-8')}>
                                 <div className={cx('wrap-info','ms-5','mt-4','pt-1')}>
-                                    <h1 id="title"  className={cx('title')}>Tên phim: {movie2.title}</h1>
+                                    <h1 id="title"  className={cx('title')}>Tên phim: </h1>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faTag} />
-                                        <div className={cx('type')}>Thể loại: {movie2.genre}</div>
+                                        <div className={cx('type')}>Thể loại: </div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faClock} />
-                                        <div className={cx('duration')}>Thời gian: {movie2.duration} phút </div>
+                                        <div className={cx('duration')}>Thời gian:  phút </div>
                                     </div>
                                     <div className='info-group d-flex'>
                                         <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faEarthAsia} />
-                                        <div className={cx('country')}>Quốc gia: {movie2.country}</div>
+                                        <div className={cx('country')}>Quốc gia: </div>
                                     </div>
                                     <div className='info-group d-flex'>
 <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faClosedCaptioning} />
-                                        <div className={cx('sub')}>Phụ đề: {movie2.subtitles}</div>
+                                        <div className={cx('sub')}>Phụ đề: </div>
                                     </div>
                                     <div className='info-group d-flex'>
-                                        <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={movie2.faUserCheck} />
+                                        <FontAwesomeIcon className={cx('icon-info','pe-2','pt-1')} icon={faUserCheck} />
                                         <div className={cx('limit')}>
-                                            Nhãn phim: {movie2.limit ? `${movie2.limit}+` : ''}
+                                            Nhãn phim: 
                                         </div>
 
                                     </div>
@@ -705,19 +707,19 @@ else{
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
                                     <h1 className={cx('title')}> Mô Tả </h1>
                                     <div className='info-group '>
-                                        <div className={cx('director')}>Đạo diễn: {movie2.director}</div>
+                                        <div className={cx('director')}>Đạo diễn: </div>
                                     </div>
                                     <div className='info-group '>
-                                        <div className={cx('performer')}>Diễn viên:  {movie2.cast}</div>
+                                        <div className={cx('performer')}>Diễn viên:  </div>
                                     </div>
                                     <div className='info-group'>
-                                        <div className={cx('premiere')}>Khởi chiếu:  {new Date(movie2.release_date).toLocaleDateString()}</div>
+                                        <div className={cx('premiere')}>Khởi chiếu:  {new Date().toLocaleDateString()}</div>
                                     </div>
                                     
                                 </div>  
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
                                     <h1 className={cx('title')}>Nội Dung Phim</h1>
-                                    <div className={cx('description')}> {movie2.description} </div>                                                                     
+                                    <div className={cx('description')}> {} </div>                                                                     
                                 </div>
                                 <div className={cx('wrap-info','ms-5','mt-4')}>
                                     <div className='info-group d-flex' >
@@ -762,4 +764,4 @@ else{
 }
 }
 
-export default BookTicket;
+export default BookByCinema;

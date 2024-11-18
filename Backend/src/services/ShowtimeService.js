@@ -97,7 +97,7 @@ class ShowtimeService {
             'room_id', 'name'
         )
         .populate(
-            'movie_id', 'title'
+            'movie_id'
         );
     }
 
@@ -115,7 +115,14 @@ class ShowtimeService {
         return results;
     };
     
-
+    getShowtimeByMovieFromCinemaId = async (movieID, cinemaID) => {
+        return await showtime.find({
+            movie_id: movieID,
+            cinema_id: cinemaID,
+            
+        })
+        .populate('cinema_id movie_id');;
+    };
 }
 
 module.exports = new ShowtimeService;
