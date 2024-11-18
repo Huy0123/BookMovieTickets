@@ -55,6 +55,49 @@ function Schedule() {
     }, []);
 
     useEffect(() => {
+        let ticking = false;
+
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const rowers = document.querySelectorAll(`.${cx('rowerr')}`);
+                    const leftIn = document.querySelectorAll(`.${cx('img-contain')}`);
+                    
+                    rowers.forEach(rowerr => {
+                        const rect = rowerr.getBoundingClientRect();
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            rowerr.classList.add(cx('float-in'));
+                            // Add the class to each element in leftIn
+                            rowerr.classList.remove(cx('hidden'));
+                        
+                        } else {
+                            rowerr.classList.remove(cx('float-in'));
+                            // Remove the class from each element in leftIn
+                            rowerr.classList.add(cx('hidden'));
+                        }
+                    }
+                     
+                  
+                );
+                leftIn.forEach( leftIn => {
+                    const rect =  leftIn.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 120) {
+                        leftIn.classList.add(cx('fromleft'));
+                        leftIn.classList.remove(cx('hidden'));
+                      
+                    } else {
+                        leftIn.classList.remove(cx('fromleft'));
+                        leftIn.classList.add(cx('hidden'));
+                    }
+                }   );
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+        
+        // Thêm event listener cho scroll
+        window.addEventListener('scroll', handleScroll);
         const generateDates = () => {
             const today = new Date();
             const days = Array.from({ length: 3 }, (_, i) => {
@@ -176,28 +219,30 @@ function Schedule() {
                                             alt={movie.name}
                                         />
                                     </div>
-                                    <div className={cx('wrap-info', 'ms-5', 'mt-4')}>
-                                        <h1 className={cx('title')}>Tên phim: {movie.title}</h1>
-                                        {/* Movie information */}
-                                        <div className="info-group d-flex">
-                                            <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faTag} />
-                                            <div className={cx('type')}>Thể loại: {movie.genre}</div>
-                                        </div>
-                                        <div className="info-group d-flex">
-                                            <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faClock} />
-                                            <div className={cx('duration')}>Thời gian: {movie.duration} phút</div>
-                                        </div>
-                                        <div className="info-group d-flex">
-                                            <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faEarthAsia} />
-                                            <div className={cx('country')}>Quốc gia: {movie.country}</div>
-                                        </div>
-                                        <div className="info-group d-flex">
-                                            <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faClosedCaptioning} />
-                                            <div className={cx('sub')}>Phụ đề: {movie.subtitles}</div>
-                                        </div>
-                                        <div className="info-group d-flex">
-                                            <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faUserCheck} />
-                                            <div className={cx('limit')}>Nhãn phim: {movie.limit} +</div>
+                                    <div className={cx('info-contain')}>
+                                        <div className={cx('wrap-info', 'ms-5', 'mt-4')}>
+                                            <h1 className={cx('title')}>Tên phim: {movie.title}</h1>
+                                            {/* Movie information */}
+                                            <div className="info-group d-flex">
+                                                <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faTag} />
+                                                <div className={cx('type')}>Thể loại: {movie.genre}</div>
+                                            </div>
+                                            <div className="info-group d-flex">
+                                                <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faClock} />
+                                                <div className={cx('duration')}>Thời gian: {movie.duration} phút</div>
+                                            </div>
+                                            <div className="info-group d-flex">
+                                                <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faEarthAsia} />
+                                                <div className={cx('country')}>Quốc gia: {movie.country}</div>
+                                            </div>
+                                            <div className="info-group d-flex">
+                                                <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faClosedCaptioning} />
+                                                <div className={cx('sub')}>Phụ đề: {movie.subtitles}</div>
+                                            </div>
+                                            <div className="info-group d-flex">
+                                                <FontAwesomeIcon className={cx('icon-info', 'pe-2', 'pt-1')} icon={faUserCheck} />
+                                                <div className={cx('limit')}>Nhãn phim: {movie.limit} +</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

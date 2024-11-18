@@ -4,6 +4,7 @@
       transform: translateY(80px) ;
      
     }
+  
     100% {
       opacity: 1;
       transform: translateY(0) ;
@@ -36,20 +37,23 @@
     animation: moveUp 1s ease-out forwards;
   }
 .fromleft{
-    animation: fromLeft 1s ease-out forwards;
+    animation: fromLeft 0.5s ease-out forwards;
 }  
+.hidden{
+    opacity: 0;
+}
 .container{
     background-color: #FFB84C;
     height: 100%;
     .search{
         .wrap{
-            padding: 0 55px;
+          
             border-bottom: 1px solid #fff;     
             h2{
                 color: #fff;
             }
             .date{
-                padding: 0 30px;
+             
                 .select1 {
                     width:300px;
                     height: 38px;
@@ -58,16 +62,16 @@
                 }
             }
             .movie{
-                padding: 0 30px;
+           
                 .select2 {
-                    width:400px;
+                    width:500px;
                     height: 38px;
                     border-radius: 4px;
                     border: 1px solid #ccc;
                 }
             }
             .cinema{
-                padding: 0 30px;
+               
                 .select3 {
                     width:300px;
                     height: 38px;
@@ -93,7 +97,7 @@
                 z-index: 3;
                 justify-content: center;
                 align-items: center;
-            
+                overflow: hidden;
                 .img-contain{
                     margin: 20px 0;
                     overflow: hidden;
@@ -109,14 +113,23 @@
                
                 }
             }
-                .wrap-info{
-                    height: 580px;
+           .info-contain{
+            overflow: hidden;
+            height: 600px;
                     border-radius:5px ;
                     color: #fff;
-                    width: 87%;
+                    width: 95%;
                     position: absolute;
                     top: 4px;
                     left: -5px;
+                    border-radius:5px ;
+                .wrap-info{
+                    height: 100%;
+                 
+                    color: #fff;
+                    width: 100%;
+                   
+                 
                     box-shadow:inset 15px 5px 100px 5px #24242489;
                     transition: opacity 0.5s ease;
                     z-index: 4;
@@ -134,6 +147,7 @@
                         align-items: center;
                     }
                 }
+            }
                 &:hover .wrap-info{
                     display: flex; /* Hiện khi hover */
                     color: #FFf;
