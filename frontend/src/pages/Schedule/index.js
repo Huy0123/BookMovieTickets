@@ -154,7 +154,7 @@ function Schedule() {
 
                                                         // Convert showtime to Vietnam time
                                                         const showtimeUTC = new Date(showtime.showtimeStart);
-                                                        showtimeUTC.setHours(showtimeUTC.getHours() + 7); // Adjust to UTC+7
+                                                         // Adjust to UTC+7
                                                         const formattedShowtime = showtimeUTC.toLocaleTimeString('vi-VN', {
                                                             hour: '2-digit',
                                                             minute: '2-digit',
