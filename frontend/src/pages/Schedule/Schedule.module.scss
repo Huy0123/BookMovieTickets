@@ -45,43 +45,43 @@
 .container{
     background-color: #FFB84C;
     height: 100%;
-    // .search{
-    //     .wrap{
-    //         padding: 0 55px;
-    //         border-bottom: 1px solid #fff;     
-    //         h2{
-    //             color: #fff;
-    //         }
-    //         .date{
-    //             padding: 0 30px;
-    //             .select1 {
-    //                 width:300px;
-    //                 height: 38px;
-    //                 border-radius: 4px;
-    //                 border: 1px solid #ccc;
-    //             }
-    //         }
-    //         .movie{
-    //             padding: 0 30px;
-    //             .select2 {
-    //                 width:400px;
-    //                 height: 38px;
-    //                 border-radius: 4px;
-    //                 border: 1px solid #ccc;
-    //             }
-    //         }
-    //         .cinema{
-    //             padding: 0 30px;
-    //             .select3 {
-    //                 width:300px;
-    //                 height: 38px;
-    //                 padding: 0.5rem;
-    //                 border-radius: 4px;
-    //                 border: 1px solid #ccc;
-    //             }
-    //         }
-    //     }
-    // }
+    .search{
+        .wrap{
+            padding: 0 55px;
+            border-bottom: 1px solid #fff;     
+            h2{
+                color: #fff;
+            }
+            .date{
+                padding: 0 30px;
+                .select1 {
+                    width:300px;
+                    height: 38px;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                }
+            }
+            .movie{
+                padding: 0 30px;
+                .select2 {
+                    width:400px;
+                    height: 38px;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                }
+            }
+            .cinema{
+                padding: 0 30px;
+                .select3 {
+                    width:300px;
+                    height: 38px;
+                    padding: 0.5rem;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                }
+            }
+        }
+    }
 
     .content{
         padding-top: 10px;
@@ -196,6 +196,7 @@
                         }
                     }
                 }
+                
                 }
             }
         }
