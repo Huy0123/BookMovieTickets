@@ -12,7 +12,7 @@ import { useAuth } from '~/contexts/AuthContext';
 const cx = classNames.bind(styles);
 function BookTicket() {
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-    const seatSelectionRef = useRef(null); // Create a ref for the seat selection area
+    const scheduleRef  = useRef(null); // Create a ref for the seat selection area
     const [hour,setHour] = useState('')
     const [getMovies,setMovies]=useState([])
     const [selectedSeats, setSelectedSeats] = useState([]);
@@ -51,14 +51,13 @@ function BookTicket() {
     const [movie2,setMovie2]= useState('')
     const navigate = useNavigate();
     let lastDisplayedDate = '';
-    const user_id = localStorage.getItem('user_id')
+    const user_id = localStorage.getItem('userId')
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
     const location = useLocation();
-    const cinema_id = location.state?.cinema_id;
-    const { showtimeId,cinemaId } = location.state || {}; // Lấy showtimeId từ state
+    const { showtimeId,cinema_id } = location.state || {}; // Lấy showtimeId từ state
     const { isAuthenticated } = useAuth();
-    console.log("showtimeId:", showtimeId);
+    
     console.log(movie_id)
     const openModal = (link) => {
         setTrailerUrl(link);
@@ -100,6 +99,7 @@ function BookTicket() {
         if(cinema_id){
             try{
                 const res = await axios.get(`http://localhost:8080/v1/getShowtimeByMovieFromCinemaId/${movie_id}/${cinema_id}`);
+                if (res.data.length > 0) {
                 console.log("hqewrgeyuqt",res.data)
                 setMovies(res.data);
                 setTitle(res.data[0].movie_id.title);
@@ -113,9 +113,12 @@ function BookTicket() {
                 setReleaseDate(res.data[0].movie_id.release_date);
                 setDescription(res.data[0].movie_id.description);
                 setTrailer(res.data[0].movie_id.trailer);
-                setPoster(res.data[0].movie_id.poster2);             
-            }catch{
-
+                setPoster(res.data[0].movie_id.poster2);      
+                }else{
+                    getMovie2();
+                }       
+            }catch (error) {
+                console.error("Error fetching data:", error);
             }
         }else{
         try {
@@ -175,18 +178,17 @@ function BookTicket() {
 }, [movie_id]);
 
 
-    useEffect(() => {
-        if (showtimeId) {
-            handleShowtimeClick(showtimeId, cinemaId, price);
-            // Scroll to seat selection area when showtimeId exists
-            if (seatSelectionRef.current) {
-                seatSelectionRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
-        } else {
-            // If no showtimeId, do not scroll or show seat selection
-            console.log("No showtimeId available.");
-        }
-    }, [showtimeId, cinemaId, price]);
+useEffect(() => {
+    if (showtimeId && cinema_id && scheduleRef.current) {
+        handleShowtimeClick(showtimeId, cinema_id, price);
+
+        // Đảm bảo cuộn chỉ xảy ra sau khi phần tử đã render
+        setTimeout(() => {
+            scheduleRef.current.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    }
+}, [showtimeId, cinema_id, price]);
+
 
     const handleBooking = () => {
         if (!isAuthenticated) {
@@ -387,7 +389,7 @@ if(title!==''){
                                     <h1 className={cx('title')}>Nội Dung Phim</h1>
                                     <div className={cx('description')}> {description} </div>                                                                     
                                 </div>
-                                <div className={cx('wrap-info','ms-5','mt-4')}>
+                                <div className={cx('wrap-info-trailer','ms-5','mt-4')}>
                                     <div className='info-group d-flex' >
                                         <FontAwesomeIcon className={cx('icon-trailer','pe-2','pt-1')} icon={faTv} />
                                         <div className={cx('trailer')} style={{ textDecoration: 'underline',cursor:'pointer' }} onClick={() => openModal(trailer)}>Xem Trailer</div>
@@ -402,7 +404,7 @@ if(title!==''){
                 </div>
             </div>
             {/* Lich chieu */}
-            <div className={cx('schedule')}>
+            <div className={cx('schedule')} ref={scheduleRef}>
     <div className="row">
         <div className="col-1"></div>
         <div className={cx('wrap', 'col-10')}>
@@ -530,8 +532,7 @@ if(title!==''){
 
           
             {/* ghe */}
-            <div ref={seatSelectionRef}>
-    {selectedShowtimeId && (
+        {selectedShowtimeId && (
         <div className={cx('seat')}>
             <div className={cx('wrap-seat')}>
                 <div className={cx('screen')}>
@@ -619,7 +620,6 @@ if(title!==''){
             </div>
         </div>
     )}
-</div>
 
             <div className={cx('food')}>
                 <h1>CHỌN BẮP NƯỚC</h1>

@@ -124,7 +124,7 @@ function Voucher() {
                             <div className={cx('left')}>
                             <div className={cx('modal-voucher')}>
                                 {Array.isArray(allVouncher) && allVouncher.map((item, index)  => {
-                                    if(item.points!=0){
+                                    if(item.points!=0 && new Date(item.start_date) <= new Date()){
                                         return(
                                             <div key={index} className={cx('voucher')}>
                                                                                     <div className={cx('wrap-img')}>
@@ -213,7 +213,7 @@ function Voucher() {
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
                      
-                        <p>{modalContent}</p>
+                        <h4>{modalContent}</h4>
                         <button className={cx('btn-cancel')} onClick={closeModal} >
                             Đóng
                         </button>
@@ -226,7 +226,7 @@ function Voucher() {
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
 
-                        <p>{modalContent}</p>
+                        <h4>{modalContent}</h4>
                         <button className={cx('btn-confirm')} onClick={() => {closeModal();handleVoucherClick(selectedVoucherId); }}>
                             Đồng ý
                         </button>
