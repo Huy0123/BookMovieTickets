@@ -1,4 +1,4 @@
-const SendEmailService = require('../services/SendEmailService')
+const SendEmailService = require('../services/SendEmailService.js')
 
 class SendEmailController{
     SendEmailforgotpassword = async(req,res)=>{

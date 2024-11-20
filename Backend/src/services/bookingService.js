@@ -25,7 +25,7 @@ class bookingService {
             
             for (const seat_id of seats_id){
                 let i = 0;
-                const seat = await SeatTimeModel.find({seat_id:seat_id}).populate('seat_id')
+                const seat = await SeatTimeModel.find({seat_id:seat_id,showtime_id:showtime_id}).populate('seat_id')
                if(!seat){
                 return {message:"khoong co seat"}
                }
@@ -52,6 +52,7 @@ class bookingService {
             
             var total_price = total_price_seat+total_price_food;
             console.log(total_price)
+            console.log("point_id",point_id)
             if(point_id){
                 const pointData = await PointModel.findById(point_id)
                     total_price = total_price - total_price*pointData.discount;
@@ -65,7 +66,7 @@ class bookingService {
                 cinema_id:showtime.cinema_id,
                 seats_id:seats_id,
                 FoodAndDrinks_id:FoodAndDrinks_id,
-                point_id,
+                point_id:point_id,
                 order_date: new Date(),
                 total_price
             })

@@ -1,4 +1,4 @@
-const showtimeService = require('../services/ShowtimeService');
+const showtimeService = require('../services/ShowtimeService.js');
 
 class ShowtimeController {
     createShowtime = async (req, res) => {
@@ -25,7 +25,7 @@ class ShowtimeController {
             res.status(200).send(showtimes);
         } catch (error) {
             res.status(400).send(error.message);
-        }
+        } 
     }
 
     getShowtimeByID = async (req, res) => {

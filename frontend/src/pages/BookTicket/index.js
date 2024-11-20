@@ -51,13 +51,13 @@ function BookTicket() {
     const [movie2,setMovie2]= useState('')
     const navigate = useNavigate();
     let lastDisplayedDate = '';
-    const user_id = localStorage.getItem('user_id')
+    const user_id = localStorage.getItem('userId')
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
     const location = useLocation();
     const { showtimeId,cinema_id } = location.state || {}; // Lấy showtimeId từ state
     const { isAuthenticated } = useAuth();
-    console.log("showtimeId:", showtimeId);
+    
     console.log(movie_id)
     const openModal = (link) => {
         setTrailerUrl(link);

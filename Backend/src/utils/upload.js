@@ -1,4 +1,4 @@
-const bucket = require('../config/FirebaseConfig');
+const bucket = require('../config/FirebaseConfig.js');
 const { format } = require('util');
 const {v4: uuidv4} = require('uuid');
 

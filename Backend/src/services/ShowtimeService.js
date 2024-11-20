@@ -1,7 +1,7 @@
-const showtime = require('../models/Showtime')
-const rooms = require('../models/Room')
-const seats = require('../models/Seat')
-const seatTime = require('../models/SeatTime')
+const showtime = require('../models/Showtime.js')
+const rooms = require('../models/Room.js')
+const seats = require('../models/Seat.js')
+const seatTime = require('../models/SeatTime.js')
 class ShowtimeService {
 
     createShowtime =    async (data) => {

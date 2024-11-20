@@ -1,4 +1,4 @@
-const seatService = require('../services/SeatService');
+const seatService = require('../services/SeatService.js');
 
 class SeatController {
     createSeat = async (req, res) => {

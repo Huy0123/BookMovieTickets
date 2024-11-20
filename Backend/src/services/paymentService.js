@@ -21,7 +21,7 @@ var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 var orderInfo = 'pay with MoMo';
 var partnerCode = 'MOMO';
 var redirectUrl = 'http://localhost:3000/thanks';
-const ngrok = 'https://3c0d-14-161-10-15.ngrok-free.app'
+const ngrok = 'https://4dd8-2402-800-6378-6c38-3d6a-b5df-7a1d-fe21.ngrok-free.app'
 var ipnUrl = `${ngrok}/v1/Payment/callback`;
 var requestType = "payWithMethod";
 var extraData = '';
@@ -123,7 +123,6 @@ class paymentService {
                     const point = Math.ceil((user.point) + ((data.amount * 1) / 1000))
                     console.log("point", point)
                     await UserModel.updateOne({ _id: order.user_id }, { point: point })
-
                     if (user) {
 
                         const pointId = order.point_id;
@@ -268,8 +267,6 @@ class paymentService {
                 const point = Math.ceil((user.point) + ((verify.vnp_Amount * 1) / 1000))
                 console.log("point", point)
                 await UserModel.updateOne({ _id: order.user_id }, { point: point })
-
-
                 if (user) {
 
                     const pointId = order.point_id;
@@ -385,19 +382,13 @@ class paymentService {
             const user = await UserModel.findById(order.user_id)
             await SendEmailService.sendEmailWithQRCode(user, qrCodeUrl, orderId);
             const seats_id = order.seats_id;
+            const showtime_id = order.showtime_id;
             for (const seat_id of seats_id) {
-                await SeatTimeModel.updateOne({ seat_id: seat_id }, { seat_status: "true" })
+                await SeatTimeModel.updateOne({ seat_id: seat_id ,showtime_id:showtime_id}, { seat_status: "true" })
             }
             const point = Math.ceil((user.point) + ((parsedData.amount * 1) / 1000))
             console.log("point", point)
-            await UserModel.updateOne({ _id: order.user_id }, { point: point })
-            await UserModel.updateOne(
-                { _id: order.user_id },
-                { $pull: { promotions_id: order.point_id } }
-            );
-
-            if (user) {
-
+            await UserModel.updateOne({ _id: order.user_id }, { point: point })        
                 const pointId = order.point_id;
                 // Bước 2: Tìm chỉ mục của promotion_id cần xóa
                 const index = user.promotions_id.indexOf(pointId);
@@ -406,7 +397,8 @@ class paymentService {
                     user.promotions_id.splice(index, 1); // Xóa occurrence tại chỉ mục
                     await user.save(); // Lưu thay đổi vào cơ sở dữ liệu
                 }
-            }
+            
+    
 
             return { result, Payment, qrCodeUrl }
         }

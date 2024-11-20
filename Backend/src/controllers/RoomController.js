@@ -1,4 +1,4 @@
-const roomService = require('../services/RoomService');
+const roomService = require('../services/RoomService.js');
 
 class RoomController {
     createRoom = async (req, res) => {
