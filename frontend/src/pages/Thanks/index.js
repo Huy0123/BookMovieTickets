@@ -35,7 +35,7 @@ function Thanks() {
     const [namefood, setNamefood] = useState([]);
     const [movieid,setMovieid] = useState('')
     const [hasFetchedTransactionStatus, setHasFetchedTransactionStatus] = useState(false);
-
+    const token = localStorage.getItem('userToken')
     const navigate = useNavigate();
    
     useEffect(() => {
@@ -56,7 +56,13 @@ function Thanks() {
                 // Kiểm tra trạng thái giao dịch chỉ nếu chưa gọi trước đó
                 if(!status){
                     if (vnp_TransactionStatus && !hasFetchedTransactionStatus) {
-                        await axios.get(`http://localhost:8080/v1/Payment/vnpay-return/${params}`);
+                        await axios.get(`http://localhost:8080/v1/Payment/vnpay-return/${params}`,{
+                            withCredentials: true,
+                            headers: {
+                            'Authorization': `Bearer ${token}`
+
+                        }
+                        });
                         setHasFetchedTransactionStatus(true); // Đánh dấu là đã gọi
                     }
                 }

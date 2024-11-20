@@ -419,7 +419,7 @@ if(title!==''){
                         .filter((show) => {
                             const showtimeDate = new Date(show.showtime_start);
                             const today = new Date();
-                            today.setHours(0, 0, 0, 0); // Đặt giờ của hôm nay về 0:00:00
+                            today.setHours(0, 0, 0, 0) ; // Đặt giờ của hôm nay về 0:00:00
                             return showtimeDate >= today; // Chỉ lấy lịch chiếu từ hôm nay trở về sau
                         })
                         // Sắp xếp lịch chiếu theo thời gian tăng dần
