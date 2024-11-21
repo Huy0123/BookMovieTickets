@@ -18,7 +18,7 @@
   position: sticky;
   top: 0%;
   z-index: 200;
-  box-shadow:inset 0px 0px 100px 5px #fca420;
+  box-shadow:inset 0px 0px 200px 5px #e38e0f;
   
     .container {
       
@@ -40,7 +40,9 @@
                     
                     //  animation: changeColor 5s ease infinite;
                      &:hover{
-                       
+                        background-color: #A459D1;
+                        border: 3px dashed #fff;
+                        border-radius:5px ;
                      }
                 }
                 .wrap1{
@@ -87,7 +89,7 @@
                         }
                         .icon-user{
                           
-                            // margin-right: 10px;
+                            margin-right: 5px;
                             padding-bottom: 5px;
                         }
                         &:hover {
