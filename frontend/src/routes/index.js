@@ -26,7 +26,6 @@ import DashBoard from '~/Admin/DashBoard';
 const publicRoutes = [
     { path: '/', component:Home },
     { path: '/schedule', component:Schedule },
-   
     { path: '/chooseCinema/:id', component:ChooseCinema},
     { path: '/bookTicket/:id', component:BookTicket},
     { path: '/thanks', component:Thanks},
