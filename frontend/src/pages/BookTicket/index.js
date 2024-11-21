@@ -543,46 +543,73 @@ if(title!==''){
                     <div className="row">
                         <div className="col-2"></div>
                         <div className="col-8">
-                            {seatRows.map((rowName, rowIndex) => {
-                                const availableSeatsInRow = seats.filter(seat => 
-                                    seat.seat_id && 
-                                    seat.seat_id.seat_number.startsWith(rowName) 
-                                );
+                        {seatRows.map((rowName, rowIndex) => {
+    // Lọc ghế theo hàng hiện tại
+    const availableSeatsInRow = seats.filter(
+        (seat) =>
+            seat.seat_id &&
+            seat.seat_id.seat_number.startsWith(rowName)
+    );
 
-                                return (
-                                    <div key={rowIndex} className={cx('group-seat')}>
-                                        <div className={cx('seat-name', 'me-4')}>{rowName}</div>
-                                        <div className={cx('group-btn-seat')}>
-                                            {availableSeatsInRow.map(seatInfo => {
-                                                const seatNumber = seatInfo.seat_id.seat_number;
-                                                const seatId = seatInfo.seat_id._id;
-                                                const seatPrice = seatInfo.seat_id.price;
+    // Sắp xếp ghế theo thứ tự số trong mỗi hàng
+    const sortedSeatsInRow = availableSeatsInRow.sort((a, b) => {
+        const seatNumberA = parseInt(a.seat_id.seat_number.slice(1)); // Lấy số từ mã ghế (bỏ ký tự đầu tiên)
+        const seatNumberB = parseInt(b.seat_id.seat_number.slice(1));
+        return seatNumberA - seatNumberB;
+    });
 
-                                                return (
-                                                    <button
-                                                        key={seatNumber}
-                                                        type="button"
-                                                        className={cx('num-seat', {
-                                                            'vip-seat': seatInfo.seat_id.seat_type.toLowerCase() === 'vip',
-                                                            'selected-seat': selectedSeats.includes(seatNumber),
-                                                            'occupied': seatInfo.seat_status,
-                                                        })}
-                                                        style={{
-                                                            backgroundColor: selectedSeats.includes(seatNumber) ? '#F9E400' : seatInfo.seat_status ? '#f5004f' : '',
-                                                            color: seatInfo.seat_status ? '#000' : '',
-                                                        }}
-                                                        onClick={() => {
-                                                            if (!seatInfo.seat_status) {
-                                                                handleSeatClick(seatNumber, seatId, seatPrice);
-                                                            }
-                                                        }}
-                                                        disabled={seatInfo.seat_status}
-                                                        aria-label={`Seat ${seatNumber} ${seatInfo.seat_status ? 'occupied' : 'available'}`}
-                                                    >
-                                                        {seatNumber}
-                                                    </button>
-                                                );
-                                            })}
+    return (
+        <div key={rowIndex} className={cx('group-seat')}>
+            <div className={cx('seat-name', 'me-4')}>{rowName}</div>
+            <div className={cx('group-btn-seat')}>
+                {sortedSeatsInRow.map((seatInfo) => {
+                    const seatNumber = seatInfo.seat_id.seat_number;
+                    const seatId = seatInfo.seat_id._id;
+                    const seatPrice = seatInfo.seat_id.price;
+
+                    return (
+                        <button
+                            key={seatNumber}
+                            type="button"
+                            className={cx('num-seat', {
+                                'vip-seat':
+                                    seatInfo.seat_id.seat_type.toLowerCase() ===
+                                    'vip',
+                                'selected-seat': selectedSeats.includes(
+                                    seatNumber
+                                ),
+                                occupied: seatInfo.seat_status,
+                            })}
+                            style={{
+                                backgroundColor: selectedSeats.includes(
+                                    seatNumber
+                                )
+                                    ? '#F9E400'
+                                    : seatInfo.seat_status
+                                    ? '#f5004f'
+                                    : '',
+                                color: seatInfo.seat_status ? '#000' : '',
+                            }}
+                            onClick={() => {
+                                if (!seatInfo.seat_status) {
+                                    handleSeatClick(
+                                        seatNumber,
+                                        seatId,
+                                        seatPrice
+                                    );
+                                }
+                            }}
+                            disabled={seatInfo.seat_status}
+                            aria-label={`Seat ${seatNumber} ${
+                                seatInfo.seat_status
+                                    ? 'occupied'
+                                    : 'available'
+                            }`}
+                        >
+                            {seatNumber}
+                        </button>
+                    );
+                })}
                                         </div>
                                     </div>
                                 );
