@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faPlay } from '@fortawesome/free-solid-svg-icons'
 import TrailerModal from '../Trailer/TrailerModal';
 import axios from 'axios';
+import images from '~/assets/img';
 import { useNavigate } from 'react-router-dom';
 import apiClient from "../../services/apiClient";
 const cx = classNames.bind(styles);
@@ -165,6 +166,57 @@ function Home() {
            
                 </div>
            
+            <div className={cx('about-cine','rowerr','row')}>
+                <div className='col-1'></div>
+               <div className={cx('col-10')}>
+               <h1 className={cx('showing-title', 'text-center')}>THÔNG TIN RẠP</h1>
+               <div className={cx('info')}>
+               <img className={cx('logo')} src={images.logos} alt="Logo" />
+               <div className={cx('para')}>
+                <p>
+                Chào mừng đến với ANTI ANTI MOVIE CINEMA – Thế giới phim không giới hạn!
+                Bạn là người yêu phim? ANTI ANTI MOVIE CINEMA là nơi bạn tìm thấy mọi điều bạn cần:
+                </p>
+                <p>
+                🎬 Hàng ngàn bộ phim đa thể loại: Từ hành động, kinh dị đến lãng mạn, hài hước.
+                </p>
+                <p>
+                🔥 Cập nhật liên tục: Những bộ phim mới nhất luôn sẵn sàng.
+                </p>
+                <p>
+                🌟 Chất lượng hoàn hảo: Hình ảnh sắc nét, âm thanh sống động.
+                </p>
+                <p>
+                📱 Hỗ trợ mọi thiết bị: Xem phim dễ dàng trên máy tính, điện thoại hay Smart TV.
+                </p>
+                <p>
+                Điểm nổi bật của chúng tôi
+                Phim đa dạng:
+                </p>
+                <p>
+                Phim điện ảnh bom tấn.
+                Series phim truyền hình hấp dẫn.
+                Phim ngắn nghệ thuật độc đáo.
+                Giao diện thân thiện:
+                </p>
+                <p>
+                Tìm kiếm dễ dàng theo thể loại, quốc gia hoặc năm phát hành.
+                Đề xuất phim theo sở thích của bạn.
+                Trải nghiệm không gián đoạn:
+                </p>
+                <p>
+                Tốc độ load nhanh.
+                Xem phim mượt mà, không quảng cáo phiền phức.
+                </p>
+                <p>
+                Hãy bắt đầu hành trình điện ảnh của bạn!
+                Nhấn vào [Đăng ký miễn phí] hoặc [Xem ngay] để tận hưởng hàng ngàn bộ phim hay mọi lúc, mọi nơi.
+                </p>
+                </div>
+                </div>
+                </div>
+                <div className='col-1'></div>
+            </div>
 
             {/* Currently Showing Movies Carousel */}
             <div className={cx('box-shadow-movie','rowerr')}>

@@ -163,7 +163,7 @@ const handleAdd = async () => {
                         <td>{item.points}</td>
                         <td>
                         <FontAwesomeIcon className={cx('btn-edit')} icon={faPenToSquare} onClick={() => openModalEdit(item._id)}/> 
-                        <EditVoucher isOpen={isModalOpen} vouncherId={vouncherId} onClose={closeModalEdit} />
+                      
                         <FontAwesomeIcon className={cx('btn-del')} icon={faTrash} onClick={() => openModalDelete(item._id)}/>
                     </td>
             </tr>
@@ -281,6 +281,7 @@ const handleAdd = async () => {
         </div>
     </div>
 )}
+<EditVoucher isOpen={isModalOpen} vouncherId={vouncherId} onClose={closeModalEdit} />
     </div>
 );
 }

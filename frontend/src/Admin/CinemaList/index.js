@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faPenToSquare, faPlus, faSearch, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import EditCinema from '../EditCinema';
 import axios from 'axios';
+import { Tooltip } from 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const cx = classNames.bind(styles);
 
@@ -162,20 +163,16 @@ const filteredCinemas = Cinemas.filter((user) => {
             {filteredCinemas.map((item, index) => {
               return (
                 <tr >
-                  <td>{index + 1}</td>
-                  <td>{item.name}</td>
-                  <td>{item.user_id?.username || "no"}</td>
-                  <td>{item.user_id?.num || "no"}</td>
-                  <td>{item.user_id?.email || "no"}</td>
-                  <td>{item.address || "no"}</td>
-                  <td>
+                  <td className={cx('text-container')}>{index + 1}</td>
+                  <td className={cx('text-container')} >{item.name}  <span className={cx('tooltip')}>{item.name}</span></td>
+                  <td className={cx('text-container')}>{item.user_id?.username || "no"}<span className={cx('tooltip')}>{item.user_id?.username || "no"}</span></td>
+                  <td className={cx('text-container')}>{item.user_id?.num || "no"}<span className={cx('tooltip')}>{item.user_id?.num || "no"}</span></td>
+                  <td className={cx('text-container')}>{item.user_id?.email || "no"}<span className={cx('tooltip')}>{item.user_id?.email || "no"}</span></td>
+                  <td className={cx('text-container')}>{item.address || "no"}<span className={cx('tooltip')}>{item.address || "no"}</span></td>
+                  <td className={cx('doing')}>
                   <FontAwesomeIcon className={cx('btn-edit')} icon={faPenToSquare} onClick={() => openModalEdit(item._id)}/> 
 
-                    <EditCinema
-                      isOpen={isModalOpen}
-                      onClose={closeModalEdit}
-                      cinemaId={selectedCinemaId} // Pass selected cinema ID
-                    />
+                   
                     <FontAwesomeIcon className={cx('btn-del')} icon={faTrash} onClick={() => openModalDelete(item._id)}/>
                   </td>
                 </tr>
@@ -246,6 +243,11 @@ const filteredCinemas = Cinemas.filter((user) => {
           </div>
         </div>
       )}
+      <EditCinema
+                      isOpen={isModalOpen}
+                      onClose={closeModalEdit}
+                      cinemaId={selectedCinemaId} // Pass selected cinema ID
+                    />
     </div>
   );
 }

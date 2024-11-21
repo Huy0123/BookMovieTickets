@@ -87,6 +87,9 @@
                         color: #fff;    
                         background-color: #6fd3dc;                      
                         }
+                        .btn-time.active {
+                            background-color: #4caf50; /* Màu khi nút được nhấn */
+                          }
                     }
                }
             }
@@ -239,13 +242,14 @@
                 
                 .item-food{
                     display: flex;
-                    justify-content: space-between;
+                    justify-content: start;
                     flex-wrap: wrap;
+                    gap: 5px;
                     .item-detail{
                         display: flex;
                         border: 5px dashed #A459D1;
                         gap: 5px;
-                        max-width: 310px;
+                        width: 310px;
                         background-color: #f57bb8;
                         align-items: center;
                         margin-top: 5px;
@@ -253,6 +257,7 @@
                             height: 140px;
                             width: 140px;
                             object-fit: cover;
+                            padding-left: 5px;
                         }
                         .food-info{
                             display: flex;

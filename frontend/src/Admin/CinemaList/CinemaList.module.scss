@@ -70,11 +70,50 @@
         }
        }
        tbody{
-        tr{
-            td{
-                padding:4px 10px ;
+        tr{   tr{ 
+            .doing{
+                
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+            .text-container {
+                position: relative;
+                padding: 4px 10px;
                 text-align: center;
-                // background-color: rgba(232, 215, 166, 0.595);
+                /* Để làm căn cứ cho tooltip */
+                max-width: 150px; /* Giới hạn chiều rộng của ô */
+                white-space: nowrap; /* Không cho nội dung xuống dòng */
+                overflow: hidden; /* Ẩn nội dung tràn */
+                text-overflow: ellipsis; /* Hiển thị dấu ba chấm */
+                z-index: 5;
+                cursor: pointer;
+                .tooltip {
+                    display: none; /* Ẩn tooltip mặc định */
+                    position: fixed; /* Định vị tooltip */
+                    top: 66px; /* Đặt tooltip ngay dưới ô */
+                    left: 40%;
+                    /* Đảm bảo tooltip hiển thị trên cùng */
+                    background-color: rgb(66, 66, 66); /* Nền đen mờ */
+                    color: #fff; /* Màu chữ */
+                    padding: 5px 10px; /* Khoảng cách trong tooltip */
+                    border-radius: 4px; /* Bo góc */
+                    white-space: nowrap;
+                     /* Cho phép xuống dòng */
+                     /* Giới hạn chiều rộng của tooltip */
+                    pointer-events: none; /* Không gây ảnh hưởng khi hover */
+                  }
+                  &:hover {
+                    z-index: 0; 
+                   
+                
+                  .tooltip {
+                    display: block; /* Hiển thị tooltip khi di chuột */
+                    z-index: 1000; 
+                  
+                  }
+                }
+               
                 .btn-del{
                     color: #000;
                     &:hover{
@@ -99,6 +138,81 @@
                     }
                 }
             }
+         
+            &:hover{
+                background-color: rgba(228, 216, 204, 0.692);
+              
+            }
+        }
+     
+            .doing{
+                
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+            .text-container {
+                
+                padding: 4px 10px;
+                text-align: center;
+                /* Để làm căn cứ cho tooltip */
+                max-width: 150px; /* Giới hạn chiều rộng của ô */
+                white-space: nowrap; /* Không cho nội dung xuống dòng */
+                overflow: hidden; /* Ẩn nội dung tràn */
+                text-overflow: ellipsis; /* Hiển thị dấu ba chấm */
+                z-index: 5;
+                cursor: pointer;
+                .tooltip {
+                    display: none; /* Ẩn tooltip mặc định */
+                    position: fixed; /* Định vị tooltip */
+                    top: 66px; /* Đặt tooltip ngay dưới ô */
+                    left: 40%;
+                    /* Đảm bảo tooltip hiển thị trên cùng */
+                    background-color: rgb(66, 66, 66); /* Nền đen mờ */
+                    color: #fff; /* Màu chữ */
+                    padding: 5px 10px; /* Khoảng cách trong tooltip */
+                    border-radius: 4px; /* Bo góc */
+                    white-space: nowrap;
+                     /* Cho phép xuống dòng */
+                     /* Giới hạn chiều rộng của tooltip */
+                    pointer-events: none; /* Không gây ảnh hưởng khi hover */
+                  }
+                  &:hover {
+                    z-index: 0; 
+                   
+                
+                  .tooltip {
+                    display: block; /* Hiển thị tooltip khi di chuột */
+                    z-index: 100; 
+                  
+                  }
+                }
+               
+                .btn-del{
+                    color: #000;
+                    &:hover{
+                        color:#ed000c;
+                        cursor: pointer;
+                    }
+                }
+                .btn-edit{
+                    color: #000;
+                    margin-right: 4px;
+                    &:hover{
+                        color:#f6a90d;
+                        cursor: pointer;
+                    }
+                }
+                .btn-info{
+                    color: #000;
+                    margin-right: 4px;
+                    &:hover{
+                        color:#057fd6;
+                        cursor: pointer;
+                    }
+                }
+            }
+         
             &:hover{
                 background-color: rgba(228, 216, 204, 0.692);
               
