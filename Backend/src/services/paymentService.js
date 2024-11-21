@@ -119,7 +119,7 @@ class paymentService {
                 await SendEmailService.sendEmailWithQRCode(user, qrCodeUrl, data.orderId);
                 const seats_id = order.seats_id;
                 for (const seat_id of seats_id) {
-                    await SeatTimeModel.updateOne({ seat_id: seat_id }, { seat_status: "true" })
+                    await SeatTimeModel.updateOne({ seat_id: seat_id ,showtime_id:order.showtime_id}, { seat_status: "true" })
                     const point = Math.ceil((user.point) + ((data.amount * 1) / 1000))
                     console.log("point", point)
                     await UserModel.updateOne({ _id: order.user_id }, { point: point })
@@ -262,7 +262,7 @@ class paymentService {
                 await SendEmailService.sendEmailWithQRCode(user, qrCodeUrl, verify.vnp_TxnRef);
                 const seats_id = order.seats_id;
                 for (const seat_id of seats_id) {
-                    await SeatTimeModel.updateOne({ seat_id: seat_id }, { seat_status: "true" })
+                    await SeatTimeModel.updateOne({ seat_id: seat_id ,showtime_id:order.showtime_id }, { seat_status: "true" })
                 }
                 const point = Math.ceil((user.point) + ((verify.vnp_Amount * 1) / 1000))
                 console.log("point", point)
