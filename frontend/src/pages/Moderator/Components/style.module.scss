@@ -181,7 +181,10 @@
     width: 100%;
     height: auto;}
 .logout{
-    
+    position: fixed;
+    bottom: 5%;
+    left: 3%;
+    width: 150px;
     border-radius:20px ;
     padding: 8px 20px;
     box-shadow: 1px 1px 8px rgba(218, 217, 217, 0.742); 
