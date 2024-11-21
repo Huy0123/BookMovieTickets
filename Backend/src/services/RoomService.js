@@ -7,14 +7,23 @@ class RoomService {
         const seats = [];
     
         for (const row of rows) {
+            if(row=== 'E'|| row==='F'||row=== 'G'|| row==='H'){
+                var seat_type = 'Vip';
+                var price = 75000
+            }else{
+                var seat_type = 'Standard';
+                var price = 50000
+            }
+            console.log(`A`,row)
             for (let i = 1; i <= 12; i++) {
                 seats.push({
                     room_id: newRoom._id,
                     seat_number: `${row}${i}`,
-                    price: 50000,
-                    seat_type: 'Standard'
+                    price: price,
+                    seat_type: seat_type
                 });
             }
+            
         }
     
         await seat.insertMany(seats);
