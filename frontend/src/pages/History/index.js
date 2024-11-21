@@ -43,7 +43,17 @@ function History() {
         }
     }
     const handleCloseModal =() =>{
-        setMoreinfo(false)
+        setMoreinfo(false);
+        setNameMovie('');
+            setAddress('');
+            setRoom('');
+            setCinemaName('');
+            setTimestart('');
+            setOrderdate('');
+            setTotalprice('')
+            setSeat([]);
+            setNamefood([]);
+
     }
     useEffect(() => {
         const getData = async () => {
