@@ -13,7 +13,7 @@ const createOrder = mongoose.Schema({
     cinema_id: 
         {
             type: Schema.Types.ObjectId,
-            ref: 'cinemas', 
+            ref: 'cinemas',
         }
     ,
     seats_id: [

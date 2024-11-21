@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import React, {useState, useEffect} from 'react';
 import Sidebar from './Components/Sidebar';
+import Order from './Components/Order';
 import { Routes, Route, Navigate } from 'react-router-dom'; // Thay đổi tại đây
 import ShowtimeList from './Components/ShowtimeList';
 import RoomList from './Components/RoomList';
@@ -34,6 +35,7 @@ const Index = () => {
           <Route path="showtime-list" element={<ShowtimeList cinema_id={cinema_id} />} />
           <Route path="room-list" element={<RoomList cinemaId={cinema_id} />} />
           <Route path="seat-list" element={<SeatList cinema_id={cinema_id} />} />
+          <Route path="orders-list" element={<Order cinema_id={cinema_id}  />} />
         </Routes>
       </div>
     </div>
