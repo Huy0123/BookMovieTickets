@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import classNames from 'classnames/bind';
 import styles from './style.module.scss';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const cx = classNames.bind(styles);
 const RoomList = ({cinemaId}) => {
     
@@ -65,6 +67,8 @@ const RoomList = ({cinemaId}) => {
             const response = await axios.post("http://localhost:8080/v1/createRoom", { name: room, cinema_id: cinemaId });
             if (response.status === 201) {
                 fetchRooms();
+                toast.success('Tạo phòng thành công');
+
             }
         } catch (error) {
             console.error("Error creating room:", error);
@@ -75,6 +79,8 @@ const RoomList = ({cinemaId}) => {
         try {
             await axios.delete(`http://localhost:8080/v1/deleteRoom/${id}`);
             fetchRooms();
+            toast.success('Xóa phòng thành công');
+
         } catch (error) {
             console.error("Error deleting room:", error);
         }
@@ -94,6 +100,8 @@ const RoomList = ({cinemaId}) => {
 
     return (
         <>
+                            <ToastContainer position="top-right" autoClose={3000} />
+
             <div className={cx('collapse-title')}>
                 <a data-bs-toggle="collapse" href="#add-room" role="button" aria-expanded="false">Tạo phòng mới</a>
             </div>

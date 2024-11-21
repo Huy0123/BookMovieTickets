@@ -3,6 +3,8 @@ import axios from "axios";
 // import styles from "~/pages/BookTicket/BookTicket.module.scss";
 import styles from './style.module.scss';
 import classNames from "classnames/bind";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const cx = classNames.bind(styles);
 
 const SeatList = ({ cinema_id }) => {
@@ -75,6 +77,8 @@ const SeatList = ({ cinema_id }) => {
             setSelectedSeat(null);
             setSeatDetails(null);
             fetchSeats();
+            toast.success('Xóa ghế thành công');
+
         } catch (error) {
             console.error("Error deleting seat:", error);
         }
@@ -94,6 +98,8 @@ const SeatList = ({ cinema_id }) => {
                 setSeatType('');
                 setAmount('');
                 fetchSeats();
+                toast.success('Tạo ghế thành công');
+
             }
         } catch (error) {
             console.error("Error creating seat:", error);
@@ -144,6 +150,8 @@ const SeatList = ({ cinema_id }) => {
     });
     return (
         <>
+                    <ToastContainer position="top-right" autoClose={3000} />
+
             {/* Add seats form */}
             <div className={cx('collapse-title')}>
                 <a data-bs-toggle="collapse" href="#add-room" role="button" aria-expanded="false">Thêm ghế mới</a>
