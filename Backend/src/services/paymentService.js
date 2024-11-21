@@ -13,7 +13,10 @@ const moment = require('moment');
 const { ProductCode, VnpLocale, VNPay, ignoreLogger, dateFormat } = require('vnpay')
 const querystring = require('querystring');
 const movie = require('../models/Movie.js')
-const showtime = require('../models/Showtime.js')
+const showtime = require('../models/Showtime.js');
+const seatTimes = require('../models/SeatTime.js');
+const FoodAndDrink = require('../models/FoodAndDrinkModel.js');
+const path = require('path');
 
 //parameters
 var accessKey = 'F8BBA842ECF85';
@@ -384,21 +387,21 @@ class paymentService {
             const seats_id = order.seats_id;
             const showtime_id = order.showtime_id;
             for (const seat_id of seats_id) {
-                await SeatTimeModel.updateOne({ seat_id: seat_id ,showtime_id:showtime_id}, { seat_status: "true" })
+                await SeatTimeModel.updateOne({ seat_id: seat_id, showtime_id: showtime_id }, { seat_status: "true" })
             }
             const point = Math.ceil((user.point) + ((parsedData.amount * 1) / 1000))
             console.log("point", point)
-            await UserModel.updateOne({ _id: order.user_id }, { point: point })        
-                const pointId = order.point_id;
-                // Bước 2: Tìm chỉ mục của promotion_id cần xóa
-                const index = user.promotions_id.indexOf(pointId);
-                if (index !== -1) {
-                    // Bước 3: Xóa chỉ một occurrence
-                    user.promotions_id.splice(index, 1); // Xóa occurrence tại chỉ mục
-                    await user.save(); // Lưu thay đổi vào cơ sở dữ liệu
-                }
-            
-    
+            await UserModel.updateOne({ _id: order.user_id }, { point: point })
+            const pointId = order.point_id;
+            // Bước 2: Tìm chỉ mục của promotion_id cần xóa
+            const index = user.promotions_id.indexOf(pointId);
+            if (index !== -1) {
+                // Bước 3: Xóa chỉ một occurrence
+                user.promotions_id.splice(index, 1); // Xóa occurrence tại chỉ mục
+                await user.save(); // Lưu thay đổi vào cơ sở dữ liệu
+            }
+
+
 
             return { result, Payment, qrCodeUrl }
         }
@@ -424,16 +427,56 @@ class paymentService {
         }
     }
 
-    getPaymentByCinemaId = async (data) => {
-        try {
-            const orders = await OrdersModel.find({ cinema_id: data })
-            const orderIds = orders.map(order => order._id)
-            const payment = await PaymentModel.find({ order_id: { $in: orderIds } })
-            return { payment }
-        } catch (error) {
-            throw error
-        }
+   getPaymentByCinemaId = async (cinemaId) => {
+    try {
+        // Tìm các orders liên quan đến cinemaId
+        const orders = await OrdersModel.find({ cinema_id: cinemaId });
+        const orderIds = orders.map(order => order._id);
+
+        // Truy vấn payments và thực hiện populate lồng nhau
+        const payments = await PaymentModel.find({ order_id: { $in: orderIds } })
+            .populate(
+                'user_id', // Populate user_id
+                'fullname' // Chỉ lấy fullname
+            )
+            .populate({
+                path: 'order_id', // Populate order_id
+                select: 'showtime_id seats_id', // Chỉ lấy showtime_id và seat_id
+                populate: [
+                    { 
+                        path: 'showtime_id', // Populate showtime_id bên trong order_id
+                        select: 'movie_id', // Chỉ lấy movie_id
+                        populate: { 
+                            path: 'movie_id room_id', // Populate movie_id bên trong showtime_id
+                            select: 'title name' // Chỉ lấy title từ movie_id
+
+                        },
+                        
+                    },
+                    { 
+                        path: 'seats_id', // Populate seat_id bên trong order_id
+                        select: 'seat_number' // Chỉ lấy seat_number
+                    },
+                    {
+                        path: 'FoodAndDrinks_id',
+                    
+                            populate:{
+                                path:'item_id',
+                                select:'name'
+                            }
+                        
+                    }
+                ]
+            });
+
+        return payments;
+    } catch (error) {
+        throw error;
     }
+};
+
+
+
     getPaymentByUserId = async (data) => {
         try {
             const res = await PaymentModel.find({ user_id: data })
@@ -446,18 +489,18 @@ class paymentService {
     getPaymentByMovie = async () => {
         const movies = await movie.find().select('_id title').lean();
         const movieIds = movies.map(movie => movie._id);
-        
+
         const showtimes = await showtime.find({ movie_id: { $in: movieIds } }).lean();
         const showtimeIds = showtimes.map(showtime => showtime._id);
-        
+
         const orders = await OrdersModel.find({ showtime_id: { $in: showtimeIds } }).lean();
         const orderIds = orders.map(order => order._id);
-        
+
         const payments = await PaymentModel.find({ order_id: { $in: orderIds } }).lean();
-        
+
         const paymentsByMovie = payments.reduce((acc, payment) => {
             const order = orders.find(order => order._id.toString() === payment.order_id.toString());
-            
+
             if (order) {
                 const showtime = showtimes.find(showtime => showtime._id.toString() === order.showtime_id.toString());
                 if (showtime) {
@@ -472,9 +515,9 @@ class paymentService {
         const result = movies.map(movie => {
             const movieId = movie._id.toString();
             const totalRevenue = paymentsByMovie[movieId]
-                ? paymentsByMovie[movieId].reduce((acc, payment) => acc + payment.amount , 0)
+                ? paymentsByMovie[movieId].reduce((acc, payment) => acc + payment.amount, 0)
                 : 0;
-            
+
             return {
                 ...movie,
                 payments: totalRevenue
@@ -483,6 +526,8 @@ class paymentService {
 
         return result;
     }
+
+
 }
 
 module.exports = new paymentService

@@ -13,8 +13,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, B
 const DashBoard = () => {
     const [currentMovies, setCurrentMovies] = useState([]);
     const [comingMovies, setComingMovies] = useState([]);
-    const [totalRevenueByMonth, setTotalRevenueByMonth] = useState({}); // Doanh thu theo tháng
-    const [totalRevenueByMovie, setTotalRevenueByMovie] = useState({}); // Doanh thu theo phim
+    const [totalRevenueByMonth, setTotalRevenueByMonth] = useState(0); // Doanh thu theo tháng
+    const [totalRevenueByMovie, setTotalRevenueByMovie] = useState(0); // Doanh thu theo phim
     const [totalTickets, setTotalTickets] = useState(0); // Tổng số vé đã bán
     const [totalRevenue, setTotalRevenue] = useState({}); // Tổng doanh thu
     const fetchMovies = async () => {
@@ -112,7 +112,6 @@ const DashBoard = () => {
     }
   
     
-
     return (
         <div className="container-fluid bg-white">
             <h2 className="p-4">Dashboard</h2>

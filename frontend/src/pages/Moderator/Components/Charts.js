@@ -13,7 +13,7 @@ const Charts = ({cinema_id}) => {
     const [comingSoon, setComingSoon] = useState([]);
     const [totalTickets, setTotalTickets] = useState(0); // Tổng số vé đã bán
     const [totalRevenueByDay, setTotalRevenueByDay] = useState({}); // Doanh thu theo ngày
-    const [totalRevenueByMonth, setTotalRevenueByMonth] = useState({}); // Doanh thu theo tháng
+    const [totalRevenueByMonth, setTotalRevenueByMonth] = useState(0); // Doanh thu theo tháng
 
     const fetchMovies = useCallback(async () => {
         try {
@@ -40,7 +40,7 @@ const Charts = ({cinema_id}) => {
     }, [cinema_id]);
 
     const calculateMonthlyRevenue = (payments) => {
-        const monthRevenue = {};
+        
         const currentMonth = dayjs().format("YYYY-MM");
         let monthlyTotal = 0;
         // Lọc các giao dịch trong tháng hiện tại và tính tổng doanh thu
@@ -50,9 +50,9 @@ const Charts = ({cinema_id}) => {
                 monthlyTotal += payment.amount;
             }
         });
-        monthRevenue[currentMonth] = monthlyTotal;
+        
 
-        setTotalRevenueByMonth(monthRevenue);
+        setTotalRevenueByMonth(monthlyTotal);
     };
 
     const calculateDailyRevenueInCurrentMonth = (payments) => {
@@ -139,7 +139,7 @@ const Charts = ({cinema_id}) => {
                 <div className="col">
                     <div className="p-4 bg-primary text-white rounded">
                         <h4 className="fw-bold">Doanh số bán vé trong tháng</h4>
-                        <p className="mb-0">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalRevenueByMonth[Object.keys(totalRevenueByMonth)[0]])}</p>
+                        <p className="mb-0">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalRevenueByMonth)}</p>
                     </div>
                 </div>
             </div>

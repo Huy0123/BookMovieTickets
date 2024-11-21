@@ -173,7 +173,6 @@ const ShowtimeList = ({ cinema_id }) => {
             console.error('Error creating showtime:', error);
         }
     };
-    console.log(showtimeUpdate)
 
     return (
         <>
