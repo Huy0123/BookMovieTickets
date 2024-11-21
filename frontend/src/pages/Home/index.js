@@ -107,7 +107,8 @@ function Home() {
     
     
     
-    
+    console.log("Tổng số phim:", upcomingmovie.length);
+console.log("Danh sách phim:", upcomingmovie);
     
     return (
         <div className={cx('container')}>
@@ -234,7 +235,7 @@ function Home() {
                             {Array.from({ length: comingTotalPages }, (_, index) => (
                                 <div className={cx('carousel-item', { active: index === 0 })} key={index}>
                                     <div className="row d-flex justify-content-center gap-2">
-                                        {upcomingmovie.slice(index * upcomingmovie, (index + 1) * moviesPerPage).map(upcomingmovie => (
+                                        {upcomingmovie.slice(index * moviesPerPage, (index + 1) * moviesPerPage).map(upcomingmovie => (
                                             <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column p-3')} key={upcomingmovie._id}>
                                                 <img src={upcomingmovie.poster2} className={cx('img-movie', 'd-block', 'w-100')} alt={upcomingmovie.title} />
                                                 <h2 className={cx('title-movie', 'text-center')}>{upcomingmovie.title}</h2>

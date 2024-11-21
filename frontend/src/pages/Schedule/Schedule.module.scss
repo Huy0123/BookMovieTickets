@@ -120,7 +120,7 @@
                     color: #fff;
                     width: 95%;
                     position: absolute;
-                    top: 4px;
+                    top: 1%;
                     left: -5px;
                     border-radius:5px ;
                 .wrap-info{
@@ -164,7 +164,7 @@
                 padding-right: 0;
                 
                 /* Thêm chiều cao cố định và con lăn dọc */
-                max-height: 700px; /* Chiều cao cố định */
+                max-height: 600px; /* Chiều cao cố định */
                 overflow-y: auto; /* Cho phép cuộn dọc */
                 overflow-x: hidden; /* Ẩn cuộn ngang nếu có */
                 
