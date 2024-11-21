@@ -1,6 +1,6 @@
-const pointModel = require('../models/Point');
-const User = require('../models/userModel')
-const upload = require('../utils/upload');
+const pointModel = require('../models/Point.js');
+const User = require('../models/userModel.js')
+const upload = require('../utils/upload.js');
 class PointService {
     createPoint = async (pointData) => {
         try {

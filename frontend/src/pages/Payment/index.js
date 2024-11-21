@@ -111,10 +111,7 @@ function Payment(){
                         Foods.push({name:foodin4.data.food.name,quantity:food.count})
                         
                    }
-                   console.log("pointid",pointid)
-                //    if(pointid!=''){
-                    
-                //    }
+                 
                   
                    
                    setfoodarr(Foods)
@@ -136,23 +133,26 @@ function Payment(){
         console.log(data.value)
     }
     const optionMGG = promo.reduce((acc, item) => {
-        const existingItem = acc.find((i) => i.value === item._id);
+        if(new Date(item.start_date)<= new Date()){
+            const existingItem = acc.find((i) => i.value === item._id);
+            if (existingItem) {
+                // Nếu đã tồn tại, tăng số đếm
+                existingItem.count += 1;
+                existingItem.label = (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <img
+                            src={item.image} // Thay bằng URL ảnh mã giảm giá nếu có
+                            alt="Icon"
+                            style={{ width: '20px', height: '20px', marginRight: '8px' }}
+                        />
+                        {item.title} ({item.description}) x{existingItem.count}
+                    </div>
+                );
+        }
         
-        if (existingItem) {
-            // Nếu đã tồn tại, tăng số đếm
-            existingItem.count += 1;
-            existingItem.label = (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                        src={item.image} // Thay bằng URL ảnh mã giảm giá nếu có
-                        alt="Icon"
-                        style={{ width: '20px', height: '20px', marginRight: '8px' }}
-                    />
-                    {item.title} ({item.description}) x{existingItem.count}
-                </div>
-            );
-        } else {
+         else {
             // Nếu chưa tồn tại, thêm mới vào acc với số đếm là 1
+            
             acc.push({
                 value: item._id,
                 count: 1,
@@ -168,7 +168,7 @@ function Payment(){
                 ),
             });
         }
-    
+    }
         return acc;
     }, []);
     
@@ -192,7 +192,7 @@ function Payment(){
                     
             }
             if(pointid){
-                Oder.pointid = pointid;
+                Oder.point_id = pointid;
                 console.log(Oder)
             
             }

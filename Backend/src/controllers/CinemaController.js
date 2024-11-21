@@ -1,4 +1,4 @@
-const cinemaService = require('../services/CinemaService');
+const cinemaService = require('../services/CinemaService.js');
 
 class CinemaController {
     createCinema = async (req, res) => {

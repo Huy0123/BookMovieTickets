@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const movieController = require('../controllers/MovieController')
+const movieController = require('../controllers/MovieController.js')
 const multer = require('multer')
 
 const upload = multer({

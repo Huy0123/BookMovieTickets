@@ -116,6 +116,7 @@ function Header() {
                 { withCredentials: true } // Đảm bảo gửi cookie cùng request
             );
             setIsLoggedIn(false);
+            window.location.reload()
             const previousPage = localStorage.getItem('previousPage') || '/';  // Fallback to '/' if not found
                 navigate(previousPage);  // Redirect to the previous page
             localStorage.clear();
@@ -204,7 +205,7 @@ function Header() {
                                                 trigger="click"
                                                 arrow={false}
                                                 placement="bottom-start" // Đặt vị trí dưới và căn về bên trái
-                                                offset={[100, 10]} // Điều chỉnh khoảng cách giữa Tippy và thẻ logined
+                                                offset={[100, 10]} // Điều chỉnh khoảng cách giữa Tippy và thẻ logined  
                                             >
                                                     <div className={cx('wrap-logined', 'd-flex justify-content-center align-items-center w-100 h-100')} >
                                                         <FontAwesomeIcon className={cx('icon-user')} icon={faUser} />

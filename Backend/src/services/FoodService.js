@@ -1,5 +1,5 @@
 const FoodModel = require('../models/FoodAndDrinkModel.js')
-const upload = require('../utils/upload')
+const upload = require('../utils/upload.js')
 class FoodService {
     getFood = async ()=>{
         try {

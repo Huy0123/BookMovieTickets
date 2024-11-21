@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const seatController = require('../controllers/SeatController')
+const seatController = require('../controllers/SeatController.js')
 
 router.post('/createSeat', seatController.createSeat)
 router.get('/getSeats', seatController.getSeats)

@@ -1,5 +1,5 @@
-const movie = require('../models/Movie');
-const upload = require('../utils/upload')
+const movie = require('../models/Movie.js');
+const upload = require('../utils/upload.js')
 
 
 class MovieService {

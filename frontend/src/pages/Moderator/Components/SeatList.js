@@ -241,9 +241,9 @@ const SeatList = ({ cinema_id }) => {
                                                 <div className={cx('info-seat')}>
                                                 <h2>Thông tin ghế</h2>
                                                 <div>
-                                                    <p>Ghế: {seatDetails.seat_number}</p>
-                                                    <p>Loại ghế: {seatDetails.seat_type}</p>
-                                                    <p>Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(seatDetails.price)}</p>
+                                                    <h4>Ghế: {seatDetails.seat_number}</h4>
+                                                    <h4>Loại ghế: {seatDetails.seat_type}</h4>
+                                                    <h4>Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(seatDetails.price)}</h4>
                                                 </div>
                                                 <div>
                                                     <button className={cx('btn', 'me-2')} data-bs-toggle="modal" data-bs-target="#edit-seat" onClick={() =>fetchSeat(seatDetails._id)}>Sửa</button>

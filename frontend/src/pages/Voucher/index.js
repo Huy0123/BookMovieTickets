@@ -123,38 +123,45 @@ function Voucher() {
                         { activeTabVoucher=== 'left' &&( 
                             <div className={cx('left')}>
                             <div className={cx('modal-voucher')}>
-                                {Array.isArray(allVouncher) && allVouncher.map((item, index)  => (
-                                    <div key={index} className={cx('voucher')}>
-                                        <div className={cx('wrap-img')}>
-                                            <img 
-                                                className={cx('img-vou')} 
-                                                src={item.image || 'https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'} 
-                                                alt={`Voucher ${item.title || 'Giảm 20%'}`}
-                                            />
-                                        </div>
-                                        <div className={cx('vou-info')}>
-                                            <div>
-                                                <h4 className={cx('ten-ma')}>{item.title || 'Giảm 20%'}</h4>
-                                                <p className={cx('mota')}>{item.description || 'Mô tả voucher không có sẵn'}</p>
-                                            </div>
-                                            <div className='fs-5'>
-                                                <p className={cx('datestart')}>Ngày bắt đầu: {new Date (item.start_date).toLocaleDateString() }</p>
-                                                <p className={cx('dateend')}>Ngày kết thúc: {new Date (item.end_date).toLocaleDateString() }</p>
-                                            </div>
-                                        </div>
-                                        <button
-className={cx('btn-poi')} 
-                                            onClick={() => {
-                                                handleYNClick(item.title || 'Giảm 20%');
-                                                setSelectedVoucherId(item._id);
-                                                setPointvoun(item.points)
-                                            }}
-                                        >
-                                            <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />
-                                            {item.points }
-                                        </button>
-                                    </div>
-                                ))}
+                                {Array.isArray(allVouncher) && allVouncher.map((item, index)  => {
+                                    if(item.points!=0 && new Date(item.start_date) <= new Date()){
+                                        return(
+                                            <div key={index} className={cx('voucher')}>
+                                                                                    <div className={cx('wrap-img')}>
+                                                                                        <img 
+                                                                                            className={cx('img-vou')} 
+                                                                                            src={item.image || 'https://th.bing.com/th/id/OIP.SttmDc21xA1TN35hJZiNewHaHa?rs=1&pid=ImgDetMain'} 
+                                                                                            alt={`Voucher ${item.title || 'Giảm 20%'}`}
+                                                                                        />
+                                                                                    </div>
+                                                                                    <div className={cx('vou-info')}>
+                                                                                        <div>
+                                                                                            <h4 className={cx('ten-ma')}>{item.title || 'Giảm 20%'}</h4>
+                                                                                            <p className={cx('mota')}>{item.description || 'Mô tả voucher không có sẵn'}</p>
+                                                                                        </div>
+                                                                                        <div className='fs-5'>
+                                                                                            <p className={cx('datestart')}>Ngày bắt đầu: {new Date (item.start_date).toLocaleDateString() }</p>
+                                                                                            <p className={cx('dateend')}>Ngày kết thúc: {new Date (item.end_date).toLocaleDateString() }</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <button
+                                                                                            className={cx('btn-poi')} 
+                                                                                        onClick={() => {
+                                                                                            handleYNClick(item.title || 'Giảm 20%');
+                                                                                            setSelectedVoucherId(item._id);
+                                                                                            setPointvoun(item.points)
+                                                                                        }}
+                                                                                    >
+                                                                                        <FontAwesomeIcon className="fs-3 me-2" icon={faArrowsRotate} />
+                                                                                        {item.points }
+                                                                                    </button>
+                                                                                </div>
+                                                                                )
+                                    }
+                                   
+                                   
+                                    
+                                })}
                             </div>
 
                             </div>
@@ -206,7 +213,7 @@ className={cx('btn-poi')}
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
                      
-                        <p>{modalContent}</p>
+                        <h4>{modalContent}</h4>
                         <button className={cx('btn-cancel')} onClick={closeModal} >
                             Đóng
                         </button>
@@ -219,7 +226,7 @@ className={cx('btn-poi')}
                 <div className={cx('modal-wrapper')}>
                     <div className={cx('modal-content')}>
 
-                        <p>{modalContent}</p>
+                        <h4>{modalContent}</h4>
                         <button className={cx('btn-confirm')} onClick={() => {closeModal();handleVoucherClick(selectedVoucherId); }}>
                             Đồng ý
                         </button>

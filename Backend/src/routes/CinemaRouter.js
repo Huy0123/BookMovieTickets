@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const cinemaController = require('../controllers/CinemaController')
+const cinemaController = require('../controllers/CinemaController.js')
 
 router.post('/createCinema', cinemaController.createCinema)
 router.get('/getCinemas', cinemaController.getCinemas)

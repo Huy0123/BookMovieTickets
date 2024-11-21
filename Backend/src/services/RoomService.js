@@ -1,5 +1,5 @@
-const room = require('../models/Room')
-const seat = require('../models/Seat')
+const room = require('../models/Room.js')
+const seat = require('../models/Seat.js')
 class RoomService {
     createRoom = async (data) => {
         const newRoom = await room.create(data)

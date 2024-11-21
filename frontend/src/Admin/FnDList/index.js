@@ -20,12 +20,9 @@ function FnDList() {
     const [foodId,setFoodId] = useState('')
     const [foodIdToDelete,setFoodIdToDelete]=useState('');
     const [formData, setFormData] = useState({
-      title: "",
-      description: "",
-      discount: "",
-      end_date: "",
-      start_date: "",
-      points: "",     
+      name: "",
+      category: "",
+      price: "",
   });
   const [Image, setImage] = useState(null);
   const handleInputChange = (e) => {
@@ -58,7 +55,8 @@ const handleAdd = async () => {
       setImage(null);
       if(response.status === 201){
           alert('Tạo F&D thành công');
-      window.location.reload();}
+      window.location.reload();
+    }
   } catch (error) {
       console.error("Error creating movie:", error);
   }
@@ -156,7 +154,7 @@ const handleAdd = async () => {
               <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
               <td>
               <FontAwesomeIcon className={cx('btn-edit')} icon={faPenToSquare} onClick={() => openModalEdit(item._id)}/> 
-              <EditFnD isOpen={isModalOpen} onClose={closeModalEdit}  foodId={foodId}/>
+         
               <FontAwesomeIcon className={cx('btn-del')} icon={faTrash} onClick={() => openModalDelete(item._id)}/>
               </td>
             </tr>
@@ -184,18 +182,18 @@ const handleAdd = async () => {
             </div>
             <div className={cx('content')}>
                 <h4 className={cx('title')}>Loại</h4>
-                <select 
-                    type="text" 
-                    name="category" 
-                    className={cx('type', 'form-info')}    
-                    onChange={handleInputChange}
-                            value={formData.category} 
-                >
-                    <option value="" disabled>Chọn loại</option>
+                <select
+                            type="text"
+                            name="category"
+                            className={cx("form-info")}
+                            onChange={handleInputChange}
+                            value={formData.category}
+                        >
+                             <option value="" disabled>Chọn loại</option>
                     <option value="food">food</option>
                     <option value="drink">drink</option>
-                </select>
-            </div>            
+                        </select>
+            </div>         
             <div className={cx('content')}>
                 <h4 className={cx('title')}>Thêm ảnh</h4>
                 <input 
@@ -256,6 +254,7 @@ const handleAdd = async () => {
         </div>
     </div>
 )}
+<EditFnD isOpen={isModalOpen} onClose={closeModalEdit}  foodId={foodId}/>
     </div>
 );
 }

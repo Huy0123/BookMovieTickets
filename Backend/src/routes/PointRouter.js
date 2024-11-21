@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 const autUser = require('../middleware/autUser.js')
 
-const pointController = require('../controllers/PointController')
+const pointController = require('../controllers/PointController.js')
 
 const upload = multer({
     storage: multer.memoryStorage(),

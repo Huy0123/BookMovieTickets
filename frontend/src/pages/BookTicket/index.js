@@ -51,13 +51,13 @@ function BookTicket() {
     const [movie2,setMovie2]= useState('')
     const navigate = useNavigate();
     let lastDisplayedDate = '';
-    const user_id = localStorage.getItem('user_id')
+    const user_id = localStorage.getItem('userId')
     console.log("user_id: ",user_id)
     const movie_id =useParams().id; 
     const location = useLocation();
     const { showtimeId,cinema_id } = location.state || {}; // Lấy showtimeId từ state
     const { isAuthenticated } = useAuth();
-    console.log("showtimeId:", showtimeId);
+    
     console.log(movie_id)
     const openModal = (link) => {
         setTrailerUrl(link);
@@ -178,17 +178,17 @@ function BookTicket() {
 }, [movie_id]);
 
 
-    useEffect(() => {
-        if (showTimeId) {
-            // Scroll to seat selection area when showtimeId exists
-            if (scheduleRef.current) {
-                scheduleRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
-        } else {
-            // If no showtimeId, do not scroll or show seat selection
-            console.log("No showtimeId available.");
-        }
-    }, [showtimeId, cinema_id, price]);
+useEffect(() => {
+    if (showtimeId && cinema_id && scheduleRef.current) {
+        handleShowtimeClick(showtimeId, cinema_id, price);
+
+        // Đảm bảo cuộn chỉ xảy ra sau khi phần tử đã render
+        setTimeout(() => {
+            scheduleRef.current.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    }
+}, [showtimeId, cinema_id, price]);
+
 
     const handleBooking = () => {
         if (!isAuthenticated) {
@@ -419,7 +419,7 @@ if(title!==''){
                         .filter((show) => {
                             const showtimeDate = new Date(show.showtime_start);
                             const today = new Date();
-                            today.setHours(0, 0, 0, 0); // Đặt giờ của hôm nay về 0:00:00
+                            today.setHours(0, 0, 0, 0) ; // Đặt giờ của hôm nay về 0:00:00
                             return showtimeDate >= today; // Chỉ lấy lịch chiếu từ hôm nay trở về sau
                         })
                         // Sắp xếp lịch chiếu theo thời gian tăng dần

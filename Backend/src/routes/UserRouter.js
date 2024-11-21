@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const UserController = require('../controllers/UserController.js')
-const SendEmailController = require('../controllers/SendEmailController')
+const SendEmailController = require('../controllers/SendEmailController.js')
 const autAdmin = require('../middleware/autAdmin.js')
 const autUser = require('../middleware/autUser.js')
 
@@ -17,6 +17,6 @@ router.get('/getUsers',autAdmin,UserController.getUsers)
 router.get('/getUserByID/:id',autAdmin, UserController.getUserByID) //query
 router.get('/getUserbyid',autUser,UserController.getUserbyid)//user
 router.post('/refresh_token',UserController.refreshToken);
-router.put('/updateUser/:id',autUser, UserController.updateUser);
+router.put('/updateUser/:id',autUser, UserController.updateUser); 
 router.delete('/deleteUser/:id',autAdmin, UserController.deleteUser);
 module.exports = router 
