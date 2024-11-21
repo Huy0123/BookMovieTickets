@@ -8,7 +8,8 @@
         .content-movie{
             border-radius: 5px;
             margin-top: 20px;
-            box-shadow:inset -55px 55px 100px 5px #e7a035;
+            // box-shadow:inset -55px 55px 100px 5px #e7a035;
+            background-color:#f266accb;
            height: 100%;
            position: relative;
            .d-block{
@@ -239,7 +240,7 @@
                 .item-food{
                     display: flex;
                     justify-content: space-between;
-                    
+                    flex-wrap: wrap;
                     .item-detail{
                         display: flex;
                         border: 5px dashed #A459D1;
@@ -247,8 +248,11 @@
                         max-width: 310px;
                         background-color: #f57bb8;
                         align-items: center;
+                        margin-top: 5px;
                         .img-food{
                             height: 140px;
+                            width: 140px;
+                            object-fit: cover;
                         }
                         .food-info{
                             display: flex;

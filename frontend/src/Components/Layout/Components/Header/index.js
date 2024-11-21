@@ -145,11 +145,13 @@ function Header() {
                                     />
                                 </div>
                                
-                                <div className={cx('wrap2', 'col-lg-3')} ref={dropdownRef}>
+                                <div className={cx('wrap2', 'col-lg-3')} >
+                             <div className={cx('hover-but')}   onMouseEnter={() => setDropdownVisible(true)}
+    onMouseLeave={() => setDropdownVisible(false)}>
                                     <button
                                         type="button"
                                         className={cx('btn-choose', 'col-lg-6', 'me-3')}
-                                        onClick={() => setDropdownVisible((prev) => !prev)}
+                                        // onClick={() => setDropdownVisible((prev) => !prev)}
                                     >
                                         <FontAwesomeIcon className={cx('icon')} icon={faLocationDot} />
                                         Chọn rạp
@@ -163,9 +165,11 @@ function Header() {
                                     ))}
                                         </div>
                                     )}
+                                    </div>
+                                   
                                         <button type="button" className={cx('btn-schedule', 'col-lg-6')} onClick={() => navigate('/schedule')}>
                                         <FontAwesomeIcon className={cx('icon')} icon={faCalendarDays} />
-                                        Lịch chiếu
+                                        Lịch chiếu 
                                     </button>
                                 </div>
 
