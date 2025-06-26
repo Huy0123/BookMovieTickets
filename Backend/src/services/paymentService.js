@@ -17,6 +17,8 @@ const showtime = require('../models/Showtime.js');
 const seatTimes = require('../models/SeatTime.js');
 const FoodAndDrink = require('../models/FoodAndDrinkModel.js');
 const path = require('path');
+require('dotenv').config()
+
 
 //parameters
 var accessKey = 'F8BBA842ECF85';
@@ -24,7 +26,7 @@ var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 var orderInfo = 'pay with MoMo';
 var partnerCode = 'MOMO';
 var redirectUrl = 'http://localhost:3000/thanks';
-const ngrok = 'https://4dd8-2402-800-6378-6c38-3d6a-b5df-7a1d-fe21.ngrok-free.app'
+const ngrok = process.env.NGROK
 var ipnUrl = `${ngrok}/v1/Payment/callback`;
 var requestType = "payWithMethod";
 var extraData = '';
@@ -85,11 +87,11 @@ class paymentService {
             if (createResult.data && createResult.data.payUrl) {
                 console.log("URL thanh toán MoMo:", createResult.data.payUrl);
 
-                // Gọi hàm kiểm tra trạng thái sau khi tạo thanh toán
+                
                 setTimeout(async () => {
                     const statusResult = await this.status({ orderId });
                     console.log("Trạng thái thanh toán:", statusResult);
-                }, 5000); // Kiểm tra trạng thái sau 5 giây, có thể điều chỉnh thời gian này
+                }, 5000); 
             }
 
             return createResult.data;
@@ -129,12 +131,12 @@ class paymentService {
                     if (user) {
 
                         const pointId = order.point_id;
-                        // Bước 2: Tìm chỉ mục của promotion_id cần xóa
+                        
                         const index = user.promotions_id.indexOf(pointId);
                         if (index !== -1) {
-                            // Bước 3: Xóa chỉ một occurrence
-                            user.promotions_id.splice(index, 1); // Xóa occurrence tại chỉ mục
-                            await user.save(); // Lưu thay đổi vào cơ sở dữ liệu
+                         
+                            user.promotions_id.splice(index, 1); 
+                            await user.save(); 
                         }
                     }
                 }
@@ -177,10 +179,10 @@ class paymentService {
         try {
             const result = await axios(options);
             console.log(result.data)
-            return result.data; // Trả về dữ liệu của phản hồi
+            return result.data; 
         } catch (error) {
             console.error('Error querying MoMo API:', error.response?.data || error.message);
-            return error; // Ném lỗi để xử lý ở nơi khác nếu cần
+            return error; 
         }
     }
 
@@ -195,10 +197,10 @@ class paymentService {
             tmnCode: tmnCode,
             secureSecret: secretKey,
             vnpayHost: 'https://sandbox.vnpayment.vn',
-            testMode: true, // tùy chọn, ghi đè vnpayHost thành sandbox nếu là true
-            hashAlgorithm: 'SHA512', // tùy chọn
-            enableLog: true, // optional
-            loggerFn: ignoreLogger, // optional
+            testMode: true, 
+            hashAlgorithm: 'SHA512', 
+            enableLog: true, 
+            loggerFn: ignoreLogger, 
         });
 
         // Các tham số gửi tới VNPay
@@ -209,9 +211,9 @@ class paymentService {
             vnp_OrderInfo: 'Thanh toan don hang',
             vnp_OrderType: ProductCode.Other,
             vnp_ReturnUrl: 'http://localhost:3000/thanks',
-            vnp_Locale: VnpLocale.VN, // 'vn' hoặc 'en'
-            vnp_CreateDate: dateFormat(new Date()), // tùy chọn, mặc định là hiện tại
-            vnp_ExpireDate: dateFormat(tomorrow), // tùy chọn
+            vnp_Locale: VnpLocale.VN, 
+            vnp_CreateDate: dateFormat(new Date()), 
+            vnp_ExpireDate: dateFormat(tomorrow),
         });
 
         return { paymentUrl }
@@ -273,12 +275,12 @@ class paymentService {
                 if (user) {
 
                     const pointId = order.point_id;
-                    // Bước 2: Tìm chỉ mục của promotion_id cần xóa
+                  
                     const index = user.promotions_id.indexOf(pointId);
                     if (index !== -1) {
-                        // Bước 3: Xóa chỉ một occurrence
-                        user.promotions_id.splice(index, 1); // Xóa occurrence tại chỉ mục
-                        await user.save(); // Lưu thay đổi vào cơ sở dữ liệu
+                       
+                        user.promotions_id.splice(index, 1); 
+                        await user.save(); 
                     }
                 }
                 return { order, Payment, qrCodeUrl }
@@ -308,9 +310,9 @@ class paymentService {
         const transID = data.orderId;
         const order = {
             app_id: app_id,
-            app_trans_id: `${moment().format('YYMMDD')}_${transID}`, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
+            app_trans_id: `${moment().format('YYMMDD')}_${transID}`, 
             app_user: orderin4.user_id,
-            app_time: Date.now(), // miliseconds
+            app_time: Date.now(), 
             item: JSON.stringify(items),
             embed_data: JSON.stringify(embed_data),
             amount: data.amount,
@@ -341,22 +343,18 @@ class paymentService {
             let reqMac = data.mac;
             let mac = CryptoJS.HmacSHA256(dataStr, key2).toString();
             console.log("mac =", mac);
-            if (reqMac !== mac) {
-                // callback không hợp lệ
+            if (reqMac !== mac) {             
                 result.return_code = -1;
                 result.return_message = "mac not equal";
             }
-            else {
-                // thanh toán thành công
-                // merchant cập nhật trạng thái cho đơn hàng
+            else {              
                 let dataJson = JSON.parse(dataStr, key2);
-                console.log("update order's status = success where app_trans_id =", dataJson["app_trans_id"]);
 
                 result.return_code = 1;
                 result.return_message = "success";
             }
         } catch (ex) {
-            result.return_code = 0; // ZaloPay server sẽ callback lại (tối đa 3 lần)
+            result.return_code = 0; 
             result.return_message = ex.message;
         }
 
@@ -393,12 +391,12 @@ class paymentService {
             console.log("point", point)
             await UserModel.updateOne({ _id: order.user_id }, { point: point })
             const pointId = order.point_id;
-            // Bước 2: Tìm chỉ mục của promotion_id cần xóa
+           
             const index = user.promotions_id.indexOf(pointId);
             if (index !== -1) {
-                // Bước 3: Xóa chỉ một occurrence
-                user.promotions_id.splice(index, 1); // Xóa occurrence tại chỉ mục
-                await user.save(); // Lưu thay đổi vào cơ sở dữ liệu
+                
+                user.promotions_id.splice(index, 1); 
+                await user.save(); 
             }
 
 

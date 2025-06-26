@@ -8,7 +8,6 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const connectDB = require('./config/Database.js');
 dotenv.config();
-
 const app = express();
 
 const port = process.env.PORT || 8081;

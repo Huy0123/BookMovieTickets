@@ -143,7 +143,6 @@ function BookTicket() {
                 setPoster(movie[0].movie_id.poster2);
                 
             } else {
-                // Nếu không có suất chiếu thì gọi hàm getMovie2 để lấy thông tin cơ bản của phim
                 getMovie2();
             }
         } catch (error) {
@@ -225,7 +224,7 @@ useEffect(() => {
 
     const handleSeatClick = (seat, seatId) => {
         setSelectedSeats((prevSelectedSeats) => {
-const isSelected = prevSelectedSeats.includes(seat);
+        const isSelected = prevSelectedSeats.includes(seat);
             const updatedSeats = isSelected
                 ? prevSelectedSeats.filter((s) => s !== seat) // Bỏ chọn nếu đã chọn
                 : [...prevSelectedSeats, seat]; // Thêm nếu chưa chọn

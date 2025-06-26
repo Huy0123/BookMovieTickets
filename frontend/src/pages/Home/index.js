@@ -16,7 +16,7 @@ const cx = classNames.bind(styles);
 function Home() {
     const [movies,setMovie]= useState([])
    
-    const [moviesPerPage, setMoviesPerPage] = useState(4); // Default to 4 movies per page
+    const [moviesPerPage, setMoviesPerPage] = useState(4); 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -47,15 +47,17 @@ function Home() {
 
        
     }, []);
-    
+    console.log(new Date)
     const movieshowing =movies.filter(movies=>new Date(movies.release_date)< new Date())
     console.log("movieshowing",movieshowing)
-    const upcomingmovie =movies.filter(movies=>new Date(movies.release_date)> new Date())
+    const upcomingmovie =movies.filter(movies=>
+        new Date(movies.release_date)> new Date()
+    )
     const totalPages = Math.ceil(movieshowing.length / moviesPerPage);
     const comingTotalPages = Math.ceil(upcomingmovie.length / moviesPerPage);
     const newmovie = (movieshowing.sort((a,b)=> new Date(b.release_date) - new Date(a.release_date))).slice(0,3)
     console.log("newmovie",newmovie)
-
+ 
    
 
     const openModal = (link) => {
@@ -236,10 +238,10 @@ console.log("Danh sách phim:", upcomingmovie);
                                 <div className={cx('carousel-item', { active: index === 0 })} key={index}>
                                     <div className="row d-flex justify-content-center gap-2">
                                         {upcomingmovie.slice(index * moviesPerPage, (index + 1) * moviesPerPage).map(upcomingmovie => (
-                                            <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column p-3')} key={upcomingmovie._id}>
+                                            <div className={cx('wrap', 'col-lg-3 col-sm-6 col-12', 'd-flex flex-column p-3')} key={upcomingmovie._id} onClick={()=>handleBooking(upcomingmovie._id)}>
                                                 <img src={upcomingmovie.poster2} className={cx('img-movie', 'd-block', 'w-100')} alt={upcomingmovie.title} />
                                                 <h2 className={cx('title-movie', 'text-center')}>{upcomingmovie.title}</h2>
-                                                <h3 className={cx('daterelese','text-center')}>Ngày ra mắt: {new Date(upcomingmovie.release_date).toLocaleDateString() }</h3>
+                                                <h3 className={cx('daterelese','text-center')}>Ngày ra mắt: {new Date(upcomingmovie.release_date).toLocaleDateString("vi-VN") }</h3>
                                                 <div className={cx('btn-gr', 'd-flex  justify-content-center')}>
                                                 <button onClick={() => openModal(upcomingmovie.trailer)} type='button' className={cx('trailer', 'rounded-4')}>Xem trailer</button>
                                               

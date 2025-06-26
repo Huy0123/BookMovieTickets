@@ -203,10 +203,11 @@ function Header() {
                                                 content={renderUserDropdown()}
                                                 interactive={true}
                                                 trigger="click"
+                                                className='tipp'
                                                 arrow={false}
                                                 placement="bottom-start" // Đặt vị trí dưới và căn về bên trái
                                                 offset={[100, 10]} // Điều chỉnh khoảng cách giữa Tippy và thẻ logined  
-                                            >
+                                                >
                                                     <div className={cx('wrap-logined', 'd-flex justify-content-center align-items-center w-100 h-100')} >
                                                         <FontAwesomeIcon className={cx('icon-user')} icon={faUser} />
                                                         <h3 className={cx('fullname')}>{fullname}</h3>

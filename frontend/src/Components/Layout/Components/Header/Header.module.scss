@@ -77,7 +77,6 @@
                     }
                     .logined{
                         color:#fff;
-                       
                         font-size: 19px;
                         cursor: pointer;
                         overflow-x: visible;
@@ -88,7 +87,6 @@
                            
                         }
                         .icon-user{
-                          
                             margin-right: 5px;
                             padding-bottom: 5px;
                         }
@@ -186,18 +184,13 @@
 
 .user-dropdown{
     width: 100%;
-   
-    background-color: #f266acdd;
+    background: #f266acdd;
     .dropdown-item{
         margin: 0;
+        
         &:hover{ 
             background-color: #f67ab8;
         }
     }
 }
-.custom-tooltip {
-    background-color:   rgba(255, 184, 77, 0.375)  ; /* Màu nền */
-    color: #ffffff;            /* Màu chữ */
-    border-radius: 4px;       /* Bo góc */
-    padding: 8px;             /* Đệm */
-  }
+

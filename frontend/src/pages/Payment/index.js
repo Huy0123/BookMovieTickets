@@ -207,22 +207,22 @@ function Payment(){
             if(selectMethodPay==="momo"){
                 const resPay = await apiClient.post('/Payment', data);
                 console.log("resPay.data",resPay.data)
-                // Chuyển hướng đến URL thanh toán
+                
                 if (resPay.data && resPay.data.payUrl) {
-                    window.location.href = resPay.data.payUrl; // mở URL trong tab hiện tại
+                    window.location.href = resPay.data.payUrl; 
                 }
             }
             else if(selectMethodPay==="vnpay"){
                 const resPay = await apiClient.post('/Payment/createrVnpay', data);
                 if (resPay.data && resPay.data.paymentUrl) {
-                    window.location.href = resPay.data.paymentUrl; // mở URL trong tab hiện tại
+                    window.location.href = resPay.data.paymentUrl; 
                 }
             }
             else if(selectMethodPay==="zalopay"){
                 const resPay = await apiClient.post('/Payment/createrZalopay', data);
                 console.log("data",resPay.data.data2)
                 if (resPay.data && resPay.data.data2.order_url) {
-                    window.location.href = resPay.data.data2.order_url; // mở URL trong tab hiện tại
+                    window.location.href = resPay.data.data2.order_url; 
                 }
             }
            

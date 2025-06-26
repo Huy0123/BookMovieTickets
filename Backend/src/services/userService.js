@@ -1,7 +1,6 @@
 const user = require('../models/userModel.js')
 const nodemailer = require('nodemailer'); 
 const bcrypt =require('bcrypt')
-const cookie = require('cookie');
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const saltRounds =10

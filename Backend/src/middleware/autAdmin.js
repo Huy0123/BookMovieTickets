@@ -42,3 +42,4 @@ const autAdmin = async(req, res, next) => {
 }
 
 module.exports = autAdmin
+  

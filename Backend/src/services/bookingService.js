@@ -70,11 +70,7 @@ class bookingService {
                 order_date: new Date(),
                 total_price
             })
-            const orders_infor = await order.save();
-           
-           
-         
-         
+            const orders_infor = await order.save();     
             return { message:"Thanh toán thành công ",orders_infor};
         } catch (error) {
             console.error(error);
