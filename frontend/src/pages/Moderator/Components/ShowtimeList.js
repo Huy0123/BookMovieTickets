@@ -48,8 +48,16 @@ const ShowtimeList = ({ cinema_id }) => {
     const fetchMovies = useCallback(async () => {
         try {
             const response = await axios.get(`http://localhost:8080/v1/getMovies`);
-            const movieData = response.data.reduce((acc, res) => ({ ...acc, [res._id]: res.title }), {});
-            setAllMovies(movieData);
+            const date = new Date();
+            const newData = [];
+            response.data.forEach(movie => {
+            const releaseDate = new Date(movie.release_date);
+                if (releaseDate <= date) {
+                    newData.push(movie);
+                }
+                });
+            
+            setAllMovies(newData.reduce((acc, res) => ({ ...acc, [res._id]: res.title }), {}));
         } catch (error) {
             console.log("Error fetching movies:", error);
         }

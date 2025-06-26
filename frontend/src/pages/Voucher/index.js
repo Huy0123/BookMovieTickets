@@ -124,7 +124,7 @@ function Voucher() {
                             <div className={cx('left')}>
                             <div className={cx('modal-voucher')}>
                                 {Array.isArray(allVouncher) && allVouncher.map((item, index)  => {
-                                    if(item.points!=0 && new Date(item.start_date) <= new Date()){
+                                    if(item.points>=0 && new Date(item.start_date) <= new Date()){
                                         return(
                                             <div key={index} className={cx('voucher')}>
                                                                                     <div className={cx('wrap-img')}>

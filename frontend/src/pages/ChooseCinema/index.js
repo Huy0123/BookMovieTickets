@@ -24,8 +24,17 @@ function ChooseCinema() {
         const fetchMoviesByCinemaId = async () => {
             try {
                 const res = await axios.get(`http://localhost:8080/v1/getMovies`);
-                setAllMovies(res.data);
-                setVisibleMovies(res.data.slice(0, 5)); // Display first 5 movies
+                            const date = new Date();
+            const newData = [];
+            res.data.forEach(movie => {
+            const releaseDate = new Date(movie.release_date);
+                if (releaseDate <= date) {
+                    newData.push(movie);
+                }
+                });
+                console.log("newData",newData);
+                setAllMovies(newData);
+                setVisibleMovies(newData.slice(0, 5)); // Display first 5 movies
                 console.log("mv",res.data);
             } catch (error) {
                 console.error('Error fetching movies:', error);
