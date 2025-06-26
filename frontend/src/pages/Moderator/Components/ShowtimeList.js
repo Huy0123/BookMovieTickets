@@ -5,6 +5,7 @@ import styles from './style.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { clippingParents } from "@popperjs/core";
 
 const cx = classNames.bind(styles);
 
@@ -12,6 +13,8 @@ const ShowtimeList = ({ cinema_id }) => {
     const [showtimes, setShowtimes] = useState([]);
     const [roomsAvailable, setRoomsAvailable] = useState([]);
     const [allMovies, setAllMovies] = useState([]);
+    const [isSelectedMovie, setIsSelectedMovie] = useState(false);
+    const [movieDuration, setMovieDuration] = useState(0);
     const [showtime, setShowtime] = useState({
         movie_id: "",
         room_id: "",
@@ -27,9 +30,7 @@ const ShowtimeList = ({ cinema_id }) => {
     });
     const openModal = (id) => {
         handleUpdateShowtime(id);
-
     }
-
 
     // Hàm lấy danh sách showtime từ API
     const fetchShowtimes = useCallback(async () => {
@@ -39,7 +40,6 @@ const ShowtimeList = ({ cinema_id }) => {
         try {
             const response = await axios.get(`http://localhost:8080/v1/getShowtimeByCinemaID/${cinema_id}`);
             setShowtimes(response.data);
-
         } catch (error) {
             console.log("Error fetching showtimes:", error);
         }
@@ -48,7 +48,6 @@ const ShowtimeList = ({ cinema_id }) => {
     const fetchMovies = useCallback(async () => {
         try {
             const response = await axios.get(`http://localhost:8080/v1/getMovies`);
-
             const movieData = response.data.reduce((acc, res) => ({ ...acc, [res._id]: res.title }), {});
             setAllMovies(movieData);
         } catch (error) {
@@ -61,6 +60,15 @@ const ShowtimeList = ({ cinema_id }) => {
         fetchShowtimes();
     }, [fetchMovies, fetchShowtimes]);
 
+    // Tự động cập nhật showtime_end khi chọn phim hoặc giờ bắt đầu
+    useEffect(() => {
+        if (showtime.showtime_start && movieDuration) {
+            setShowtime(prev => ({
+                ...prev,
+                showtime_end: calcEndTime(showtime.showtime_start, movieDuration)
+            }));
+        }
+    }, [showtime.showtime_start, movieDuration]);
 
     const RoomsAvailable = useCallback(async () => {
         try {
@@ -117,6 +125,20 @@ const ShowtimeList = ({ cinema_id }) => {
         }
     };
 
+    function calcEndTime(start, duration) {
+        if (!start || !duration) return "";
+        const date = new Date(start);
+        date.setMinutes(date.getMinutes() + Number(duration) + 30);
+        // Pad month, day, hours, minutes to 2 digits
+        const pad = (n) => n.toString().padStart(2, '0');
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1); // getMonth() is zero-based
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
     const resetForm = () => {
         setRoomsAvailable([]);
         setShowtime({
@@ -125,16 +147,32 @@ const ShowtimeList = ({ cinema_id }) => {
             showtime_start: "",
             showtime_end: ""
         });
+        setIsSelectedMovie(false);
+        setMovieDuration(0);
     };
 
-
-
-    const handleInputChange = (e) => {
-        setShowtime({ ...showtime, [e.target.name]: e.target.value });
+const handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    setShowtime(prev => ({ ...prev, [name]: value }));
+    console.log("Input changed:", name, value);
+    // Nếu cần dùng movie_id mới chọn, dùng luôn biến value
+    if (name === "movie_id") {
+        setIsSelectedMovie(!!value);
+        try {
+            const res = await axios.get(`http://localhost:8080/v1/getMovieByID/${value}`);
+            setMovieDuration(res.data.duration);
+        } catch (error) {
+            setMovieDuration(0);
+        }
     }
+};
+
 
     const handleUpdateInputChange = (e) => {
         setShowtimeUpdate({ ...showtimeUpdate, [e.target.name]: e.target.value });
+        if (e.target.name === "movie_id") {
+            setIsSelectedMovie(!!e.target.value);
+        }
     }
 
     const handleSaveUpdatedShowtime = async (id) => {
@@ -151,7 +189,6 @@ const ShowtimeList = ({ cinema_id }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Ngăn chặn hành động mặc định của form
-
         try {
             const response = await axios.post('http://localhost:8080/v1/createShowtime', {
                 ...showtime,
@@ -187,8 +224,12 @@ const ShowtimeList = ({ cinema_id }) => {
                         <form onSubmit={handleSubmit}>
                             <label htmlFor="movie" className="form-label">Chọn phim</label>
                             <select
-                                className={cx('form-select', ' form-select-lg mb-3')} aria-label="Choose a movie" name="movie_id" value={showtime.movie_id} onChange={handleInputChange}>
-
+                                className={cx('form-select', ' form-select-lg mb-3')}
+                                aria-label="Choose a movie"
+                                name="movie_id"
+                                value={showtime.movie_id}
+                                onChange={handleInputChange}
+                            >
                                 <option value="" disabled>Chọn phim</option>
                                 {Object.entries(allMovies).map(([id, title]) => (
                                     <option key={id} value={id}>{title}</option>
@@ -197,24 +238,57 @@ const ShowtimeList = ({ cinema_id }) => {
 
                             <div className="mb-3">
                                 <label htmlFor="showtime_start" className={cx('form-label')}>Thời gian bắt đầu</label>
-                                <input type="datetime-local" min={new Date().toISOString().slice(0, 16)} className={cx('form-control')} id="showtime_start" name="showtime_start" value={showtime.showtime_start} onChange={handleInputChange} />
+                                <input
+                                    type="datetime-local"
+                                    min={new Date().toISOString().slice(0, 16)}
+                                    className={cx('form-control')}
+                                    id="showtime_start"
+                                    name="showtime_start"
+                                    value={showtime.showtime_start}
+                                    onChange={handleInputChange}
+                                    disabled={!showtime.movie_id}
+                                />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="showtime_end" className={cx('form-label')}>Thời gian kết thúc</label>
-                                <input type="datetime-local" className={cx('form-control')} min={new Date().toISOString().slice(0, 16)} id="showtime_end" name="showtime_end" value={showtime.showtime_end} onChange={handleInputChange} />
+                                <input
+                                    type="datetime-local"
+                                    className={cx('form-control')}
+                                    min={new Date().toISOString().slice(0, 16)}
+                                    id="showtime_end"
+                                    name="showtime_end"
+                                    value={calcEndTime(showtime.showtime_start, movieDuration)}
+                                    onChange={handleInputChange}
+                                    readOnly
+                                    disabled={!showtime.movie_id}
+                                />
                             </div>
                             <label htmlFor="room" className="form-label">Chọn phòng</label>
-                            <select className={cx('form-select', ' form-select-lg mb-3')} aria-label="Choose a room" name="room_id" value={showtime.room_id} onChange={handleInputChange}>
+                            <select
+                                className={cx('form-select', ' form-select-lg mb-3')}
+                                aria-label="Choose a room"
+                                name="room_id"
+                                value={showtime.room_id}
+                                onChange={handleInputChange}
+                                disabled={!showtime.movie_id}
+                            >
                                 <option value="" disabled>Chọn phòng</option>
                                 {Object.entries(roomsAvailable).map(([id, name]) => (
                                     <option key={id} value={id}>{name}</option>
                                 ))}
                             </select>
                             <div className={cx('btn-submit')}>
-                                <button type="submit">Tạo lịch chiếu</button>
-
+                                <button
+                                    type="submit"
+                                    disabled={
+                                        !showtime.movie_id ||
+                                        !showtime.showtime_start ||
+                                        !showtime.room_id
+                                    }
+                                >
+                                    Tạo lịch chiếu
+                                </button>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -242,7 +316,6 @@ const ShowtimeList = ({ cinema_id }) => {
                                 <td>
                                     <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit-showtime" onClick={() => openModal(showtime._id)}>Edit</button>
                                     <button className="btn btn-danger" onClick={() => handleDeleteShowtime(showtime._id)}>Delete</button>
-
                                 </td>
                             </tr>
                         ))}
@@ -261,12 +334,16 @@ const ShowtimeList = ({ cinema_id }) => {
                             <form>
                                 <label htmlFor="movie" className="form-label">Chọn phim</label>
                                 <select
-                                    className={cx('form-select', ' form-select-lg mb-3')} aria-label="Choose a movie" name="movie_id" value={showtimeUpdate.movie_id} onChange={handleUpdateInputChange}>
-
+                                    className={cx('form-select', ' form-select-lg mb-3')}
+                                    aria-label="Choose a movie"
+                                    name="movie_id"
+                                    value={showtimeUpdate.movie_id}
+                                    onChange={handleUpdateInputChange}
+                                >
                                     <option value="" disabled>Chọn phim</option>
                                     <option value={showtimeUpdate.movie_id._id}>{showtimeUpdate.movie_id.title}</option>
                                     {Object.entries(allMovies)
-                                        .filter(([id]) => id !== showtimeUpdate.movie_id._id) // Loại bỏ phim hiện tại
+                                        .filter(([id]) => id !== showtimeUpdate.movie_id._id)
                                         .map(([id, title]) => (
                                             <option key={id} value={id}>
                                                 {title}
@@ -276,14 +353,34 @@ const ShowtimeList = ({ cinema_id }) => {
 
                                 <div className="mb-3">
                                     <label htmlFor="showtime_start" className={cx('form-label')}>Thời gian bắt đầu</label>
-                                    <input type="datetime-local" className={cx('form-control')} id="showtime_start" name="showtime_start" value={showtimeUpdate.showtime_start} onChange={handleUpdateInputChange} />
+                                    <input
+                                        type="datetime-local"
+                                        className={cx('form-control')}
+                                        id="showtime_start"
+                                        name="showtime_start"
+                                        value={showtimeUpdate.showtime_start}
+                                        onChange={handleUpdateInputChange}
+                                    />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="showtime_end" className={cx('form-label')}>Thời gian kết thúc</label>
-                                    <input type="datetime-local" className={cx('form-control')} id="showtime_end" name="showtime_end" value={showtimeUpdate.showtime_end} onChange={handleUpdateInputChange} />
+                                    <input
+                                        type="datetime-local"
+                                        className={cx('form-control')}
+                                        id="showtime_end"
+                                        name="showtime_end"
+                                        value={showtimeUpdate.showtime_end}
+                                        onChange={handleUpdateInputChange}
+                                    />
                                 </div>
                                 <label htmlFor="room" className="form-label">Chọn phòng</label>
-                                <select className={cx('form-select', ' form-select-lg mb-3')} aria-label="Choose a room" name="room_id" value={showtimeUpdate.room_id} onChange={handleUpdateInputChange}>
+                                <select
+                                    className={cx('form-select', ' form-select-lg mb-3')}
+                                    aria-label="Choose a room"
+                                    name="room_id"
+                                    value={showtimeUpdate.room_id}
+                                    onChange={handleUpdateInputChange}
+                                >
                                     <option value="" disabled>Chọn phòng</option>
                                     {showtimeUpdate.room_id && <option value={showtimeUpdate.room_id._id}>{showtimeUpdate.room_id.name}</option>}
                                     {Object.entries(roomsAvailable).map(([id, name]) => (
@@ -291,7 +388,6 @@ const ShowtimeList = ({ cinema_id }) => {
                                     ))}
                                 </select>
                             </form>
-
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-primary" onClick={() => handleSaveUpdatedShowtime(showtimeUpdate._id)}>Save</button>
@@ -302,9 +398,6 @@ const ShowtimeList = ({ cinema_id }) => {
             </div>
         </>
     );
-
 };
-
-
 
 export default ShowtimeList;

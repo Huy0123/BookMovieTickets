@@ -14,7 +14,6 @@ const Charts = ({cinema_id}) => {
     const [totalTickets, setTotalTickets] = useState(0); // Tổng số vé đã bán
     const [totalRevenueByDay, setTotalRevenueByDay] = useState({}); // Doanh thu theo ngày
     const [totalRevenueByMonth, setTotalRevenueByMonth] = useState(0); // Doanh thu theo tháng
-
     const fetchMovies = useCallback(async () => {
         try {
             const response = await axios.get("http://localhost:8080/v1/getMovies");
@@ -29,8 +28,8 @@ const Charts = ({cinema_id}) => {
         if (!cinema_id) return;
         try {
             const response = await axios.get(`http://localhost:8080/v1/Payment/getPaymentByCinemaId/${cinema_id}`);
-            const payments = response.data.payment;
-            // Sau khi có dữ liệu, tính toán doanh thu theo tháng và theo ngày
+            const payments = response.data;
+            // Tính toán doanh thu theo tháng và ngày
             calculateMonthlyRevenue(payments);
             calculateDailyRevenueInCurrentMonth(payments);
             calculateTotalTickets(payments);

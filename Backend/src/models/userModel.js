@@ -21,7 +21,7 @@ const createUser = new mongoose.Schema({
     },
     password: {
         type: String,
-      
+
     },
     point:{
         type:Number,
