@@ -56,6 +56,7 @@
             position: relative; /* Đặt vị trí tương đối cho nội dung để đảm bảo các phần tử bên trong được căn chỉnh đúng */
             z-index: 0  ;
             display: flex;
+             
             img{
                 z-index: 0  ;
                 width: 100%;
@@ -104,19 +105,25 @@
                     color: #F266AB;
                     text-align: start;
                 }
-                .wrap-decr{
-                    background:#a559d14c;
-                    width: 80%;
-                   
-                   text-align: justify;
-                    padding: 15px 30px;
-                    border-radius: 10px;
-                   
-                    animation: floatIn 1.2s ease-out forwards;
-                    p{
-                        color: #F266AB;
-                    }
-                }
+               .wrap-decr {
+                        width: 80%;
+                        background: #a559d14c;
+                        padding: 15px 30px;
+                        border-radius: 10px;
+                        text-align: justify;
+
+                        p {
+                            color: #F266AB;
+                            display: -webkit-box;               // ⚠️ Cần để dùng line clamp
+                            -webkit-line-clamp: 3;              // ✅ Hiển thị tối đa 3 dòng
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                         
+                        }
+                          
+                        }
+
                 .timeset{
                     animation: floatIn 1.2s ease-out forwards;
                     color: #F266AB;

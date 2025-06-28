@@ -114,7 +114,7 @@ function History() {
                             </tbody>
                         </table>
                         </div>
-
+ 
                         <div className={cx('histor-content')}>
                             {order.map((item, index) => (
                                 <div key={item._id} className='w-100 row'>

@@ -5,8 +5,8 @@ class UserController{
     // dang ki
     createUser = async(req,res,next)=>{
        const data = req.body
-       try {
-        
+       try {     
+        // Kiểm tra xem người dùng đã đăng nhập hay chưa
         const create = await userService.createUserService(data) // Lưu đối tượng vào cơ sở dữ liệu
         
         return res.status(201).json(create)

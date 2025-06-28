@@ -8,8 +8,8 @@ class RoomController {
             res.status(201).send(room);
         } catch (error) {
             res.status(400).send(error.message);
-        }
-    }
+        } 
+    }  
     getRoomByCinemaID = async (req, res) => {
         try {
             const rooms = await roomService.getRoomByCinemaID(req.params.id);
@@ -17,7 +17,7 @@ class RoomController {
         } catch (error) {
             res.status(400).send(error.message);
         }
-    }
+    }  
 
     getRooms = async (req, res) => {
         try {
